@@ -24,14 +24,14 @@ public class Portal : MonoBehaviour
     }
 
     //標示Portal
-    public void doHightLineOn()
+    private void doHightLineOn()
     {
         this.gameObject.GetComponent<Renderer>().material.color = Color.gray;
         // TODO Portal，當傳送門可被調查時應該要如何實現標示
     }
 
     //取消標示Portal
-    public void doHightLineOff()
+    private void doHightLineOff()
     {
         this.gameObject.GetComponent<Renderer>().material.color = Color.white;
         // TODO Portal，當傳送門取消標示的實現，應與實現相對應

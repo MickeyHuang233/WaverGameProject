@@ -16,14 +16,14 @@ public class NPC_Item : MonoBehaviour
     }
 
     //標示Item
-    public void doHightLineOn()
+    private void doHightLineOn()
     {
         this.gameObject.GetComponent<Renderer>().material.color = Color.gray;
         // TODO Portal，當物品可被調查時應該要如何實現標示
     }
 
     //取消標示Item
-    public void doHightLineOff()
+    private void doHightLineOff()
     {
         this.gameObject.GetComponent<Renderer>().material.color = Color.white;
         // TODO Portal，當物品取消標示的實現，應與實現相對應

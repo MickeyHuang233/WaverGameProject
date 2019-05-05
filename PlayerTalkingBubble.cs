@@ -52,22 +52,22 @@ public class PlayerTalkingBubble : MonoBehaviour
         }
     }
 
-    public void showTalkBubble_01()
+    private void showTalkBubble_01()
     {
         shouldBeStatus = "TalkBubble_01";
     }
 
-    public void showTalkBubble_02()
+    private void showTalkBubble_02()
     {
         shouldBeStatus = "TalkBubble_02";
     }
 
-    public void showTalkBubble_03()
+    private void showTalkBubble_03()
     {
         shouldBeStatus = "TalkBubble_03";
     }
 
-    public void hideTalkBubble()
+    private void hideTalkBubble()
     {
         shouldBeStatus = "empty";
     }

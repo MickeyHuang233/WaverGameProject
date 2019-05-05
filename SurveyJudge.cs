@@ -80,6 +80,7 @@ public class SurveyJudge : MonoBehaviour
                 if (Input.GetKeyDown(KeyCode.Z))
                 {
                     // TODO SurveyJudge，與NPC對話按Z後的操作
+                    surveyObject.SendMessage("npcTalking");
                 }
             }
             else if (surveyObjectCollider.tag == "NPC_Item")
