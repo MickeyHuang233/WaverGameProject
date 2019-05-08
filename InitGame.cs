@@ -15,5 +15,6 @@ public class InitGame : MonoBehaviour
     void Start()
     {
         SceneManager.LoadScene(startScene);
+        InitSceneManagment.PositionName = startPositionnName;//傳送位置物件名稱，以便新場景找到相應的物件
     }
 }
