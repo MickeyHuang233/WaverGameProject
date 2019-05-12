@@ -52,10 +52,30 @@ public class PlayerMovement : MonoBehaviour
     [Range(-1F, 1F)]
     public float talkColliderPositionRateY = 0.1F;
 
+    [Header("對話完成或關閉菜單所需等待時間")]
+    [Range(0F, 5F)]
+    public float restTime = 0.1F;
+
+    //計算玩家已休息時間
+    private float restTimer = 5F;
+
+    //等待時間是否超過應等待時間
+    private bool overRestTime
+    {
+        get
+        {
+            return (restTimer < restTime) ? false : true;//休息時間還沒到就返回false
+        }
+    }
+
+    //菜單物件
+    private GameObject MenuObject;
+
     void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        MenuObject = this.transform.GetChild(3).gameObject;
         nowYaxis = this.transform.position.y;//初始化當前幀的y軸位置
         preYaxis = this.transform.position.y;//初始化上一幀的y軸位置
         talkColliderObject = this.transform.GetChild(0).gameObject;//取得玩家物件下的對話域物件的碰撞器元件
@@ -72,11 +92,12 @@ public class PlayerMovement : MonoBehaviour
         doSetStatusToShould(currentState);
         if (!Talkable.isTalking && !isStatus("lookNote", currentState))//當玩家沒有正在對話或是打開菜單
         {
+            restTimer += Time.deltaTime;
             if (h != 0 || v != 0)//按方向鍵
             {
                 doMove(h, v);
             }
-            else if(submit > 0)
+            else if(submit > 0 && overRestTime)
             {
                 doSubmit();
             }
@@ -87,6 +108,14 @@ public class PlayerMovement : MonoBehaviour
             else//什麼按也不按
             {
                 shouldStatus = "idle";
+            }
+        }
+        else if (isStatus("lookNote", currentState))
+        {
+            restTimer += Time.deltaTime;
+            if (cancel > 0 && overRestTime)
+            {
+                doReturnCancel();
             }
         }
     }
@@ -137,7 +166,6 @@ public class PlayerMovement : MonoBehaviour
     {
         nowYaxis = this.transform.position.y;//取得當前位置
         float gapYaxis = nowYaxis - preYaxis;//取得上一幀與當前位置Y軸之差
-        Debug.Log("doMove");
         //角色移動
         rigidbody.AddForce(new Vector2(h * speedH, v * speedV));
         this.transform.Translate(0, 0, -(gapYaxis * speedZ), Space.World);
@@ -166,14 +194,25 @@ public class PlayerMovement : MonoBehaviour
     //按下submit的操作
     private void doSubmit()
     {
-        //TODO 把SurveyJudge中的submit的操作搬過來
-        Debug.Log("submit");
+        restTimer = 0F;
+        shouldStatus = "idle";
+        talkColliderObject.SendMessage("doSurvey");
     }
 
-    //按下cancel的操作
+    //在待機狀態，按下cancel的操作
     private void doCancel()
     {
+        restTimer = 0F;
         shouldStatus = "lookNote";
+        MenuObject.SendMessage("doOpenMenu");
+    }
+
+    //在打開菜單狀態，按下cancel的操作
+    private void doReturnCancel()
+    {
+        restTimer = 0F;
+        shouldStatus = "idle";
+        MenuObject.SendMessage("doCloseMenu");
     }
 
 }

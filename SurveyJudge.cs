@@ -77,31 +77,39 @@ public class SurveyJudge : MonoBehaviour
             if (surveyObjectCollider.tag == "NPC")
             {
                 playerObject.SendMessage("showTalkBubble_01");
-                if (Input.GetKeyDown(KeyCode.Z))
-                {
-                    // TODO SurveyJudge，與NPC對話按Z後的操作
-                    surveyObject.SendMessage("npcTalking");
-                }
             }
             else if (surveyObjectCollider.tag == "NPC_Item")
             {
                 playerObject.SendMessage("showTalkBubble_02");
-                if (Input.GetKeyDown(KeyCode.Z))
-                {
-                    // TODO SurveyJudge，調查物品按Z後的操作
-                }
             }
             else if (surveyObjectCollider.tag == "Portal")
             {
                 playerObject.SendMessage("showTalkBubble_03");
-                if (Input.GetKeyDown(KeyCode.Z))
-                {
-                    surveyObject.SendMessage("ChangeScene");
-                    playerObject.SendMessage("hideTalkBubble");
-                    triggerNameMap.Clear();
-                }
             }
+        }
+    }
 
+    //執行調查
+    private void doSurvey()
+    {
+        if (Input.GetAxisRaw("Submit") > 0 && triggerNameMap.Count > 0)
+        {
+            Collider2D surveyObjectCollider = surveyObject.GetComponent<Collider2D>();
+            if (surveyObjectCollider.tag == "NPC")
+            {
+                // TODO SurveyJudge，與NPC對話按Z後的操作
+                surveyObject.SendMessage("npcTalking");
+            }
+            else if (surveyObjectCollider.tag == "NPC_Item")
+            {
+                // TODO SurveyJudge，調查物品按Z後的操作
+            }
+            else if (surveyObjectCollider.tag == "Portal")
+            {
+                surveyObject.SendMessage("ChangeScene");
+                playerObject.SendMessage("hideTalkBubble");
+                triggerNameMap.Clear();
+            }
         }
     }
 
