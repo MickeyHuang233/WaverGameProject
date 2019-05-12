@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fungus;
 
 //每一個場景初始化的操作，一定要每個場景都加，否則無法傳送到指定位置
 public class InitSceneManagment : MonoBehaviour
@@ -54,6 +55,9 @@ public class InitSceneManagment : MonoBehaviour
 
         //將DarkLayout的全部子物件放入List中
         darkLayoutToList();
+
+        //加載GameManager
+        Talkable.flowchartManager = GameObject.Find("SpeakManager").GetComponent<Flowchart>();
     }
 
     void Update()
