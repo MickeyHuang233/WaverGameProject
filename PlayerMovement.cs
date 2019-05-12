@@ -14,6 +14,9 @@ public class PlayerMovement : MonoBehaviour
     //角色的動畫信息
     private Animator animator;
 
+    //玩家應該的狀態
+    private string shouldStatus;
+
     //上一幀角色方向
     private Vector2 preMoveDirction;
 
@@ -53,21 +56,38 @@ public class PlayerMovement : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        nowYaxis = this.transform.position.y;
-        preYaxis = this.transform.position.y;
-        //取得玩家物件下的對話域物件的碰撞器元件
-        talkColliderObject = this.transform.GetChild(0).gameObject;
+        nowYaxis = this.transform.position.y;//初始化當前幀的y軸位置
+        preYaxis = this.transform.position.y;//初始化上一幀的y軸位置
+        talkColliderObject = this.transform.GetChild(0).gameObject;//取得玩家物件下的對話域物件的碰撞器元件
+        shouldStatus = "idle";
     }
     
     void Update()
     {
-        if (!Talkable.isTalking)//沒在對話才可行走
+        currentState = animator.GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態的hashCode
+        float h = Input.GetAxisRaw("Horizontal");//檢測水平移動
+        float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
+        float submit = Input.GetAxisRaw("Submit");//檢測z鍵
+        float cancel = Input.GetAxisRaw("Cancel");//檢測x鍵
+        doSetStatusToShould(currentState);
+        if (!Talkable.isTalking && !isStatus("lookNote", currentState))//當玩家沒有正在對話或是打開菜單
         {
-            doMove();
-        }
-        else//如果正在對話就將狀態改為待機
-        {
-            setStatus("idle");
+            if (h != 0 || v != 0)//按方向鍵
+            {
+                doMove(h, v);
+            }
+            else if(submit > 0)
+            {
+                doSubmit();
+            }
+            else if (cancel > 0 && isStatus("idle", currentState))//站穩才能打開菜單
+            {
+                doCancel();
+            }
+            else//什麼按也不按
+            {
+                shouldStatus = "idle";
+            }
         }
     }
 
@@ -76,22 +96,51 @@ public class PlayerMovement : MonoBehaviour
     {
         this.animator.SetBool("idle", false);
         this.animator.SetBool("run", false);
+        this.animator.SetBool("lookNote", false);
         if (!status.Equals("allClose"))//只開啟所設定的狀態，若設定allClose則狀態全關
         {
             this.animator.SetBool(status, true);
         }
     }
 
-    //角色移動
-    private void doMove()
+    //判斷當前狀態
+    private bool isStatus(string status, AnimatorStateInfo nowStateHash)
     {
-        float h = Input.GetAxisRaw("Horizontal");//檢測水平移動
-        float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
+        bool b = false;
+        switch (status)
+        {
+            case "idle":
+                b = nowStateHash.IsName("Idle");
+                break;
+            case "run":
+                b = nowStateHash.IsName("Base Layer.Run");
+                break;
+            case "lookNote":
+                b = nowStateHash.IsName("Base Layer.TakeNote") || nowStateHash.IsName("Base Layer.LookNote");
+                break;
+            default:
+                Debug.Log(status + "找不到相對應的狀態，可能輸入錯誤");
+                break;
+        }
+        return b;
+    }
+
+    //將當前狀態設置為應該狀態
+    private void doSetStatusToShould(AnimatorStateInfo nowStateHash)
+    {
+        string s = (isStatus(shouldStatus, nowStateHash) || isStatus("idle", nowStateHash)) ? shouldStatus : "idle";
+        setStatus(s);
+    }
+
+    //角色移動
+    private void doMove(float h, float v)
+    {
         nowYaxis = this.transform.position.y;//取得當前位置
         float gapYaxis = nowYaxis - preYaxis;//取得上一幀與當前位置Y軸之差
+        Debug.Log("doMove");
         //角色移動
         rigidbody.AddForce(new Vector2(h * speedH, v * speedV));
-        this.transform.Translate( 0, 0, -(gapYaxis * speedZ), Space.World);
+        this.transform.Translate(0, 0, -(gapYaxis * speedZ), Space.World);
 
         //判斷方向，以便顯示正確的動畫
         moveDirction = Vector2.zero;
@@ -102,52 +151,29 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.UpArrow))
             moveDirction.y = 1F;
         if (Input.GetKey(KeyCode.DownArrow))
-            moveDirction.y = -1F;
-        if (moveDirction.sqrMagnitude > 0)//當玩家有按上下左右任一鍵時
-        {
-            setStatus("run");
-            preMoveDirction = moveDirction;
-        }
-        else//當玩家沒執行任何操作就把狀態改為待機
-        {
-            setStatus("idle");
-            moveDirction = preMoveDirction;
-        }
+        moveDirction.y = -1F;
+        shouldStatus = "run";
+        preMoveDirction = moveDirction;
         animator.SetFloat("move_X", moveDirction.x);//賦值給Animator的相應變量
         animator.SetFloat("move_Y", moveDirction.y);
 
         //根據移動方向移動Player底下的talkColliderObject物件
         talkColliderObject.transform.position = new Vector2(this.transform.position.x + moveDirction.x * talkColliderPositionRateX, this.transform.position.y + moveDirction.y * talkColliderPositionRateY);
-        //doMoveV(v);
-        //doMoveH(h);
 
         preYaxis = nowYaxis;//更新上一幀的玩家位置信息，以便下一幀計算差值
     }
 
-    //上下鍵的判斷
-    private void doMoveV(float v)
+    //按下submit的操作
+    private void doSubmit()
     {
-        Debug.Log("doMoveV");
-        if (v > 0)//上走
-        {
-        }
-        else if (v < 0)//下走
-        {
-        }
-        else//h == 0
-        {
-        }
+        //TODO 把SurveyJudge中的submit的操作搬過來
+        Debug.Log("submit");
     }
 
-    //左右移動的判斷
-    private void doMoveH(float h)
+    //按下cancel的操作
+    private void doCancel()
     {
-        Debug.Log("doMoveH");
-        if (h > 0)//右走
-        {
-        }
-        else if (h < 0)//左走
-        {
-        }
+        shouldStatus = "lookNote";
     }
+
 }
