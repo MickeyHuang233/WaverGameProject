@@ -73,8 +73,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
-        rigidbody = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+        rigidbody = this.GetComponent<Rigidbody2D>();
+        animator = this.GetComponent<Animator>();
         MenuObject = this.transform.GetChild(3).gameObject;
         nowYaxis = this.transform.position.y;//初始化當前幀的y軸位置
         preYaxis = this.transform.position.y;//初始化上一幀的y軸位置
@@ -84,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
     
     void Update()
     {
-        currentState = animator.GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態的hashCode
+        currentState = this.animator.GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態的hashCode
         float h = Input.GetAxisRaw("Horizontal");//檢測水平移動
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
         float submit = Input.GetAxisRaw("Submit");//檢測z鍵
