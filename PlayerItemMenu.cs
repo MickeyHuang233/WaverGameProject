@@ -5,7 +5,6 @@ using UnityEngine;
 //玩家物品菜單欄
 public class PlayerItemMenu : MonoBehaviour
 {
-
     //菜單的動畫信息
     private Animator animator;
 
@@ -15,6 +14,9 @@ public class PlayerItemMenu : MonoBehaviour
     //菜單的Tag動畫組件
     private List<Animator> MenuTagsAnimator = new List<Animator>();
 
+    [Header("菜單選項選擇器")]
+    public GameObject MenuChoice;
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -22,9 +24,9 @@ public class PlayerItemMenu : MonoBehaviour
         this.animator.SetBool("openMenu", false);
         this.animator.SetBool("closeMenu", true);
         //取得菜單的Tag物件及動畫組件
-        for (int i = 0; i < this.transform.GetChildCount(); i++)
+        for (int i = 0; i < this.transform.GetChild(0).GetChildCount(); i++)
         {
-            GameObject t = this.transform.GetChild(i).gameObject;
+            GameObject t = this.transform.GetChild(0).GetChild(i).gameObject;
             MenuTagsObject.Add(t);
             Animator a = t.GetComponent<Animator>();
             MenuTagsAnimator.Add(a);
@@ -46,10 +48,16 @@ public class PlayerItemMenu : MonoBehaviour
     {
         this.animator.SetBool("openMenu", true);
         this.animator.SetBool("closeMenu", false);
-        for (int i = 0; i < this.transform.GetChildCount(); i++)
+        for (int i = 0; i < MenuTagsObject.Count; i++)
         {
             MenuTagsAnimator[i].SetBool("openMenu", true);
             MenuTagsAnimator[i].SetBool("closeMenu", false);
+        }
+        Vector3 tagItemPosition = MenuTagsObject[0].transform.position;
+        //如果沒有菜單選擇物件就加載
+        if (GameObject.Find("MenuChoice(Clone)") == null)
+        {
+            GameObject go = GameObject.Instantiate(MenuChoice, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
         }
     }
 
@@ -58,10 +66,15 @@ public class PlayerItemMenu : MonoBehaviour
     {
         this.animator.SetBool("openMenu", false);
         this.animator.SetBool("closeMenu", true);
-        for (int i = 0; i < this.transform.GetChildCount(); i++)
+        for (int i = 0; i < MenuTagsObject.Count; i++)
         {
             MenuTagsAnimator[i].SetBool("openMenu", false);
             MenuTagsAnimator[i].SetBool("closeMenu", true);
+        }
+        //如果有菜單選擇物件就注除
+        if (GameObject.Find("MenuChoice(Clone)") != null)
+        {
+            GameObject.Destroy(GameObject.Find("MenuChoice(Clone)"));
         }
     }
 }
