@@ -38,11 +38,6 @@ public class PlayerItemMenu : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-
-    }
-
     //打開菜單
     private void doOpenMenu()
     {
@@ -52,12 +47,20 @@ public class PlayerItemMenu : MonoBehaviour
         {
             MenuTagsAnimator[i].SetBool("openMenu", true);
             MenuTagsAnimator[i].SetBool("closeMenu", false);
+            MenuTagsAnimator[i].SetBool("choseTag", false);
+            MenuTagsAnimator[i].SetBool("cancelChoseTag", true);
+            if (i == 0)
+            {
+                MenuTagsAnimator[i].SetBool("choseTag", true);
+                MenuTagsAnimator[i].SetBool("cancelChoseTag", false);
+            }
         }
         Vector3 tagItemPosition = MenuTagsObject[0].transform.position;
         //如果沒有菜單選擇物件就加載
         if (GameObject.Find("MenuChoice(Clone)") == null)
         {
             GameObject go = GameObject.Instantiate(MenuChoice, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+            go.transform.SetParent(transform);//將新建出來的菜單選項選擇器放到自己底下
         }
     }
 
@@ -70,6 +73,8 @@ public class PlayerItemMenu : MonoBehaviour
         {
             MenuTagsAnimator[i].SetBool("openMenu", false);
             MenuTagsAnimator[i].SetBool("closeMenu", true);
+            MenuTagsAnimator[i].SetBool("choseTag", false);
+            MenuTagsAnimator[i].SetBool("cancelChoseTag", true);
         }
         //如果有菜單選擇物件就注除
         if (GameObject.Find("MenuChoice(Clone)") != null)

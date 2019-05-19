@@ -46,14 +46,19 @@ public class ChoiceTag : MonoBehaviour
         saveAnimator = MenuTag_Save.GetComponent<Animator>();
         exitAnimator = MenuTag_Exit.GetComponent<Animator>();
         tagIndex = 1;//初始化當前位置編號
-        transform.position = new Vector3(MenuTag_Item.transform.position.x + 0.25F, MenuTag_Item.transform.position.y + 0.05F, MenuTag_Item.transform.position.z);
-        //TODO 遊戲第一次加載後點開菜單，item的tag需等open完成後再放選擇動畫
-        //TODO 收回菜單再打開，動畫會停留在上一次的狀態(需初始化)
     }
 
     void Update()
     {
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
+        float submit = Input.GetAxisRaw("Submit");//檢測z鍵
+        doMove(v);
+        doSubmit(submit);
+    }
+
+    //菜單選擇器的移動
+    private void doMove(float v)
+    {
         restTimer += Time.deltaTime;
         if (v > 0 && tagIndex > 0 && overRestTime)//向上移動
         {
@@ -89,7 +94,26 @@ public class ChoiceTag : MonoBehaviour
             }
             restTimer = 0;
         }
+    }
 
+    //菜單選擇器的確認
+    private void doSubmit(float submit)
+    {
+        if (submit > 0)
+        {
+            switch (tagIndex)
+            {
+                case 1:
+                    Debug.Log("MenuTag_Item");
+                    break;
+                case 2:
+                    Debug.Log("MenuTag_Save");
+                    break;
+                case 3:
+                    Debug.Log("MenuTag_Exit");
+                    break;
+            }
+        }
     }
 
     //設定批次狀態機的狀態
