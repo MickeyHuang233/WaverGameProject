@@ -17,6 +17,9 @@ public class PlayerItemMenu : MonoBehaviour
     [Header("菜單選項選擇器")]
     public GameObject MenuChoice;
 
+    //是否打開第二級層菜單
+    public static bool openDetailMenu = false;
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -38,7 +41,7 @@ public class PlayerItemMenu : MonoBehaviour
         }
     }
 
-    //打開菜單
+    //打開一級菜單
     private void doOpenMenu()
     {
         this.animator.SetBool("openMenu", true);
@@ -64,7 +67,7 @@ public class PlayerItemMenu : MonoBehaviour
         }
     }
 
-    //關閉菜單
+    //關閉一級菜單
     private void doCloseMenu()
     {
         this.animator.SetBool("openMenu", false);
@@ -81,5 +84,21 @@ public class PlayerItemMenu : MonoBehaviour
         {
             GameObject.Destroy(GameObject.Find("MenuChoice(Clone)"));
         }
+    }
+
+    //打開二級菜單
+    private void doOpenDetailMenu()
+    {
+        this.animator.SetBool("openDetilMenu", true);
+        this.animator.SetBool("closeDetilMenu", false);
+        openDetailMenu = true;
+    }
+
+    //關閉二級菜單
+    private void doCloseDetailMenu()
+    {
+        this.animator.SetBool("openDetilMenu", false);
+        this.animator.SetBool("closeDetilMenu", true);
+        openDetailMenu = false;
     }
 }

@@ -110,7 +110,7 @@ public class PlayerMovement : MonoBehaviour
                 shouldStatus = "idle";
             }
         }
-        else if (isStatus("lookNote", currentState))
+        else if (isStatus("lookNote", currentState) && !PlayerItemMenu.openDetailMenu)//打開一級菜單時的操作
         {
             restTimer += Time.deltaTime;
             if (cancel > 0 && overRestTime)
@@ -194,7 +194,7 @@ public class PlayerMovement : MonoBehaviour
     //按下submit的操作
     private void doSubmit()
     {
-        restTimer = 0F;
+        returnRestTimer();
         shouldStatus = "idle";
         talkColliderObject.SendMessage("doSurvey");
     }
@@ -202,7 +202,7 @@ public class PlayerMovement : MonoBehaviour
     //在待機狀態，按下cancel的操作
     private void doCancel()
     {
-        restTimer = 0F;
+        returnRestTimer();
         shouldStatus = "lookNote";
         MenuObject.SendMessage("doOpenMenu");
     }
@@ -210,9 +210,15 @@ public class PlayerMovement : MonoBehaviour
     //在打開菜單狀態，按下cancel的操作
     private void doReturnCancel()
     {
-        restTimer = 0F;
+        returnRestTimer();
         shouldStatus = "idle";
         MenuObject.SendMessage("doCloseMenu");
+    }
+
+    //已休息時間歸零
+    private void returnRestTimer()
+    {
+        restTimer = 0F;
     }
 
 }

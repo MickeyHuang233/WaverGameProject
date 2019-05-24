@@ -14,6 +14,9 @@ public class ChoiceTag : MonoBehaviour
     private Animator saveAnimator;
     private Animator exitAnimator;
 
+    //菜單物件
+    private GameObject MenuObject;
+
     //當前位置編號
     private int tagIndex;
 
@@ -42,6 +45,7 @@ public class ChoiceTag : MonoBehaviour
         MenuTag_Item = GameObject.Find("MenuTag_Item");
         MenuTag_Save = GameObject.Find("MenuTag_Save");
         MenuTag_Exit = GameObject.Find("MenuTag_Exit");
+        MenuObject = GameObject.Find("Menu");
         itemAnimator = MenuTag_Item.GetComponent<Animator>();
         saveAnimator = MenuTag_Save.GetComponent<Animator>();
         exitAnimator = MenuTag_Exit.GetComponent<Animator>();
@@ -52,14 +56,19 @@ public class ChoiceTag : MonoBehaviour
     {
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
         float submit = Input.GetAxisRaw("Submit");//檢測z鍵
+        float cancel = Input.GetAxisRaw("Cancel");//檢測x鍵
+        restTimer += Time.deltaTime;
         doMove(v);
         doSubmit(submit);
+        if (PlayerItemMenu.openDetailMenu)
+        {
+            doCancel(cancel);
+        }
     }
 
     //菜單選擇器的移動
     private void doMove(float v)
     {
-        restTimer += Time.deltaTime;
         if (v > 0 && tagIndex > 0 && overRestTime)//向上移動
         {
             tagIndex--;
@@ -99,20 +108,35 @@ public class ChoiceTag : MonoBehaviour
     //菜單選擇器的確認
     private void doSubmit(float submit)
     {
-        if (submit > 0)
+        if (submit > 0 && overRestTime)
         {
+            MenuObject.SendMessage("doOpenDetailMenu");
             switch (tagIndex)
             {
                 case 1:
-                    Debug.Log("MenuTag_Item");
+                    MenuTag_Item.SendMessage("showItemPage");
+                    restTimer = 0;
                     break;
                 case 2:
-                    Debug.Log("MenuTag_Save");
+                    MenuTag_Save.SendMessage("showSavePage");
+                    restTimer = 0;
                     break;
                 case 3:
-                    Debug.Log("MenuTag_Exit");
+                    MenuTag_Exit.SendMessage("showExitPage");
+                    restTimer = 0;
                     break;
             }
+        }
+    }
+
+    //開始二級菜單時的取消操作
+    private void doCancel(float cancel)
+    {
+        if (cancel > 0 && overRestTime)
+        {
+            MenuObject.SendMessage("doCloseDetailMenu");
+            restTimer = 0;
+            GameObject.Find("Player").SendMessage("returnRestTimer");
         }
     }
 
