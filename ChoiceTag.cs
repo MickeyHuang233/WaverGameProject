@@ -135,6 +135,21 @@ public class ChoiceTag : MonoBehaviour
         if (cancel > 0 && overRestTime)
         {
             MenuObject.SendMessage("doCloseDetailMenu");
+            switch (tagIndex)
+            {
+                case 1:
+                    MenuTag_Item.SendMessage("hideItemPage");
+                    restTimer = 0;
+                    break;
+                case 2:
+                    MenuTag_Save.SendMessage("hideSavePage");
+                    restTimer = 0;
+                    break;
+                case 3:
+                    MenuTag_Exit.SendMessage("hideExitPage");
+                    restTimer = 0;
+                    break;
+            }
             restTimer = 0;
             GameObject.Find("Player").SendMessage("returnRestTimer");
         }

@@ -4,9 +4,16 @@ using UnityEngine;
 
 public class MenuTagSave : MonoBehaviour
 {
+    //存檔菜單文字物件
+    GameObject savePage;
+
+    //存檔菜單文字的動畫信息
+    private Animator savePageAanimator;
+
     void Start()
     {
-        
+        savePage = GameObject.Find("SavePage");
+        savePageAanimator = savePage.GetComponent<Animator>();
     }
 
     void Update()
@@ -14,8 +21,19 @@ public class MenuTagSave : MonoBehaviour
 
     }
 
+    //打開存檔菜單
     private void showSavePage()
     {
-        Debug.Log("MenuTag_Save");
+        Debug.Log("MenuTag_Exit_showItemPage");
+        savePageAanimator.SetBool("openDetilMenu", true);
+        savePageAanimator.SetBool("closeDetilMenu", false);
+    }
+
+    //關閉存檔菜單
+    private void hideSavePage()
+    {
+        Debug.Log("MenuTag_Exit_hideItemPage");
+        savePageAanimator.SetBool("openDetilMenu", false);
+        savePageAanimator.SetBool("closeDetilMenu", true);
     }
 }
