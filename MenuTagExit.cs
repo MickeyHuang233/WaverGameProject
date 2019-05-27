@@ -40,12 +40,11 @@ public class MenuTagExit : MonoBehaviour
     //確認離開遊戲
     private void doExitSubmit()
     {
-
+        Application.Quit();//關閉遊戲
     }
 
     //取消離開遊戲
     private void doExitCancel()
     {
-
     }
 }
