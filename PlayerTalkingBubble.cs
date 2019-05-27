@@ -2,7 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//控制主角頭上泡泡
+/*
+    控制主角頭上泡泡
+    掛載物件：
+        PlayerTalkingBubble --> talkBubble(對話框泡泡物件必須放在玩家物件底下的第三個)
+    實現功能：
+        1. 根據遊戲需求調用，在玩家頭上顯示對話泡泡
+    對話泡泡對照：
+        TalkBubble_01 --> 
+        TalkBubble_02 --> 
+        TalkBubble_03 --> 
+*/
 public class PlayerTalkingBubble : MonoBehaviour
 {
     //頭上對話泡泡物件
