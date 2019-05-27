@@ -36,4 +36,16 @@ public class MenuTagExit : MonoBehaviour
         exitPageAanimator.SetBool("openDetilMenu", false);
         exitPageAanimator.SetBool("closeDetilMenu", true);
     }
+
+    //確認離開遊戲
+    private void doExitSubmit()
+    {
+
+    }
+
+    //取消離開遊戲
+    private void doExitCancel()
+    {
+
+    }
 }

@@ -39,6 +39,15 @@ public class ChoiceTag : MonoBehaviour
         }
     }
 
+    /*
+     * 打開二級菜單類型
+     * 0 --> 未打開二級菜單
+     * 1 --> Item
+     * 2 --> Save
+     * 3 --> Exit
+     */
+    private int openDetailMenu;
+
     void Start()
     {
         //獲取菜單各Tag物件及其動畫組件
@@ -50,6 +59,7 @@ public class ChoiceTag : MonoBehaviour
         saveAnimator = MenuTag_Save.GetComponent<Animator>();
         exitAnimator = MenuTag_Exit.GetComponent<Animator>();
         tagIndex = 1;//初始化當前位置編號
+        openDetailMenu = 0;//剛開始未打開二級菜單
     }
 
     void Update()
@@ -58,9 +68,12 @@ public class ChoiceTag : MonoBehaviour
         float submit = Input.GetAxisRaw("Submit");//檢測z鍵
         float cancel = Input.GetAxisRaw("Cancel");//檢測x鍵
         restTimer += Time.deltaTime;
-        doMove(v);
-        doSubmit(submit);
-        if (PlayerItemMenu.openDetailMenu)
+        if (openDetailMenu == 0)
+        {
+            doMove(v);
+            doSubmit(submit);
+        }
+        else
         {
             doCancel(cancel);
         }
@@ -115,14 +128,17 @@ public class ChoiceTag : MonoBehaviour
             {
                 case 1:
                     MenuTag_Item.SendMessage("showItemPage");
+                    openDetailMenu = 1;
                     restTimer = 0;
                     break;
                 case 2:
                     MenuTag_Save.SendMessage("showSavePage");
+                    openDetailMenu = 2;
                     restTimer = 0;
                     break;
                 case 3:
                     MenuTag_Exit.SendMessage("showExitPage");
+                    openDetailMenu = 3;
                     restTimer = 0;
                     break;
             }
@@ -139,18 +155,20 @@ public class ChoiceTag : MonoBehaviour
             {
                 case 1:
                     MenuTag_Item.SendMessage("hideItemPage");
+                    openDetailMenu = 0;
                     restTimer = 0;
                     break;
                 case 2:
                     MenuTag_Save.SendMessage("hideSavePage");
+                    openDetailMenu = 0;
                     restTimer = 0;
                     break;
                 case 3:
                     MenuTag_Exit.SendMessage("hideExitPage");
+                    openDetailMenu = 0;
                     restTimer = 0;
                     break;
             }
-            restTimer = 0;
             GameObject.Find("Player").SendMessage("returnRestTimer");
         }
     }
@@ -184,5 +202,10 @@ public class ChoiceTag : MonoBehaviour
         }
     }
 
+    //已休息時間歸零
+    private void returnRestTimer()
+    {
+        restTimer = 0F;
+    }
 
 }
