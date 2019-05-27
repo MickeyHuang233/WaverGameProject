@@ -2,7 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//控制主角移動及傳送
+/*
+    控制主角移動及傳送
+    掛載物件：
+        PlayerMovement --> Player(命名固定)
+        SurveyJudge --> (碰撞器物件必須放在玩家物件底下的第一個)
+    實現功能：
+        1. 角色的拸動及動畫轉換// TODO 缺斜向四個角的動畫轉換
+        2. 在角色上下移動時需要同時改動Z軸 // TODO 因程式重構，需要從history中取之前寫好的部分
+        3. 按下確認鍵調查或對話，調用Player底下的碰撞器物件的方法(碰撞器物件必須放在玩家物件底下的第一個)
+        4. 按下取消鍵開啟或關閉一級菜單，調用Player底下的菜單物件的方法(菜單物件必須放在玩家物件底下的第四個)
+*/
 public class PlayerMovement : MonoBehaviour
 {
     //先取得目前動畫狀態的資訊
