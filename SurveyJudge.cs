@@ -2,7 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//用於判斷被調查物件進入觸發器及調查的信息發送
+/*
+    用於判斷被調查物件進入觸發器及調查的信息發送
+    掛載物件：
+        SurveyJudge --> (碰撞器物件必須放在玩家物件底下的第一個)
+        PlayerTalkingBubble --> talkBubble(對話框泡泡物件必須放在玩家物件底下的第三個)
+        NPC --> NPC物件(tag設定為NPC)
+        NPC_Item --> Item物件(tag設定為NPC_Item)
+        Portal --> Portal物件(tag設定為Portal)
+    實現功能：
+        1. 標示離玩家最近又在玩家調查范圍內的可調查物件
+            1) 玩家頭上的對話泡泡顯示
+            2) 調查物件的特殊標示 // TODO 目前只是變暗而已
+        2. 執行物品調查、人物對話、場景移動(根據被調查物件所設定的tag及掛載的script決定)
+*/
 public class SurveyJudge : MonoBehaviour
 {
     //Player物件
