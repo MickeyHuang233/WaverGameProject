@@ -24,7 +24,6 @@ public class MenuTagSave : MonoBehaviour
     //打開存檔菜單
     private void showSavePage()
     {
-        Debug.Log("MenuTag_Exit_showItemPage");
         savePageAanimator.SetBool("openDetilMenu", true);
         savePageAanimator.SetBool("closeDetilMenu", false);
     }
@@ -32,7 +31,6 @@ public class MenuTagSave : MonoBehaviour
     //關閉存檔菜單
     private void hideSavePage()
     {
-        Debug.Log("MenuTag_Exit_hideItemPage");
         savePageAanimator.SetBool("openDetilMenu", false);
         savePageAanimator.SetBool("closeDetilMenu", true);
     }

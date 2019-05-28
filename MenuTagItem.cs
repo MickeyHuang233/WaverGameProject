@@ -24,7 +24,6 @@ public class MenuTagItem : MonoBehaviour
     //打開物品欄
     private void showItemPage()
     {
-        Debug.Log("MenuTag_Item_showItemPage");
         itemPageAanimator.SetBool("openDetilMenu", true);
         itemPageAanimator.SetBool("closeDetilMenu", false);
     }
@@ -32,7 +31,6 @@ public class MenuTagItem : MonoBehaviour
     //關閉物品欄
     private void hideItemPage()
     {
-        Debug.Log("MenuTag_Item_hideItemPage");
         itemPageAanimator.SetBool("openDetilMenu", false);
         itemPageAanimator.SetBool("closeDetilMenu", true);
     }
