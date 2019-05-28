@@ -17,9 +17,6 @@ public class PlayerItemMenu : MonoBehaviour
     [Header("菜單選項選擇器")]
     public GameObject MenuChoice;
 
-    //是否打開第二級層菜單
-    public static bool openDetailMenu = false;
-
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -91,7 +88,6 @@ public class PlayerItemMenu : MonoBehaviour
     {
         this.animator.SetBool("openDetilMenu", true);
         this.animator.SetBool("closeDetilMenu", false);
-        openDetailMenu = true;
     }
 
     //關閉二級菜單
@@ -99,6 +95,6 @@ public class PlayerItemMenu : MonoBehaviour
     {
         this.animator.SetBool("openDetilMenu", false);
         this.animator.SetBool("closeDetilMenu", true);
-        openDetailMenu = false;
+        ChoiceTag.openDetailMenu = 0;
     }
 }

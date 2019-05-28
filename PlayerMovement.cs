@@ -120,7 +120,7 @@ public class PlayerMovement : MonoBehaviour
                 shouldStatus = "idle";
             }
         }
-        else if (isStatus("lookNote", currentState) && !PlayerItemMenu.openDetailMenu)//打開一級菜單時的操作
+        else if (isStatus("lookNote", currentState) && ChoiceTag.openDetailMenu==0)//打開一級菜單時的操作
         {
             restTimer += Time.deltaTime;
             if (cancel > 0 && overRestTime)
@@ -214,6 +214,7 @@ public class PlayerMovement : MonoBehaviour
     {
         returnRestTimer();
         shouldStatus = "lookNote";
+        ChoiceTag.openDetailMenu = 0;
         MenuObject.SendMessage("doOpenMenu");
     }
 
@@ -222,6 +223,7 @@ public class PlayerMovement : MonoBehaviour
     {
         returnRestTimer();
         shouldStatus = "idle";
+        ChoiceTag.openDetailMenu = -1;
         MenuObject.SendMessage("doCloseMenu");
     }
 

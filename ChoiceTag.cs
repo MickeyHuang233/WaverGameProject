@@ -4,11 +4,6 @@ using UnityEngine;
 
 public class ChoiceTag : MonoBehaviour
 {
-    //菜單Item Tag物件
-    private GameObject MenuTag_Item;
-    private GameObject MenuTag_Save;
-    private GameObject MenuTag_Exit;
-
     //菜單Item Tag動畫組件
     private Animator itemAnimator;
     private Animator saveAnimator;
@@ -16,6 +11,11 @@ public class ChoiceTag : MonoBehaviour
 
     //菜單物件
     private GameObject MenuObject;
+
+    //菜單Page物件
+    private GameObject ItemPage;
+    private GameObject SavePage;
+    private GameObject ExitPage;
 
     //當前位置編號
     private int tagIndex;
@@ -41,23 +41,25 @@ public class ChoiceTag : MonoBehaviour
 
     /*
      * 打開二級菜單類型
+     * -1 --> 未打開一級菜單
      * 0 --> 未打開二級菜單
      * 1 --> Item
      * 2 --> Save
      * 3 --> Exit
      */
-    private int openDetailMenu;
+    public static int openDetailMenu;
 
     void Start()
     {
-        //獲取菜單各Tag物件及其動畫組件
-        MenuTag_Item = GameObject.Find("MenuTag_Item");
-        MenuTag_Save = GameObject.Find("MenuTag_Save");
-        MenuTag_Exit = GameObject.Find("MenuTag_Exit");
+        //獲取菜單物件及其動畫組件
         MenuObject = GameObject.Find("Menu");
-        itemAnimator = MenuTag_Item.GetComponent<Animator>();
-        saveAnimator = MenuTag_Save.GetComponent<Animator>();
-        exitAnimator = MenuTag_Exit.GetComponent<Animator>();
+        itemAnimator = GameObject.Find("MenuTag_Item").GetComponent<Animator>();
+        saveAnimator = GameObject.Find("MenuTag_Save").GetComponent<Animator>();
+        exitAnimator = GameObject.Find("MenuTag_Exit").GetComponent<Animator>();
+        //獲取菜單各page物件
+        ItemPage = GameObject.Find("ItemPage");
+        SavePage = GameObject.Find("SavePage");
+        ExitPage = GameObject.Find("ExitPage");
         tagIndex = 1;//初始化當前位置編號
         openDetailMenu = 0;//剛開始未打開二級菜單
     }
@@ -87,14 +89,10 @@ public class ChoiceTag : MonoBehaviour
             tagIndex--;
             if (tagIndex == 1)
             {
-                Vector3 targetPosition = MenuTag_Item.transform.position;
-                transform.position = new Vector3(targetPosition.x + 0.25F, targetPosition.y + 0.05F, targetPosition.z);
                 setStatus("item");
             }
             else if (tagIndex == 2)
             {
-                Vector3 targetPosition = MenuTag_Save.transform.position;
-                transform.position = new Vector3(targetPosition.x + 0.25F, targetPosition.y + 0.05F, targetPosition.z);
                 setStatus("save");
             }
             restTimer = 0;
@@ -104,14 +102,10 @@ public class ChoiceTag : MonoBehaviour
             tagIndex++;
             if (tagIndex == 2)
             {
-                Vector3 targetPosition = MenuTag_Save.transform.position;
-                transform.position = new Vector3(targetPosition.x + 0.25F, targetPosition.y + 0.05F, targetPosition.z);
                 setStatus("save");
             }
             else if (tagIndex == 3)
             {
-                Vector3 targetPosition = MenuTag_Exit.transform.position;
-                transform.position = new Vector3(targetPosition.x + 0.25F, targetPosition.y + 0.05F, targetPosition.z);
                 setStatus("exit");
             }
             restTimer = 0;
@@ -127,19 +121,20 @@ public class ChoiceTag : MonoBehaviour
             switch (tagIndex)
             {
                 case 1:
-                    MenuTag_Item.SendMessage("showItemPage");
+                    ItemPage.SendMessage("showItemPage");
                     openDetailMenu = 1;
-                    restTimer = 0;
+                    returnRestTimer();
                     break;
                 case 2:
-                    MenuTag_Save.SendMessage("showSavePage");
+                    SavePage.SendMessage("showSavePage");
                     openDetailMenu = 2;
-                    restTimer = 0;
+                    returnRestTimer();
                     break;
                 case 3:
-                    MenuTag_Exit.SendMessage("showExitPage");
+                    ExitPage.SendMessage("showExitPage");
+                    ExitPage.SendMessage("returnRestTimer");
                     openDetailMenu = 3;
-                    restTimer = 0;
+                    returnRestTimer();
                     break;
             }
         }
@@ -154,19 +149,19 @@ public class ChoiceTag : MonoBehaviour
             switch (tagIndex)
             {
                 case 1:
-                    MenuTag_Item.SendMessage("hideItemPage");
+                    ItemPage.SendMessage("hideItemPage");
                     openDetailMenu = 0;
-                    restTimer = 0;
+                    returnRestTimer();
                     break;
                 case 2:
-                    MenuTag_Save.SendMessage("hideSavePage");
+                    SavePage.SendMessage("hideSavePage");
                     openDetailMenu = 0;
-                    restTimer = 0;
+                    returnRestTimer();
                     break;
                 case 3:
-                    MenuTag_Exit.SendMessage("hideExitPage");
+                    ExitPage.SendMessage("hideExitPage");
                     openDetailMenu = 0;
-                    restTimer = 0;
+                    returnRestTimer();
                     break;
             }
             GameObject.Find("Player").SendMessage("returnRestTimer");
