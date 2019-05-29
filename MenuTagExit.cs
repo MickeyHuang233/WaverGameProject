@@ -32,19 +32,29 @@ public class MenuTagExit : MonoBehaviour
         }
     }
 
+    #region 已休息時間歸零
+    private void returnRestTimer()
+    {
+        restTimer = 0F;
+    }
+    #endregion
+
+    #region Start()
     void Start()
     {
         exitPage = GameObject.Find("ExitPage");
         exitPageAanimator = exitPage.GetComponent<Animator>();
         itemIndex = this.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
     }
+    #endregion
 
+    #region Update()
     void Update()
     {
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
         float submit = Input.GetAxisRaw("Submit");//檢測z鍵
         restTimer += Time.deltaTime;
-        if (overRestTime && ChoiceTag.openDetailMenu == 3)
+        if (overRestTime && PlayerItemMenu.openDetailMenu == 3)
         {
             if (v < 0 && tagIndex == 1)
             {
@@ -60,51 +70,49 @@ public class MenuTagExit : MonoBehaviour
             }
             if (submit > 0)
             {
+                returnRestTimer();
                 switch (tagIndex)
                 {
                     case 1://是的
-                        returnRestTimer();
                         doExitSubmit();
                         break;
                     case 2://取消
-                        returnRestTimer();
                         doExitCancel();
                         break;
                 }
             }
         }
     }
+    #endregion
 
-    //打開離開遊戲菜單
+    # region 打開離開遊戲菜單
     private void showExitPage()
     {
         exitPageAanimator.SetBool("openDetilMenu", true);
         exitPageAanimator.SetBool("closeDetilMenu", false);
     }
+    #endregion
 
-    //關閉離開遊戲菜單
+    #region 關閉離開遊戲菜單
     private void hideExitPage()
     {
         exitPageAanimator.SetBool("openDetilMenu", false);
         exitPageAanimator.SetBool("closeDetilMenu", true);
     }
+    #endregion
 
-    //確認離開遊戲
+    #region 確認離開遊戲
     private void doExitSubmit()
-        {
+    {
             Debug.Log("doExitSubmit");
             Application.Quit();//關閉遊戲
     }
+    #endregion
 
-    //取消離開遊戲
+    #region 取消離開遊戲
     private void doExitCancel()
-        {
-            Debug.Log("doExitCancel");
-        }
-
-    //已休息時間歸零
-    private void returnRestTimer()
     {
-        restTimer = 0F;
+            Debug.Log("doExitCancel");
     }
+    #endregion
 }

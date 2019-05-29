@@ -10,28 +10,34 @@ public class MenuTagItem : MonoBehaviour
     //物品欄文字的動畫信息
     private Animator itemPageAanimator;
 
+    #region Start()
     void Start()
     {
         itemPage = GameObject.Find("ItemPage");
         itemPageAanimator = itemPage.GetComponent<Animator>();
     }
+    #endregion
 
+    #region Update()
     void Update()
     {
-        
-    }
 
-    //打開物品欄
+    }
+    #endregion
+
+    #region 打開物品欄
     private void showItemPage()
     {
         itemPageAanimator.SetBool("openDetilMenu", true);
         itemPageAanimator.SetBool("closeDetilMenu", false);
     }
+    #endregion
 
-    //關閉物品欄
+    #region 關閉物品欄
     private void hideItemPage()
     {
         itemPageAanimator.SetBool("openDetilMenu", false);
         itemPageAanimator.SetBool("closeDetilMenu", true);
     }
+    #endregion
 }

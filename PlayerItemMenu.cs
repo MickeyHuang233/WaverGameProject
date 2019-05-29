@@ -8,21 +8,72 @@ public class PlayerItemMenu : MonoBehaviour
     //菜單的動畫信息
     private Animator animator;
 
-    //菜單的Tag物件
+    /*
+     * 菜單的Tag物件
+     * 0 --> MenuTag_Item
+     * 1 --> MenuTag_Save
+     * 2 --> MenuTag_Exit
+     */
     private List<GameObject> MenuTagsObject = new List<GameObject>();
+
+    //菜單Page物件
+    private GameObject ItemPage;
+    private GameObject SavePage;
+    private GameObject ExitPage;
 
     //菜單的Tag動畫組件
     private List<Animator> MenuTagsAnimator = new List<Animator>();
 
-    [Header("菜單選項選擇器")]
-    public GameObject MenuChoice;
+    /*
+     * 打開二級菜單類型
+     * -1 --> 未打開一級菜單
+     * 0 --> 打開一級菜單，未打開二級菜單
+     * 1 --> Item
+     * 2 --> Save
+     * 3 --> Exit
+     */
+    public static int openDetailMenu = -1;
 
+    //當前位置編號
+    private int tagIndex;
+
+    //最大位置編號
+    private int tagIndexMax = 3;
+
+    [Header("切換菜單tag應休息時間")]
+    [Range(0F, 5F)]
+    public float restTime = 0.5F;
+
+    //切換菜單tag已休息時間
+    private float restTimer = 5F;
+
+    //等待時間是否超過應等待時間
+    private bool overRestTime
+    {
+        get
+        {
+            return (restTimer < restTime) ? false : true;//休息時間還沒到就返回false
+        }
+    }
+
+    #region 已休息時間歸零
+    private void returnRestTimer()
+    {
+        restTimer = 0F;
+    }
+    #endregion
+
+    #region Start()
     void Start()
     {
         animator = GetComponent<Animator>();
         //設定菜單動畫狀態
         this.animator.SetBool("openMenu", false);
         this.animator.SetBool("closeMenu", true);
+        //獲取菜單各page物件
+        ItemPage = GameObject.Find("ItemPage");
+        SavePage = GameObject.Find("SavePage");
+        ExitPage = GameObject.Find("ExitPage");
         //取得菜單的Tag物件及動畫組件
         for (int i = 0; i < this.transform.GetChild(0).GetChildCount(); i++)
         {
@@ -36,35 +87,85 @@ public class PlayerItemMenu : MonoBehaviour
             a.SetBool("openMenu", false);
             a.SetBool("closeMenu", false);
         }
+        tagIndex = 1;//初始化當前位置編號
     }
+    #endregion
 
-    //打開一級菜單
+    #region Update()
+    void Update()
+    {
+        float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
+        float submit = Input.GetAxisRaw("Submit");//檢測z鍵
+        float cancel = Input.GetAxisRaw("Cancel");//檢測x鍵
+        restTimer += Time.deltaTime;
+        if (openDetailMenu == 0 && overRestTime)//當開啟一級菜單
+        {
+            if (v != 0) doFirstMenuMove(v);
+            if (submit > 0) doOpenDetailMenu();
+            if (cancel > 0) doCloseMenu();
+        }
+        if(openDetailMenu > 0 && overRestTime)//當開啟任一個二級菜單
+        {
+            if (cancel > 0) doCloseDetailMenu();
+        }
+    }
+    #endregion
+
+    #region 一級菜單選擇器的移動  doFirstMenuMove(float v)
+    private void doFirstMenuMove(float v)
+    {
+        if (v > 0 && tagIndex > 0)//向上移動
+        {
+            tagIndex--;
+            if (tagIndex == 1)
+            {
+                setTagStatus("item");
+            }
+            else if (tagIndex == 2)
+            {
+                setTagStatus("save");
+            }
+            restTimer = 0;
+        }
+        else if (v < 0 && tagIndex <= tagIndexMax)//向下移動
+        {
+            tagIndex++;
+            if (tagIndex == 2)
+            {
+                setTagStatus("save");
+            }
+            else if (tagIndex == 3)
+            {
+                setTagStatus("exit");
+            }
+            restTimer = 0;
+        }
+    }
+    #endregion
+
+    #region 打開一級菜單  doOpenMenu()
     private void doOpenMenu()
     {
-        this.animator.SetBool("openMenu", true);
-        this.animator.SetBool("closeMenu", false);
+        animator.SetBool("openMenu", true);
+        animator.SetBool("closeMenu", false);
         for (int i = 0; i < MenuTagsObject.Count; i++)
         {
             MenuTagsAnimator[i].SetBool("openMenu", true);
             MenuTagsAnimator[i].SetBool("closeMenu", false);
             MenuTagsAnimator[i].SetBool("choseTag", false);
             MenuTagsAnimator[i].SetBool("cancelChoseTag", true);
-            if (i == 0)
+            if (i == 0)//選擇第一個Tag
             {
                 MenuTagsAnimator[i].SetBool("choseTag", true);
                 MenuTagsAnimator[i].SetBool("cancelChoseTag", false);
             }
         }
-        Vector3 tagItemPosition = MenuTagsObject[0].transform.position;
-        //如果沒有菜單選擇物件就加載
-        if (GameObject.Find("MenuChoice(Clone)") == null)
-        {
-            GameObject go = GameObject.Instantiate(MenuChoice, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
-            go.transform.SetParent(transform);//將新建出來的菜單選項選擇器放到自己底下
-        }
+        openDetailMenu = 0;
+        returnRestTimer();
     }
+    #endregion
 
-    //關閉一級菜單
+    #region 關閉一級菜單  doCloseMenu()
     private void doCloseMenu()
     {
         this.animator.SetBool("openMenu", false);
@@ -76,25 +177,87 @@ public class PlayerItemMenu : MonoBehaviour
             MenuTagsAnimator[i].SetBool("choseTag", false);
             MenuTagsAnimator[i].SetBool("cancelChoseTag", true);
         }
-        //如果有菜單選擇物件就注除
-        if (GameObject.Find("MenuChoice(Clone)") != null)
-        {
-            GameObject.Destroy(GameObject.Find("MenuChoice(Clone)"));
-        }
+        openDetailMenu = -1;
+        tagIndex = 1;
+        returnRestTimer();
     }
+    #endregion
 
-    //打開二級菜單
+    #region 打開二級菜單  doOpenDetailMenu()
     private void doOpenDetailMenu()
     {
-        this.animator.SetBool("openDetilMenu", true);
-        this.animator.SetBool("closeDetilMenu", false);
+        animator.SetBool("openDetilMenu", true);
+        animator.SetBool("closeDetilMenu", false);
+        returnRestTimer();
+        switch (tagIndex)
+        {
+            case 1:
+                ItemPage.SendMessage("showItemPage");
+                openDetailMenu = 1;
+                break;
+            case 2:
+                SavePage.SendMessage("showSavePage");
+                openDetailMenu = 2;
+                break;
+            case 3:
+                ExitPage.SendMessage("showExitPage");
+                ExitPage.SendMessage("returnRestTimer");
+                openDetailMenu = 3;
+                break;
+        }
     }
+    #endregion
 
-    //關閉二級菜單
+    #region 關閉二級菜單  doCloseDetailMenu()
     private void doCloseDetailMenu()
     {
-        this.animator.SetBool("openDetilMenu", false);
-        this.animator.SetBool("closeDetilMenu", true);
-        ChoiceTag.openDetailMenu = 0;
+        animator.SetBool("openDetilMenu", false);
+        animator.SetBool("closeDetilMenu", true);
+        switch (tagIndex)
+        {
+            case 1:
+                ItemPage.SendMessage("hideItemPage");
+                break;
+            case 2:
+                SavePage.SendMessage("hideSavePage");
+                break;
+            case 3:
+                ExitPage.SendMessage("hideExitPage");
+                break;
+            }
+        GameObject.Find("Player").SendMessage("returnRestTimer");
+        returnRestTimer();
+        openDetailMenu = 0;
     }
+    #endregion
+
+    #region 設定批次Tag狀態機的狀態  setTagStatus(string status)
+    private void setTagStatus(string status)
+    {
+        MenuTagsAnimator[0].GetComponent<Animator>().SetBool("choseTag", false);
+        MenuTagsAnimator[0].GetComponent<Animator>().SetBool("cancelChoseTag", false);
+        MenuTagsAnimator[1].GetComponent<Animator>().SetBool("choseTag", false);
+        MenuTagsAnimator[1].GetComponent<Animator>().SetBool("cancelChoseTag", false);
+        MenuTagsAnimator[2].GetComponent<Animator>().SetBool("choseTag", false);
+        MenuTagsAnimator[2].GetComponent<Animator>().SetBool("cancelChoseTag", false);
+        if (status.Equals("item"))
+        {
+            MenuTagsAnimator[0].GetComponent<Animator>().SetBool("choseTag", true);
+            MenuTagsAnimator[1].GetComponent<Animator>().SetBool("cancelChoseTag", true);
+            MenuTagsAnimator[2].GetComponent<Animator>().SetBool("cancelChoseTag", true);
+        }
+        else if (status.Equals("save"))
+        {
+            MenuTagsAnimator[1].GetComponent<Animator>().SetBool("choseTag", true);
+            MenuTagsAnimator[0].GetComponent<Animator>().SetBool("cancelChoseTag", true);
+            MenuTagsAnimator[2].GetComponent<Animator>().SetBool("cancelChoseTag", true);
+        }
+        else if (status.Equals("exit"))
+        {
+            MenuTagsAnimator[2].GetComponent<Animator>().SetBool("choseTag", true);
+            MenuTagsAnimator[0].GetComponent<Animator>().SetBool("cancelChoseTag", true);
+            MenuTagsAnimator[1].GetComponent<Animator>().SetBool("cancelChoseTag", true);
+        }
+    }
+    #endregion
 }

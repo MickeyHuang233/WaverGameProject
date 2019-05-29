@@ -64,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("對話完成或關閉菜單所需等待時間")]
     [Range(0F, 5F)]
-    public float restTime = 0.1F;
+    public float restTime = 0.51F;
 
     //計算玩家已休息時間
     private float restTimer = 5F;
@@ -78,9 +78,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    #region 已休息時間歸零
+    private void returnRestTimer()
+    {
+        restTimer = 0F;
+    }
+    #endregion
+
     //菜單物件
     private GameObject MenuObject;
 
+    #region Start()
     void Start()
     {
         rigidbody = this.GetComponent<Rigidbody2D>();
@@ -91,7 +99,9 @@ public class PlayerMovement : MonoBehaviour
         talkColliderObject = this.transform.GetChild(0).gameObject;//取得玩家物件下的對話域物件的碰撞器元件
         shouldStatus = "idle";
     }
-    
+    #endregion
+
+    #region Update()
     void Update()
     {
         currentState = this.animator.GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態的hashCode
@@ -100,9 +110,9 @@ public class PlayerMovement : MonoBehaviour
         float submit = Input.GetAxisRaw("Submit");//檢測z鍵
         float cancel = Input.GetAxisRaw("Cancel");//檢測x鍵
         doSetStatusToShould(currentState);
-        if (!Talkable.isTalking && !isStatus("lookNote", currentState))//當玩家沒有正在對話或是打開菜單
+        restTimer += Time.deltaTime;
+        if (!Talkable.isTalking && PlayerItemMenu.openDetailMenu == -1)//當玩家沒有正在對話或是打開菜單
         {
-            restTimer += Time.deltaTime;
             if (h != 0 || v != 0)//按方向鍵
             {
                 doMove(h, v);
@@ -120,17 +130,14 @@ public class PlayerMovement : MonoBehaviour
                 shouldStatus = "idle";
             }
         }
-        else if (isStatus("lookNote", currentState) && ChoiceTag.openDetailMenu==0)//打開一級菜單時的操作
+        else if (PlayerItemMenu.openDetailMenu == 0)//打開一級菜單時的操作
         {
-            restTimer += Time.deltaTime;
-            if (cancel > 0 && overRestTime)
-            {
-                doReturnCancel();
-            }
+            if (cancel > 0 && overRestTime) doReturnCancel();
         }
     }
+    #endregion
 
-    //設定批次狀態機的狀態
+    #region 設定批次狀態機的狀態
     private void setStatus(string status)
     {
         this.animator.SetBool("idle", false);
@@ -141,8 +148,9 @@ public class PlayerMovement : MonoBehaviour
             this.animator.SetBool(status, true);
         }
     }
+    #endregion
 
-    //判斷當前狀態
+    #region 判斷當前狀態
     private bool isStatus(string status, AnimatorStateInfo nowStateHash)
     {
         bool b = false;
@@ -163,15 +171,17 @@ public class PlayerMovement : MonoBehaviour
         }
         return b;
     }
+    #endregion
 
-    //將當前狀態設置為應該狀態
+    #region 將當前狀態設置為應該狀態
     private void doSetStatusToShould(AnimatorStateInfo nowStateHash)
     {
         string s = (isStatus(shouldStatus, nowStateHash) || isStatus("idle", nowStateHash)) ? shouldStatus : "idle";
         setStatus(s);
     }
+    #endregion
 
-    //角色移動
+    # region 角色移動
     private void doMove(float h, float v)
     {
         nowYaxis = this.transform.position.y;//取得當前位置
@@ -200,37 +210,34 @@ public class PlayerMovement : MonoBehaviour
 
         preYaxis = nowYaxis;//更新上一幀的玩家位置信息，以便下一幀計算差值
     }
+    #endregion
 
-    //按下submit的操作
+    # region 按下submit的操作
     private void doSubmit()
     {
         returnRestTimer();
         shouldStatus = "idle";
         talkColliderObject.SendMessage("doSurvey");
     }
+    #endregion
 
-    //在待機狀態，按下cancel的操作
+    #region 在待機狀態，按下cancel的操作
     private void doCancel()
     {
         returnRestTimer();
         shouldStatus = "lookNote";
-        ChoiceTag.openDetailMenu = 0;
+        PlayerItemMenu.openDetailMenu = 0;
         MenuObject.SendMessage("doOpenMenu");
     }
+    #endregion
 
-    //在打開菜單狀態，按下cancel的操作
+    #region 在打開菜單狀態，按下cancel的操作
     private void doReturnCancel()
     {
         returnRestTimer();
         shouldStatus = "idle";
-        ChoiceTag.openDetailMenu = -1;
+        PlayerItemMenu.openDetailMenu = -1;
         MenuObject.SendMessage("doCloseMenu");
     }
-
-    //已休息時間歸零
-    private void returnRestTimer()
-    {
-        restTimer = 0F;
-    }
-
+    #endregion
 }
