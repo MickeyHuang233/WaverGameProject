@@ -10,11 +10,13 @@ public class MenuTagExit : MonoBehaviour
     //離開遊戲菜單文字的動畫信息
     private Animator exitPageAanimator;
 
+    GameObject MenuObject;
+
     //指標物件
     GameObject itemIndex;
 
     //當前位置編號
-    private int tagIndex = 1;
+    private int tagIndex = 2;
 
     [Header("防按鍵鬼畜的休息時間")]
     [Range(0F, 5F)]
@@ -44,6 +46,7 @@ public class MenuTagExit : MonoBehaviour
     {
         exitPage = GameObject.Find("ExitPage");
         exitPageAanimator = exitPage.GetComponent<Animator>();
+        MenuObject = this.transform.parent.parent.gameObject;
         itemIndex = this.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
     }
     #endregion
@@ -77,7 +80,7 @@ public class MenuTagExit : MonoBehaviour
                         doExitSubmit();
                         break;
                     case 2://取消
-                        doExitCancel();
+                        MenuObject.SendMessage("doCloseDetailMenu");
                         break;
                 }
             }
@@ -98,6 +101,10 @@ public class MenuTagExit : MonoBehaviour
     {
         exitPageAanimator.SetBool("openDetilMenu", false);
         exitPageAanimator.SetBool("closeDetilMenu", true);
+        //將指標返回至"取消"狀態上
+        tagIndex = 2;
+        Vector3 choicePosition_02 = this.transform.GetChild(1).gameObject.transform.GetChild(2).gameObject.transform.position;
+        itemIndex.transform.position = new Vector3(choicePosition_02.x - 0.25F, choicePosition_02.y, choicePosition_02.z);
     }
     #endregion
 
@@ -106,13 +113,6 @@ public class MenuTagExit : MonoBehaviour
     {
             Debug.Log("doExitSubmit");
             Application.Quit();//關閉遊戲
-    }
-    #endregion
-
-    #region 取消離開遊戲
-    private void doExitCancel()
-    {
-            Debug.Log("doExitCancel");
     }
     #endregion
 }
