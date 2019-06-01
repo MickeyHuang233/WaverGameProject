@@ -39,11 +39,13 @@ public class GameMenager : MonoBehaviour
             JSONObject itemJSON = new JSONObject(itemText.text);
             foreach (JSONObject itemInformation in itemJSON.list)
             {
-                Item item = new Item();
-                item.ItemId = (int)itemInformation["itemId"].n;
-                item.ItemName = itemInformation["itemName"].str;
-                item.Description = itemInformation["description"].str;
-                item.UseItemameObject = itemInformation["useItemameObject"].str;
+                Item item = new Item
+                {
+                    ItemId = (int)itemInformation["itemId"].n,
+                    ItemName = itemInformation["itemName"].str,
+                    Description = itemInformation["description"].str,
+                    UseItemameObject = itemInformation["useItemameObject"].str
+                };
                 itemInformationList.Add(item);
             }
         }
