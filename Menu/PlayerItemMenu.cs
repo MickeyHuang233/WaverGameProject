@@ -42,13 +42,16 @@ public class PlayerItemMenu : MonoBehaviour
 
     [Header("切換菜單tag應休息時間")]
     [Range(0F, 5F)]
-    public float restTime = 0.5F;
+    public float setRestTime = 0.5F;
+
+    //菜單所有操作的應休息時間
+    public static float restTime;
 
     //切換菜單tag已休息時間
-    private float restTimer = 5F;
+    public static float restTimer = 5F;
 
     //等待時間是否超過應等待時間
-    private bool overRestTime
+    public static bool overRestTime
     {
         get
         {
@@ -57,7 +60,7 @@ public class PlayerItemMenu : MonoBehaviour
     }
 
     #region 已休息時間歸零
-    private void returnRestTimer()
+    public static void returnRestTimer()
     {
         restTimer = 0F;
     }
@@ -66,6 +69,8 @@ public class PlayerItemMenu : MonoBehaviour
     #region Start()
     void Start()
     {
+        //將設定的應休息時間放至靜態變量，以方便調用
+        restTime = setRestTime;
         animator = GetComponent<Animator>();
         //設定菜單動畫狀態
         this.animator.SetBool("openMenu", false);
