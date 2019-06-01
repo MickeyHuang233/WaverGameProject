@@ -21,10 +21,16 @@ public class MenuTagExit : MonoBehaviour
     #region Start()
     void Start()
     {
+        //取得exitPage物件及動畫信息
         exitPage = GameObject.Find("ExitPage");
         exitPageAanimator = exitPage.GetComponent<Animator>();
+        //取得Menu物件
         MenuObject = this.transform.parent.parent.gameObject;
+        //取得指標物件
         itemIndex = this.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
+        //初始化指標物件的位置
+        Vector3 choicePosition_02 = this.transform.GetChild(1).gameObject.transform.GetChild(2).gameObject.transform.position;
+        itemIndex.transform.position = new Vector3(choicePosition_02.x - 0.25F, choicePosition_02.y, choicePosition_02.z);
     }
     #endregion
 
