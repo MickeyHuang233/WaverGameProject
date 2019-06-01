@@ -18,29 +18,6 @@ public class MenuTagExit : MonoBehaviour
     //當前位置編號
     private int tagIndex = 2;
 
-    [Header("防按鍵鬼畜的休息時間")]
-    [Range(0F, 5F)]
-    public float restTime = 0.5F;
-
-    //切換菜單tag已休息時間
-    private float restTimer = 5F;
-
-    //等待時間是否超過應等待時間
-    private bool overRestTime
-    {
-        get
-        {
-            return (restTimer < restTime) ? false : true;//休息時間還沒到就返回false
-        }
-    }
-
-    #region 已休息時間歸零
-    private void returnRestTimer()
-    {
-        restTimer = 0F;
-    }
-    #endregion
-
     #region Start()
     void Start()
     {
@@ -56,8 +33,7 @@ public class MenuTagExit : MonoBehaviour
     {
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
         float submit = Input.GetAxisRaw("Submit");//檢測z鍵
-        restTimer += Time.deltaTime;
-        if (overRestTime && PlayerItemMenu.openDetailMenu == 3)
+        if (PlayerItemMenu.overRestTime && PlayerItemMenu.openDetailMenu == 3)
         {
             if (v < 0 && tagIndex == 1)
             {
@@ -73,7 +49,7 @@ public class MenuTagExit : MonoBehaviour
             }
             if (submit > 0)
             {
-                returnRestTimer();
+                PlayerItemMenu.returnRestTimer();
                 switch (tagIndex)
                 {
                     case 1://是的

@@ -39,4 +39,14 @@ public class NPC : MonoBehaviour
         this.gameObject.GetComponent<Renderer>().material.color = Color.white;
         // TODO Portal，當NPC取消標示的實現，應與實現相對應
     }
+
+    private void chackItem()
+    {
+        GameMenager.chackItem();
+    }
+
+    private void getItem()
+    {
+        GameMenager.getItem(1);
+    }
 }
