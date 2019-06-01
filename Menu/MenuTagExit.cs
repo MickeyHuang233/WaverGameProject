@@ -18,6 +18,9 @@ public class MenuTagExit : MonoBehaviour
     //當前位置編號
     private int tagIndex = 2;
 
+    //最大位置編號
+    private int tagIndexMax;
+
     #region Start()
     void Start()
     {
@@ -28,9 +31,11 @@ public class MenuTagExit : MonoBehaviour
         MenuObject = this.transform.parent.parent.gameObject;
         //取得指標物件
         itemIndex = this.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
+        //取得最大位置編號，要去掉指標物件
+        tagIndexMax = this.transform.GetChild(1).gameObject.transform.childCount - 1;
         //初始化指標物件的位置
-        Vector3 choicePosition_02 = this.transform.GetChild(1).gameObject.transform.GetChild(2).gameObject.transform.position;
-        itemIndex.transform.position = new Vector3(choicePosition_02.x - 0.25F, choicePosition_02.y, choicePosition_02.z);
+        Vector3 choicePosition = this.transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
+        itemIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
     }
     #endregion
 
@@ -41,36 +46,13 @@ public class MenuTagExit : MonoBehaviour
         float submit = Input.GetAxisRaw("Submit");//檢測z鍵
         if (PlayerItemMenu.overRestTime && PlayerItemMenu.openDetailMenu == 3)
         {
-            if (v < 0 && tagIndex == 1)
-            {
-                Vector3 choicePosition_02 = this.transform.GetChild(1).gameObject.transform.GetChild(2).gameObject.transform.position;
-                itemIndex.transform.position = new Vector3(choicePosition_02.x - 0.25F, choicePosition_02.y, choicePosition_02.z);
-                tagIndex++;
-            } 
-            else if (v > 0 && tagIndex == 2)
-            {
-                Vector3 choicePosition_01 = this.transform.GetChild(1).gameObject.transform.GetChild(1).gameObject.transform.position;
-                itemIndex.transform.position = new Vector3(choicePosition_01.x - 0.25F, choicePosition_01.y, choicePosition_01.z);
-                tagIndex--;
-            }
-            if (submit > 0)
-            {
-                PlayerItemMenu.returnRestTimer();
-                switch (tagIndex)
-                {
-                    case 1://是的
-                        doExitSubmit();
-                        break;
-                    case 2://取消
-                        MenuObject.SendMessage("doCloseDetailMenu");
-                        break;
-                }
-            }
+            if (v != 0) doMove(v);
+            if (submit > 0) doSubmit(submit);
         }
     }
     #endregion
 
-    # region 打開離開遊戲菜單
+    #region 打開離開遊戲菜單
     private void showExitPage()
     {
         exitPageAanimator.SetBool("openDetilMenu", true);
@@ -90,11 +72,39 @@ public class MenuTagExit : MonoBehaviour
     }
     #endregion
 
-    #region 確認離開遊戲
-    private void doExitSubmit()
+    #region 指標移動
+    private void doMove(float v)
     {
-            Debug.Log("doExitSubmit");
-            Application.Quit();//關閉遊戲
+        if (v > 0 && tagIndex > 1)//向上移動
+        {
+            tagIndex--;
+        }
+        else if (v < 0 && tagIndex < tagIndexMax)//向下移動
+        {
+            tagIndex++;
+        }
+        Vector3 choicePosition = this.transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
+        itemIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
+        PlayerItemMenu.returnRestTimer();
+    }
+    #endregion
+
+    #region 按下確認鍵操作
+    private void doSubmit(float submit)
+    {
+        if (submit > 0)
+        {
+            PlayerItemMenu.returnRestTimer();
+            switch (tagIndex)
+            {
+                case 1://是的
+                    Application.Quit();//關閉遊戲
+                    break;
+                case 2://取消
+                    MenuObject.SendMessage("doCloseDetailMenu");
+                    break;
+            }
+        }
     }
     #endregion
 }
