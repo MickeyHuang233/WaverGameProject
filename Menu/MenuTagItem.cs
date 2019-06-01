@@ -47,11 +47,28 @@ public class MenuTagItem : MonoBehaviour
         if (PlayerItemMenu.overRestTime && PlayerItemMenu.openDetailMenu == 1)
         {
             if(v != 0) doMove(v);
+            if (submit > 0) doSubmit();
         }
 
         }
     #endregion
-    
+
+    #region 打開物品欄
+    private void showItemPage()
+    {
+        itemPageAanimator.SetBool("openDetilMenu", true);
+        itemPageAanimator.SetBool("closeDetilMenu", false);
+    }
+    #endregion
+
+    #region 關閉物品欄
+    private void hideItemPage()
+    {
+        itemPageAanimator.SetBool("openDetilMenu", false);
+        itemPageAanimator.SetBool("closeDetilMenu", true);
+    }
+    #endregion
+
     #region 指標移動
     private void doMove(float v)
     {
@@ -77,19 +94,11 @@ public class MenuTagItem : MonoBehaviour
     }
     #endregion
 
-    #region 打開物品欄
-    private void showItemPage()
+    #region 按下確認鍵操作
+    private void doSubmit()
     {
-        itemPageAanimator.SetBool("openDetilMenu", true);
-        itemPageAanimator.SetBool("closeDetilMenu", false);
-    }
-    #endregion
-
-    #region 關閉物品欄
-    private void hideItemPage()
-    {
-        itemPageAanimator.SetBool("openDetilMenu", false);
-        itemPageAanimator.SetBool("closeDetilMenu", true);
+        Debug.Log("Item_doSubmit()");
+        PlayerItemMenu.returnRestTimer();
     }
     #endregion
 }

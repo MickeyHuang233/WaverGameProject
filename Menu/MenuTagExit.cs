@@ -47,7 +47,7 @@ public class MenuTagExit : MonoBehaviour
         if (PlayerItemMenu.overRestTime && PlayerItemMenu.openDetailMenu == 3)
         {
             if (v != 0) doMove(v);
-            if (submit > 0) doSubmit(submit);
+            if (submit > 0) doSubmit();
         }
     }
     #endregion
@@ -90,21 +90,18 @@ public class MenuTagExit : MonoBehaviour
     #endregion
 
     #region 按下確認鍵操作
-    private void doSubmit(float submit)
+    private void doSubmit()
     {
-        if (submit > 0)
+        PlayerItemMenu.returnRestTimer();
+        switch (tagIndex)
         {
-            PlayerItemMenu.returnRestTimer();
-            switch (tagIndex)
-            {
-                case 1://是的
-                    Application.Quit();//關閉遊戲
-                    break;
-                case 2://取消
-                    MenuObject.SendMessage("doCloseDetailMenu");
-                    break;
+            case 1://是的
+                Application.Quit();//關閉遊戲
+                break;
+            case 2://取消
+                MenuObject.SendMessage("doCloseDetailMenu");
+                break;
             }
-        }
     }
     #endregion
 }
