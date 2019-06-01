@@ -206,7 +206,6 @@ public class PlayerItemMenu : MonoBehaviour
                 break;
             case 3:
                 ExitPage.SendMessage("showExitPage");
-                ExitPage.SendMessage("returnRestTimer");
                 openDetailMenu = 3;
                 break;
         }
