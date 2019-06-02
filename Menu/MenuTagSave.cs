@@ -35,7 +35,7 @@ public class MenuTagSave : MonoBehaviour
         tagIndexMax = this.transform.GetChild(2).gameObject.transform.childCount - 1;
         //初始化指標物件的位置
         Vector3 choicePosition = this.transform.GetChild(2).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
-        itemIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
+        itemIndex.transform.position = new Vector3(choicePosition.x - 0.2F, choicePosition.y, choicePosition.z);
     }
 
     void Update()
@@ -72,7 +72,7 @@ public class MenuTagSave : MonoBehaviour
         else if (v < 0 && tagIndex == tagIndexMax) tagIndex = 1;//最後一項，向下移動
         //更新指標位置
         Vector3 choicePosition = this.transform.GetChild(2).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
-        itemIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
+        itemIndex.transform.position = new Vector3(choicePosition.x - 0.2F, choicePosition.y, choicePosition.z);
     }
     #endregion
 
