@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Cinemachine;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -66,6 +67,9 @@ public class PlayerMovement : MonoBehaviour
     [Range(0F, 5F)]
     public float setRestTime = 0.5F;
 
+    //菜單物件
+    private GameObject MenuObject;
+
     //對話完成或關閉菜單應休息時間
     public static float restTime;
 
@@ -88,8 +92,19 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
-    //菜單物件
-    private GameObject MenuObject;
+    //Camara插件的Compoment
+    CinemachineVirtualCamera cinemachineVirtualCamera;
+
+    //關閉菜單時的Camara距離，在CM vcam1中指定
+    private float closeMenuOrthographicSize;
+
+    [Header("打開菜單時的Camara距離")]
+    [Range(0F, 5F)]
+    public float openMenuOrthographicSize = 0.8F;
+
+    [Header("打開及關閉菜單視角的移動速度")]
+    [Range(0F, 10F)]
+    public float targetMenuSpeed = 5F;
 
     #region Start()
     void Start()
@@ -100,6 +115,10 @@ public class PlayerMovement : MonoBehaviour
         nowYaxis = this.transform.position.y;//初始化當前幀的y軸位置
         preYaxis = this.transform.position.y;//初始化上一幀的y軸位置
         talkColliderObject = this.transform.GetChild(0).gameObject;//取得玩家物件下的對話域物件的碰撞器元件
+        //獲取Camara插件的Compoment
+        cinemachineVirtualCamera = GameObject.Find("CM vcam1").gameObject.GetComponent<CinemachineVirtualCamera>();
+        //獲取關閉菜單時的Camara距離
+        closeMenuOrthographicSize = cinemachineVirtualCamera.m_Lens.OrthographicSize;
         //將設定的應休息時間放至靜態變量，以方便調用
         restTime = setRestTime;
         shouldStatus = "idle";
@@ -121,6 +140,8 @@ public class PlayerMovement : MonoBehaviour
             else if (Input.GetButtonDown("Cancel") && isStatus("idle", currentState) && overRestTime) doCancel();//站穩才能打開菜單
             else shouldStatus = "idle";//什麼按也不按
         }
+        //視角移動
+        moveCamera();
     }
     #endregion
 
@@ -168,6 +189,15 @@ public class PlayerMovement : MonoBehaviour
     }
     #endregion
 
+    #region 根據菜單狀態進行視角移動
+    private void moveCamera()
+    {
+        float targetOrthographicSize = (PlayerItemMenu.openDetailMenu == -1) ? closeMenuOrthographicSize : openMenuOrthographicSize;
+        cinemachineVirtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(cinemachineVirtualCamera.m_Lens.OrthographicSize, targetOrthographicSize, Time.deltaTime * targetMenuSpeed);
+        
+    }
+    #endregion
+
     # region 角色移動
     private void doMove(float h, float v)
     {
@@ -207,10 +237,10 @@ public class PlayerMovement : MonoBehaviour
     #region 在待機狀態，按下cancel的操作
     private void doCancel()
     {
-        returnRestTimer();
         shouldStatus = "lookNote";
-        PlayerItemMenu.openDetailMenu = 0;
         MenuObject.SendMessage("doOpenMenu");
+        returnRestTimer();
+        PlayerItemMenu.openDetailMenu = 0;
     }
     #endregion
 }
