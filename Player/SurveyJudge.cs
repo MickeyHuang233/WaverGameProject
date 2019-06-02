@@ -30,25 +30,31 @@ public class SurveyJudge : MonoBehaviour
     //觸發對話或調查的物件名
     string minDistanceObject;
 
+    #region Start()
     void Start()
     {
         //獲取父類的Player物件
         playerObject = this.transform.parent.gameObject;
         triggerNameMap = new Dictionary<string, float>();
     }
-    
+    #endregion
+
+    #region Update()
     void Update()
     {
-        countAllTriggerDistance();
+        if (PlayerMovement.overRestTime && PlayerItemMenu.openDetailMenu == -1) countAllTriggerDistance();
+        else returnStatus();
     }
+    #endregion
 
-    //判斷是否是可被調查的物件tag
+    #region 判斷是否是可被調查的物件tag
     private bool isTag(Collider2D collision)
     {
         return collision.tag == "NPC" || collision.tag == "NPC_Item" || collision.tag == "Portal";
     }
+    #endregion
 
-    // 計算所有進入觸發器的物件與玩家的距離
+    #region 計算所有進入觸發器的物件與玩家的距離
     private void countAllTriggerDistance()
     {
         Vector2 playerPosition = playerObject.transform.position;
@@ -101,8 +107,19 @@ public class SurveyJudge : MonoBehaviour
             }
         }
     }
+    #endregion
 
-    //執行調查
+    #region 返回至初始狀態
+    private void returnStatus()
+    {
+        //返回玩家頭上泡泡的狀態
+        playerObject.SendMessage("hideTalkBubble");
+        //返回應調查對象的狀態
+        surveyObject.SendMessage("doHightLineOff");
+    }
+    #endregion
+
+    #region 執行調查
     private void doSurvey()
     {
         if (Input.GetAxisRaw("Submit") > 0 && triggerNameMap.Count > 0)
@@ -125,8 +142,9 @@ public class SurveyJudge : MonoBehaviour
             }
         }
     }
+    #endregion
 
-    //當物件進入觸發器時
+    #region 當物件進入觸發器時
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (isTag(collision))
@@ -135,8 +153,9 @@ public class SurveyJudge : MonoBehaviour
             triggerNameMap.Add(collision.transform.name, 0F);
         }
     }
+    #endregion
 
-    //當物件離開觸發器時
+    #region 當物件離開觸發器時
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (isTag(collision))
@@ -146,4 +165,5 @@ public class SurveyJudge : MonoBehaviour
             collision.SendMessage("doHightLineOff");
         }
     }
+    #endregion
 }
