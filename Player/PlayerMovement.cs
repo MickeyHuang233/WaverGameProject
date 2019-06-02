@@ -64,13 +64,16 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("對話完成或關閉菜單所需等待時間")]
     [Range(0F, 5F)]
-    public float restTime = 0.51F;
+    public float setRestTime = 0.5F;
+
+    //對話完成或關閉菜單應休息時間
+    public static float restTime;
 
     //計算玩家已休息時間
-    private float restTimer = 5F;
+    public static float restTimer = 5F;
 
     //等待時間是否超過應等待時間
-    private bool overRestTime
+    public static bool overRestTime
     {
         get
         {
@@ -79,7 +82,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     #region 已休息時間歸零
-    private void returnRestTimer()
+    public static void returnRestTimer()
     {
         restTimer = 0F;
     }
@@ -97,6 +100,8 @@ public class PlayerMovement : MonoBehaviour
         nowYaxis = this.transform.position.y;//初始化當前幀的y軸位置
         preYaxis = this.transform.position.y;//初始化上一幀的y軸位置
         talkColliderObject = this.transform.GetChild(0).gameObject;//取得玩家物件下的對話域物件的碰撞器元件
+        //將設定的應休息時間放至靜態變量，以方便調用
+        restTime = setRestTime;
         shouldStatus = "idle";
     }
     #endregion
@@ -107,8 +112,6 @@ public class PlayerMovement : MonoBehaviour
         currentState = this.animator.GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態的hashCode
         float h = Input.GetAxisRaw("Horizontal");//檢測水平移動
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
-        float submit = Input.GetAxisRaw("Submit");//檢測z鍵
-        float cancel = Input.GetAxisRaw("Cancel");//檢測x鍵
         doSetStatusToShould(currentState);
         restTimer += Time.deltaTime;
         if (!Talkable.isTalking && PlayerItemMenu.openDetailMenu == -1)//當玩家沒有正在對話或是打開菜單
@@ -199,9 +202,9 @@ public class PlayerMovement : MonoBehaviour
     # region 按下submit的操作
     private void doSubmit()
     {
-        returnRestTimer();
         shouldStatus = "idle";
         talkColliderObject.SendMessage("doSurvey");
+        returnRestTimer();
     }
     #endregion
 

@@ -171,15 +171,22 @@ public class PlayerItemMenu : MonoBehaviour
         openDetailMenu = -1;
         tagIndex = 1;
         returnRestTimer();
+        PlayerMovement.returnRestTimer();
     }
     #endregion
 
     #region 打開二級菜單  doOpenDetailMenu()
     private void doOpenDetailMenu()
     {
+        //設置Menu動畫
         animator.SetBool("openDetilMenu", true);
         animator.SetBool("closeDetilMenu", false);
-        returnRestTimer();
+        //批次設置Tag動畫
+        for (int i = 0; i < MenuTagsObject.Count; i++)
+        {
+            MenuTagsAnimator[i].SetBool("openDetilMenu", true);
+            MenuTagsAnimator[i].SetBool("closeDetilMenu", false);
+        }
         switch (tagIndex)
         {
             case 1:
@@ -195,14 +202,22 @@ public class PlayerItemMenu : MonoBehaviour
                 openDetailMenu = 3;
                 break;
         }
+        returnRestTimer();
     }
     #endregion
 
     #region 關閉二級菜單  doCloseDetailMenu()
     private void doCloseDetailMenu()
     {
+        //設置Menu動畫
         animator.SetBool("openDetilMenu", false);
         animator.SetBool("closeDetilMenu", true);
+        //批次設置Tag動畫
+        for (int i = 0; i < MenuTagsObject.Count; i++)
+        {
+            MenuTagsAnimator[i].SetBool("openDetilMenu", false);
+            MenuTagsAnimator[i].SetBool("closeDetilMenu", true);
+        }
         switch (tagIndex)
         {
             case 1:
@@ -214,8 +229,7 @@ public class PlayerItemMenu : MonoBehaviour
             case 3:
                 ExitPage.SendMessage("hideExitPage");
                 break;
-            }
-        GameObject.Find("Player").SendMessage("returnRestTimer");
+        }
         returnRestTimer();
         openDetailMenu = 0;
     }
