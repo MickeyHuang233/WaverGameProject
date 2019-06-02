@@ -37,6 +37,7 @@ public class InitSceneManagment : MonoBehaviour
     [Range(0F, 50F)]
     public float moveSpeed;
 
+    #region Start()
     void Start()
     {
         //取得玩家物件
@@ -59,28 +60,26 @@ public class InitSceneManagment : MonoBehaviour
         //加載GameManager
         Talkable.flowchartManager = GameObject.Find("SpeakManager").GetComponent<Flowchart>();
     }
+    #endregion
 
+    #region Update()
     void Update()
     {
         //DarkLayout的移動
         darkLayoutMove();
     }
+    #endregion
 
-    //取得指定傳送點物件
+    #region 取得指定傳送點物件
     private void getTargetPositionObject()
     {
         GameObject targetPositionObject = GameObject.Find(positionName) as GameObject;
-        if (targetPositionObject != null)
-        {
-            playerObject.transform.position = targetPositionObject.transform.position;
-        }
-        else
-        {
-            Debug.Log(positionName + " is not found!!");
-        }
+        if (targetPositionObject != null) playerObject.transform.position = targetPositionObject.transform.position;
+        else Debug.Log(positionName + " is not found!!");
     }
+    #endregion
 
-    //建立前景黑的物件
+    #region 建立前景黑的物件
     private void createDarkLayout()
     {
         darkLayoutHolder = new GameObject("DarkLayout").transform;//建立一個新的物件叫Map，並取得這個物件的transform屬性
@@ -102,8 +101,9 @@ public class InitSceneManagment : MonoBehaviour
             //TODO 需加B1的DarkLayout産生
         }
     }
+    #endregion
 
-    //將DarkLayout的全部子物件放入List中
+    #region 將DarkLayout的全部子物件放入List中
     private void darkLayoutToList()
     {
         darkLayoutObject = GameObject.Find("DarkLayout");
@@ -113,22 +113,24 @@ public class InitSceneManagment : MonoBehaviour
             darkLayoutObjects.Add(d);
         }
     }
+    #endregion
 
-    //DarkLayout的移動
+    #region DarkLayout的移動
     private void darkLayoutMove()
     {
+        float v = (PlayerMovement.moveDirction.x > 0) ? 0.5F : (PlayerMovement.moveDirction.x == 0) ? 0F : -0.5F;
+        float h = (PlayerMovement.moveDirction.y > 0) ? 0.5F : (PlayerMovement.moveDirction.y == 0) ? 0F : -0.5F;
         //取得玩家位置
-        float playerX = playerObject.transform.position.x;
-        float playerY = playerObject.transform.position.y;
+        float playerX = playerObject.transform.position.x + v;
+        float playerY = playerObject.transform.position.y + h;
 
         for (int i = 0; i < darkLayoutObjects.Count; i++)
         {
             //TODO 使用蒙版實現場景渲染
-            //TODO 不同層的DarkLayout移動速度不一樣
             GameObject d = darkLayoutObjects[i];
             darkLayoutTargetPosition = new Vector3(playerX, playerY, 0);
-            d.transform.position = Vector3.Lerp(d.transform.position, darkLayoutTargetPosition, moveSpeed * Time.deltaTime);
+            d.transform.position = Vector3.Lerp(d.transform.position, darkLayoutTargetPosition, moveSpeed * Time.deltaTime / (i+1));
         }
     }
-
+    #endregion
 }

@@ -31,7 +31,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 preMoveDirction;
 
     //當前角色方向
-    private Vector2 moveDirction;
+    public static Vector2 moveDirction;
 
     //對話域物件
     private GameObject talkColliderObject;
@@ -179,14 +179,10 @@ public class PlayerMovement : MonoBehaviour
 
         //判斷方向，以便顯示正確的動畫
         moveDirction = Vector2.zero;
-        if (Input.GetKey(KeyCode.LeftArrow))
-            moveDirction.x = -1F;
-        if (Input.GetKey(KeyCode.RightArrow))
-            moveDirction.x = 1F;
-        if (Input.GetKey(KeyCode.UpArrow))
-            moveDirction.y = 1F;
-        if (Input.GetKey(KeyCode.DownArrow))
-        moveDirction.y = -1F;
+        if (Input.GetKey(KeyCode.LeftArrow)) moveDirction.x = -1F;
+        if (Input.GetKey(KeyCode.RightArrow)) moveDirction.x = 1F;
+        if (Input.GetKey(KeyCode.UpArrow)) moveDirction.y = 1F;
+        if (Input.GetKey(KeyCode.DownArrow)) moveDirction.y = -1F;
         shouldStatus = "run";
         preMoveDirction = moveDirction;
         animator.SetFloat("move_X", moveDirction.x);//賦值給Animator的相應變量
