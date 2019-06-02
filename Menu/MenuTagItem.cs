@@ -50,7 +50,6 @@ public class MenuTagItem : MonoBehaviour
     void Update()
     {
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
-        float submit = Input.GetAxisRaw("Submit");//檢測z鍵
         if (PlayerItemMenu.openDetailMenu == 1)
         {
             if (Input.GetButtonDown("Vertical")) doMove(v);
@@ -130,6 +129,7 @@ public class MenuTagItem : MonoBehaviour
     private void doSubmit()
     {
         Debug.Log("Item_doSubmit()");
+        // TODO 具體每個物品要執行不同的腳本
         PlayerItemMenu.returnRestTimer();
     }
     #endregion

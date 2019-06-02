@@ -43,7 +43,6 @@ public class MenuTagExit : MonoBehaviour
     void Update()
     {
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
-        float submit = Input.GetAxisRaw("Submit");//檢測z鍵
         if (PlayerItemMenu.openDetailMenu == 3)
         {
             if (Input.GetButtonDown("Vertical")) doMove(v);
