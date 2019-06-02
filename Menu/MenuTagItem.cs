@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MenuTagItem : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class MenuTagItem : MonoBehaviour
     //物品欄文字的動畫信息
     private Animator itemPageAanimator;
 
+    //Menu物件
     GameObject MenuObject;
 
     //指標物件
@@ -44,10 +46,10 @@ public class MenuTagItem : MonoBehaviour
     {
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
         float submit = Input.GetAxisRaw("Submit");//檢測z鍵
-        if (PlayerItemMenu.overRestTime && PlayerItemMenu.openDetailMenu == 1)
+        if (PlayerItemMenu.openDetailMenu == 1)
         {
             if(v != 0) doMove(v);
-            if (submit > 0) doSubmit();
+            if (Input.GetKeyDown(KeyCode.Z)) doSubmit();
         }
 
         }
@@ -58,6 +60,28 @@ public class MenuTagItem : MonoBehaviour
     {
         itemPageAanimator.SetBool("openDetilMenu", true);
         itemPageAanimator.SetBool("closeDetilMenu", false);
+        showItemName();
+    }
+    #endregion
+
+    #region 顯示物品欄中的物品名稱
+    private void showItemName()
+    {
+        //顯示與所擁有物品數相當的欄位數
+        GameObject ItemObject = this.transform.GetChild(1).gameObject;
+        for (int i = 1; i <= 5; i++)
+        {
+            ItemObject.transform.GetChild(i).gameObject.transform.localScale = new Vector3((i > GameMenager.getItemNumList.Count) ? 0F : 1F, 1F, 1F);
+        }
+        int j = 1;
+        foreach (int ItemNum in GameMenager.getItemNumList)
+        {
+            //Debug.Log(ItemObject.transform.GetChild(j).GetComponent<Text>().text);
+            ItemObject.transform.GetChild(j).GetComponent<Text>().text = GameMenager.itemInformationList[ItemNum].ItemName;
+            j++;
+        }
+        //更新指標能走的最大位置編號
+        tagIndexMax = GameMenager.getItemNumList.Count;
     }
     #endregion
 
@@ -72,19 +96,19 @@ public class MenuTagItem : MonoBehaviour
     #region 指標移動
     private void doMove(float v)
     {
-        if (v > 0 && tagIndex > 1)//向上移動
+        if (Input.GetKeyDown(KeyCode.UpArrow) && tagIndex > 1)//向上移動
         {
             tagIndex--;
         }
-        else if (v > 0 && tagIndex == 1)//向上移動
+        else if (Input.GetKeyDown(KeyCode.UpArrow) && tagIndex == 1)//向上移動
         {
             tagIndex = tagIndexMax;
         }
-        else if (v < 0 && tagIndex < tagIndexMax)//向下移動
+        else if (Input.GetKeyDown(KeyCode.DownArrow) && tagIndex < tagIndexMax)//向下移動
         {
             tagIndex++;
         }
-        else if (v < 0 && tagIndex == tagIndexMax)//向下移動
+        else if (Input.GetKeyDown(KeyCode.DownArrow) && tagIndex == tagIndexMax)//向下移動
         {
             tagIndex = 1;
         }

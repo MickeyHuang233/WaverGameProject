@@ -121,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 doSubmit();
             }
-            else if (cancel > 0 && isStatus("idle", currentState))//站穩才能打開菜單
+            else if (cancel > 0 && isStatus("idle", currentState) && overRestTime)//站穩才能打開菜單
             {
                 doCancel();
             }
