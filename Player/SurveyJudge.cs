@@ -115,7 +115,7 @@ public class SurveyJudge : MonoBehaviour
         //返回玩家頭上泡泡的狀態
         playerObject.SendMessage("hideTalkBubble");
         //返回應調查對象的狀態
-        surveyObject.SendMessage("doHightLineOff");
+        if(surveyObject != null) surveyObject.SendMessage("doHightLineOff");
     }
     #endregion
 
