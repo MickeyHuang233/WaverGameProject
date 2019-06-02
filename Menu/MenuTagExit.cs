@@ -44,10 +44,10 @@ public class MenuTagExit : MonoBehaviour
     {
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
         float submit = Input.GetAxisRaw("Submit");//檢測z鍵
-        if (PlayerItemMenu.overRestTime && PlayerItemMenu.openDetailMenu == 3)
+        if (PlayerItemMenu.openDetailMenu == 3)
         {
-            if (v != 0) doMove(v);
-            if (submit > 0) doSubmit();
+            if (Input.GetButtonDown("Vertical")) doMove(v);
+            if (Input.GetButtonDown("Submit") && PlayerItemMenu.overRestTime) doSubmit();
         }
     }
     #endregion
@@ -71,21 +71,16 @@ public class MenuTagExit : MonoBehaviour
         itemIndex.transform.position = new Vector3(choicePosition_02.x - 0.25F, choicePosition_02.y, choicePosition_02.z);
     }
     #endregion
-
+    
     #region 指標移動
     private void doMove(float v)
     {
-        if (v > 0 && tagIndex > 1)//向上移動
-        {
-            tagIndex--;
-        }
-        else if (v < 0 && tagIndex < tagIndexMax)//向下移動
-        {
-            tagIndex++;
-        }
+        if (v > 0 && tagIndex > 1) tagIndex--;//第一項，向上移動
+        else if (v > 0 && tagIndex == 1) tagIndex = tagIndexMax;//向上移動
+        else if (v < 0 && tagIndex < tagIndexMax) tagIndex++;//向下移動
+        else if (v < 0 && tagIndex == tagIndexMax) tagIndex = 1;//最後一項，向下移動
         Vector3 choicePosition = this.transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
         itemIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
-        PlayerItemMenu.returnRestTimer();
     }
     #endregion
 

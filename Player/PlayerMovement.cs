@@ -113,26 +113,10 @@ public class PlayerMovement : MonoBehaviour
         restTimer += Time.deltaTime;
         if (!Talkable.isTalking && PlayerItemMenu.openDetailMenu == -1)//當玩家沒有正在對話或是打開菜單
         {
-            if (h != 0 || v != 0)//按方向鍵
-            {
-                doMove(h, v);
-            }
-            else if(submit > 0 && overRestTime)
-            {
-                doSubmit();
-            }
-            else if (cancel > 0 && isStatus("idle", currentState) && overRestTime)//站穩才能打開菜單
-            {
-                doCancel();
-            }
-            else//什麼按也不按
-            {
-                shouldStatus = "idle";
-            }
-        }
-        else if (PlayerItemMenu.openDetailMenu == 0)//打開一級菜單時的操作
-        {
-            if (cancel > 0 && overRestTime) doReturnCancel();
+            if (h != 0 || v != 0)doMove(h, v);//按方向鍵
+            else if(Input.GetButtonDown("Submit") && overRestTime) doSubmit();
+            else if (Input.GetButtonDown("Cancel") && isStatus("idle", currentState) && overRestTime) doCancel();//站穩才能打開菜單
+            else shouldStatus = "idle";//什麼按也不按
         }
     }
     #endregion
@@ -228,16 +212,6 @@ public class PlayerMovement : MonoBehaviour
         shouldStatus = "lookNote";
         PlayerItemMenu.openDetailMenu = 0;
         MenuObject.SendMessage("doOpenMenu");
-    }
-    #endregion
-
-    #region 在打開菜單狀態，按下cancel的操作
-    private void doReturnCancel()
-    {
-        returnRestTimer();
-        shouldStatus = "idle";
-        PlayerItemMenu.openDetailMenu = -1;
-        MenuObject.SendMessage("doCloseMenu");
     }
     #endregion
 }

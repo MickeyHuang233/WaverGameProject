@@ -100,18 +100,16 @@ public class PlayerItemMenu : MonoBehaviour
     void Update()
     {
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
-        float submit = Input.GetAxisRaw("Submit");//檢測z鍵
-        float cancel = Input.GetAxisRaw("Cancel");//檢測x鍵
         restTimer += Time.deltaTime;
-        if (openDetailMenu == 0 && overRestTime)//當開啟一級菜單
+        if (openDetailMenu == 0)//當開啟一級菜單
         {
-            if (v != 0) doFirstMenuMove(v);
-            if (submit > 0) doOpenDetailMenu();
-            if (cancel > 0) doCloseMenu();
+            if (Input.GetButtonDown("Vertical")) doFirstMenuMove(v);
+            if (Input.GetButtonDown("Submit") && overRestTime) doOpenDetailMenu();
+            if (Input.GetButtonDown("Cancel") && overRestTime) doCloseMenu();
         }
-        if(openDetailMenu > 0 && overRestTime)//當開啟任一個二級菜單
+        if(openDetailMenu > 0)//當開啟任一個二級菜單
         {
-            if (cancel > 0) doCloseDetailMenu();
+            if (Input.GetButtonDown("Cancel") && overRestTime) doCloseDetailMenu();
         }
     }
     #endregion
@@ -119,31 +117,19 @@ public class PlayerItemMenu : MonoBehaviour
     #region 一級菜單選擇器的移動  doFirstMenuMove(float v)
     private void doFirstMenuMove(float v)
     {
-        if (v > 0 && tagIndex > 0)//向上移動
+        if (v > 0 && tagIndex >= 1)//向上移動
         {
             tagIndex--;
-            if (tagIndex == 1)
-            {
-                setTagStatus("item");
-            }
-            else if (tagIndex == 2)
-            {
-                setTagStatus("save");
-            }
-            restTimer = 0;
+            if (tagIndex == 1)  setTagStatus("item");
+            else if (tagIndex == 2) setTagStatus("save");
+            returnRestTimer();
         }
         else if (v < 0 && tagIndex <= tagIndexMax)//向下移動
         {
             tagIndex++;
-            if (tagIndex == 2)
-            {
-                setTagStatus("save");
-            }
-            else if (tagIndex == 3)
-            {
-                setTagStatus("exit");
-            }
-            restTimer = 0;
+            if (tagIndex == 2) setTagStatus("save");
+            else if (tagIndex == 3) setTagStatus("exit");
+            returnRestTimer();
         }
     }
     #endregion
