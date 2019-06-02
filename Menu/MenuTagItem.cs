@@ -17,6 +17,9 @@ public class MenuTagItem : MonoBehaviour
     //指標物件
     GameObject itemIndex;
 
+    //物品說明物件
+    GameObject descriptionObject;
+
     //當前位置編號
     private int tagIndex = 1;
 
@@ -33,6 +36,8 @@ public class MenuTagItem : MonoBehaviour
         MenuObject = this.transform.parent.parent.gameObject;
         //取得指標物件
         itemIndex = this.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
+        //取得物品說明物件
+        descriptionObject = this.transform.GetChild(0).gameObject;
         //取得最大位置編號，要去掉指標物件
         tagIndexMax = this.transform.GetChild(1).gameObject.transform.childCount - 1;
         //初始化指標物件的位置
@@ -61,6 +66,8 @@ public class MenuTagItem : MonoBehaviour
         itemPageAanimator.SetBool("openDetilMenu", true);
         itemPageAanimator.SetBool("closeDetilMenu", false);
         showItemName();
+        //如果物品欄有東西，就顯示第一個物品的物品說明
+        if (GameMenager.getItemNumList.Count > 0) showItemDescription(0);
     }
     #endregion
 
@@ -74,10 +81,10 @@ public class MenuTagItem : MonoBehaviour
             ItemObject.transform.GetChild(i).gameObject.transform.localScale = new Vector3((i > GameMenager.getItemNumList.Count) ? 0F : 1F, 1F, 1F);
         }
         int j = 1;
-        foreach (int ItemNum in GameMenager.getItemNumList)
+        foreach (int itemNum in GameMenager.getItemNumList)
         {
             //Debug.Log(ItemObject.transform.GetChild(j).GetComponent<Text>().text);
-            ItemObject.transform.GetChild(j).GetComponent<Text>().text = GameMenager.itemInformationList[ItemNum].ItemName;
+            ItemObject.transform.GetChild(j).GetComponent<Text>().text = GameMenager.itemInformationList[itemNum].ItemName;
             j++;
         }
         //更新指標能走的最大位置編號
@@ -85,11 +92,22 @@ public class MenuTagItem : MonoBehaviour
     }
     #endregion
 
-    #region 關閉物品欄
-    private void hideItemPage()
+    #region 顯示指定物品的物品說明 showItemDescription(int itemNum)
+    private void showItemDescription(int itemNum)
+    {
+        descriptionObject.GetComponent<Text>().text = GameMenager.itemInformationList[itemNum].Description;
+    }
+    #endregion
+
+        #region 關閉物品欄
+        private void hideItemPage()
     {
         itemPageAanimator.SetBool("openDetilMenu", false);
         itemPageAanimator.SetBool("closeDetilMenu", true);
+        //將指標返回至第一個物品的位置
+        tagIndex = 1;
+        Vector3 choicePosition_02 = this.transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
+        itemIndex.transform.position = new Vector3(choicePosition_02.x - 0.25F, choicePosition_02.y, choicePosition_02.z);
     }
     #endregion
 
@@ -100,6 +118,9 @@ public class MenuTagItem : MonoBehaviour
         else if (v > 0 && tagIndex == 1) tagIndex = tagIndexMax;//向上移動
         else if (v < 0 && tagIndex < tagIndexMax) tagIndex++;//向下移動
         else if (v < 0 && tagIndex == tagIndexMax) tagIndex = 1;//最後一項，向下移動
+        //更新物品說明
+        showItemDescription(tagIndex - 1);
+        //更新指標位置
         Vector3 choicePosition = this.transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
         itemIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
     }

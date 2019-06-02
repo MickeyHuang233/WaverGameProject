@@ -67,7 +67,7 @@ public class MenuTagExit : MonoBehaviour
         exitPageAanimator.SetBool("closeDetilMenu", true);
         //將指標返回至"取消"狀態上
         tagIndex = 2;
-        Vector3 choicePosition_02 = this.transform.GetChild(1).gameObject.transform.GetChild(2).gameObject.transform.position;
+        Vector3 choicePosition_02 = this.transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
         itemIndex.transform.position = new Vector3(choicePosition_02.x - 0.25F, choicePosition_02.y, choicePosition_02.z);
     }
     #endregion
