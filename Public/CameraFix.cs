@@ -42,7 +42,7 @@ public class CameraFix : MonoBehaviour
     void Start()
     {
         //獲取Camara插件的Compoment
-        cinemachineVirtualCamera = GameObject.Find("CM vcam1").gameObject.GetComponent<CinemachineVirtualCamera>();
+        cinemachineVirtualCamera = this.transform.GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
         //獲取關閉菜單時的Camara距離
         closeMenuOrthographicSize = cinemachineVirtualCamera.m_Lens.OrthographicSize;
     }
