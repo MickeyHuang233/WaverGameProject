@@ -13,8 +13,12 @@ public class Item : MonoBehaviour
     public string ItemName { get; set; }
 
     //物品說明
-    private string description;
-    public string Description { get; set; }
+    private string itemDescription;
+    public string ItemDescription { get; set; }
+
+    //物品說明_在地下室才顯示
+    private string itemDescriptionbBasement;
+    public string ItemDescriptionbBasement { get; set; }
 
     //物品使用域判斷的物件名
     private string useItemameObject;

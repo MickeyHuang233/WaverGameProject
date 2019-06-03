@@ -43,7 +43,8 @@ public class GameMenager : MonoBehaviour
                 {
                     ItemId = (int)itemInformation["itemId"].n,
                     ItemName = itemInformation["itemName"].str,
-                    Description = itemInformation["description"].str,
+                    ItemDescription = itemInformation["itemDescription"].str,
+                    ItemDescriptionbBasement = itemInformation["itemDescriptionbBasement"].str,
                     UseItemameObject = itemInformation["useItemameObject"].str
                 };
                 itemInformationList.Add(item);
@@ -89,7 +90,12 @@ public class GameMenager : MonoBehaviour
     {
         foreach (int itemNum in getItemNumList)
         {
-            Debug.Log(itemInformationList[itemNum].ItemId + " " + itemInformationList[itemNum].ItemName + " " + itemInformationList[itemNum].Description + " " + itemInformationList[itemNum].UseItemameObject);
+            Debug.Log(
+                itemInformationList[itemNum].ItemId + " " + 
+                itemInformationList[itemNum].ItemName + " " + 
+                itemInformationList[itemNum].ItemDescription + " " +
+                itemInformationList[itemNum].ItemDescriptionbBasement + " " +
+                itemInformationList[itemNum].UseItemameObject);
         }
     }
     #endregion

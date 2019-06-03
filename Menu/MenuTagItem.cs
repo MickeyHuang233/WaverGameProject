@@ -94,7 +94,7 @@ public class MenuTagItem : MonoBehaviour
     #region 顯示指定物品的物品說明 showItemDescription(int itemNum)
     private void showItemDescription(int itemNum)
     {
-        descriptionObject.GetComponent<Text>().text = GameMenager.itemInformationList[itemNum].Description;
+        descriptionObject.GetComponent<Text>().text = GameMenager.itemInformationList[itemNum].ItemDescription;
     }
     #endregion
 
