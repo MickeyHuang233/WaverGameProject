@@ -27,12 +27,13 @@ public class TitleSceneControl : MonoBehaviour
     //讀取遊戲
     public void doGameLoad()
     {
-        
+        Debug.Log("doGameLoad");
     }
     
     //關閉遊戲
     public void doGameExit()
     {
-    
+        Debug.Log("doGameExit");
+        Application.Quit();//關閉遊戲
     }
 }
