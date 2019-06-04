@@ -55,20 +55,18 @@ public class InitSceneManagment : MonoBehaviour
             return;//找不到玩家物件直接返回
         }
 
-        //取得指定傳送點物件
-        getTargetPositionObject();
+        getTargetPositionObject(); //取得指定傳送點物件
 
-        //建立前景黑的物件
-        createDarkLayout();
-
-        //將DarkLayout的全部子物件放入List中
-        darkLayoutToList();
+        createDarkLayout();//建立前景黑的物件
+        darkLayoutToList();//將DarkLayout的全部子物件放入List中
 
         //加載GameManager
         Talkable.flowchartManager = GameObject.Find("SpeakManager").GetComponent<Flowchart>();
 
         //初始化目標場景為當前場景
         targetScenceName = SceneManager.GetActiveScene().name;
+
+        showSceneName();//顯示場景名稱
 
         //前置作業完成後淡入場景
         if (!CameraFix.isStatus("SceneWhite") && isNeedScenceDark == true)
@@ -108,6 +106,14 @@ public class InitSceneManagment : MonoBehaviour
         //如果當前場景和目標場景不一致時，加載目標場景
         if (!SceneManager.GetActiveScene().name.Equals(targetScenceName) && CameraFix.isStatus("SceneDark"))
             SceneManager.LoadScene(targetScenceName);
+    }
+    #endregion
+
+    #region 顯示場景名稱   showSceneName()
+    private void showSceneName()
+    {
+        string sceneName = GameMenager.mapInformationList[GameMenager.IsInMapDefinition(targetScenceName)].MapName;
+        CameraFix.showSceneName(sceneName);
     }
     #endregion
 

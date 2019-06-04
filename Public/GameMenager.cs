@@ -15,6 +15,9 @@ public class GameMenager : MonoBehaviour
     //所有遊戲道具信息
     public static List<Item> itemInformationList;
 
+    //所有遊戲場景信息
+    public static List<Map> mapInformationList;
+
     [Header("遊戲初始獲得道具")]
     public List<int> gameInitGetItemList;
 
@@ -23,13 +26,14 @@ public class GameMenager : MonoBehaviour
 
     void Start()
     {
+        ParseMapJSON();//讀取場景json定義檔
         ParseItemJSON();//讀取物品json定義檔
         initGetItem();//初始化獲得的道具
         SceneManager.LoadScene(startScene);
         InitSceneManagment.targetPositionName = startPositionnName;//傳送位置物件名稱，以便新場景找到相應的物件
     }
 
-    #region 讀取物品json定義檔，放入中
+    #region 讀取物品json定義檔，放入bean  ParseItemJSON()
     private void ParseItemJSON()
     {
         itemInformationList = new List<Item>();
@@ -52,6 +56,49 @@ public class GameMenager : MonoBehaviour
         }
     }
     #endregion
+
+    #region 讀取場景json定義檔，放入bean  ParseMapJSON()
+    private void ParseMapJSON()
+    {
+        mapInformationList = new List<Map>();
+        TextAsset mapText = Resources.Load<TextAsset>("Json/MapDefinition");
+        if (mapText != null)
+        {
+            JSONObject mapJSON = new JSONObject(mapText.text);
+            foreach (JSONObject mapInformation in mapJSON.list)
+            {
+                Map map = new Map
+                {
+                    MapId = (int)mapInformation["mapId"].n,
+                    MapPicMappingId = mapInformation["mapPicMappingId"].str,
+                    MapName = mapInformation["mapName"].str,
+                    IsShowMapName = (bool)mapInformation["isShowMapName"].b
+                };
+                mapInformationList.Add(map);
+            }
+        }
+    }
+    #endregion
+
+    /*
+     * 場景名是否在MapDefinition有定義    IsInMapDefinition(string SceneName)
+     * 如果存在會返回在mapInformationList找到的index，若沒找到返回-1
+     */
+    public static int IsInMapDefinition(string SceneName)
+    {
+        int index = -1;
+        int returnIndex = -1;
+        foreach (Map map in mapInformationList)
+        {
+            index++;
+            if (map.MapPicMappingId.Equals(SceneName))
+            {
+                returnIndex = index;
+                break;
+            }
+        }
+        return returnIndex;
+    }
 
     #region 初始化道具欄
     private void initGetItem()
@@ -85,7 +132,7 @@ public class GameMenager : MonoBehaviour
     }
     #endregion
 
-    #region 打印現有道具至Log chackItem()
+    #region 打印現有道具至Log  chackItem()
     public static void chackItem()
     {
         foreach (int itemNum in getItemNumList)
@@ -95,7 +142,27 @@ public class GameMenager : MonoBehaviour
                 itemInformationList[itemNum].ItemName + " " + 
                 itemInformationList[itemNum].ItemDescription + " " +
                 itemInformationList[itemNum].ItemDescriptionbBasement + " " +
-                itemInformationList[itemNum].UseItemameObject);
+                itemInformationList[itemNum].UseItemameObject
+            );
+        }
+    }
+    #endregion
+
+    #region 打印現有道具至Log  chackMap()
+    public static void chackMap()
+    {
+        if (mapInformationList.Count == 0)
+        {
+            Debug.Log("mapInformationList.Count == 0");
+        }
+        foreach (Map map in mapInformationList)
+        {
+            Debug.Log(
+                map.MapId + " " +
+                map.MapPicMappingId + " " +
+                map.MapName + " " +
+                map.IsShowMapName
+            );
         }
     }
     #endregion

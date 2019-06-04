@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 //視角相關的操作
 public class CameraFix : MonoBehaviour
@@ -38,14 +39,19 @@ public class CameraFix : MonoBehaviour
     [Range(0F, 10F)]
     public float targetMenuSpeed = 5F;
 
-    //場景漸變物件
+    //場景漸變物件的動畫組件
     public static Animator sceneGradientAnimator;
+
+    //場景名稱顯示物件
+    public static GameObject sceneNameObject;
 
     #region Start()
     void Start()
     {
         //獲取場景漸變物件
-        sceneGradientAnimator = GameObject.Find("SceneGradient").GetComponent<Animator>();
+        sceneGradientAnimator = GameObject.Find("Canvas_UI").transform.GetChild(0).GetComponent<Animator>();
+        //獲取場景名稱顯示物件
+        sceneNameObject = GameObject.Find("Canvas_UI").transform.GetChild(1).gameObject;
         //獲取Camara插件的Compoment
         cinemachineVirtualCamera = this.transform.GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
         //獲取關閉菜單時的Camara距離
@@ -88,7 +94,21 @@ public class CameraFix : MonoBehaviour
         sceneGradientAnimator.SetBool("changeScene_Off", true);
     }
     #endregion
-    
+
+    #region 顯示場景名稱   showSceneName()
+    public static void showSceneName(string sceneName)
+    {
+        sceneNameObject.GetComponent<Text>().text = sceneName;
+    }
+    #endregion
+
+    #region 穩藏場景名稱   hideSceneName()
+    private void hideSceneName()
+    {
+
+    }
+    #endregion
+
     #region 判斷當前狀態
     public static bool isStatus(string status)
     {
