@@ -26,7 +26,7 @@ public class GameMenager : MonoBehaviour
         ParseItemJSON();//讀取物品json定義檔
         initGetItem();//初始化獲得的道具
         SceneManager.LoadScene(startScene);
-        InitSceneManagment.PositionName = startPositionnName;//傳送位置物件名稱，以便新場景找到相應的物件
+        InitSceneManagment.targetPositionName = startPositionnName;//傳送位置物件名稱，以便新場景找到相應的物件
     }
 
     #region 讀取物品json定義檔，放入中

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Fungus;
+using UnityEngine.SceneManagement;
 
 //每一個場景初始化的操作，一定要每個場景都加，否則無法傳送到指定位置
 public class InitSceneManagment : MonoBehaviour
@@ -22,7 +23,7 @@ public class InitSceneManagment : MonoBehaviour
     public GameObject[] darkLayout_1F;
 
     //傳送位置物件名稱，主要從Portal賦值
-    public static string PositionName { get => positionName; set => positionName = value; }
+    public static string targetPositionName { get => positionName; set => positionName = value; }
 
     //用來管理DarkLayout的物件(父類)
     private GameObject darkLayoutObject;
@@ -36,6 +37,12 @@ public class InitSceneManagment : MonoBehaviour
     [Header("視角移動速度")]
     [Range(0F, 50F)]
     public float moveSpeed;
+
+    //場景是否需要淡出
+    public static bool isNeedScenceDark = false;
+
+    //目標場景
+    public static string targetScenceName;
 
     #region Start()
     void Start()
@@ -59,18 +66,28 @@ public class InitSceneManagment : MonoBehaviour
 
         //加載GameManager
         Talkable.flowchartManager = GameObject.Find("SpeakManager").GetComponent<Flowchart>();
+
+        //初始化目標場景為當前場景
+        targetScenceName = SceneManager.GetActiveScene().name;
+
+        //前置作業完成後淡入場景
+        if (!CameraFix.isStatus("SceneWhite") && isNeedScenceDark == true)
+        {
+            GameObject.Find("Main Camera").SendMessage("doChangeSceneOff");
+            isNeedScenceDark = false;
+        }
     }
     #endregion
 
     #region Update()
     void Update()
     {
-        //DarkLayout的移動
-        darkLayoutMove();
+        darkLayoutMove();//DarkLayout的移動
+        loadTargetScene();//場景移動
     }
     #endregion
 
-    #region 取得指定傳送點物件
+    #region 取得指定傳送點物件    getTargetPositionObject()
     private void getTargetPositionObject()
     {
         GameObject targetPositionObject = GameObject.Find(positionName) as GameObject;
@@ -79,7 +96,22 @@ public class InitSceneManagment : MonoBehaviour
     }
     #endregion
 
-    #region 建立前景黑的物件
+    #region 場景移動的實際操作   loadTargetScene()
+    private void loadTargetScene()
+    {
+        //如果目標場景為空或為空字串就報錯並返回
+        if (targetScenceName == null || targetScenceName.Equals(""))
+        {
+            Debug.Log("目標場景名稱(targetScenceName)為空或為空字串，故無法轉移場景");
+            return;
+        }
+        //如果當前場景和目標場景不一致時，加載目標場景
+        if (!SceneManager.GetActiveScene().name.Equals(targetScenceName) && CameraFix.isStatus("SceneDark"))
+            SceneManager.LoadScene(targetScenceName);
+    }
+    #endregion
+
+    #region 建立前景黑的物件    createDarkLayout()
     private void createDarkLayout()
     {
         darkLayoutHolder = new GameObject("DarkLayout").transform;//建立一個新的物件叫Map，並取得這個物件的transform屬性
@@ -103,7 +135,7 @@ public class InitSceneManagment : MonoBehaviour
     }
     #endregion
 
-    #region 將DarkLayout的全部子物件放入List中
+    #region 將DarkLayout的全部子物件放入List中    darkLayoutToList()
     private void darkLayoutToList()
     {
         darkLayoutObject = GameObject.Find("DarkLayout");
@@ -115,7 +147,7 @@ public class InitSceneManagment : MonoBehaviour
     }
     #endregion
 
-    #region DarkLayout的移動
+    #region DarkLayout的移動   darkLayoutMove()
     private void darkLayoutMove()
     {
         float v = (PlayerMovement.moveDirction.x > 0) ? 0.5F : (PlayerMovement.moveDirction.x == 0) ? 0F : -0.5F;

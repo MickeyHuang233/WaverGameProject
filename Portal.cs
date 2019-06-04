@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class Portal : MonoBehaviour
 {
     [Header("場景名稱")]
-    public string sceneName;
+    public string targetScenceName;
 
     [Header("傳送位置物件名稱")]
     public string targetPositionName;
@@ -19,8 +19,9 @@ public class Portal : MonoBehaviour
 
     public void ChangeScene()
     {
-        SceneManager.LoadScene(sceneName);//加載目標場景
-        InitSceneManagment.PositionName = targetPositionName;//傳送位置物件名稱，以便新場景找到相應的物件
+        InitSceneManagment.targetScenceName = targetScenceName;//設置目標場景
+        InitSceneManagment.targetPositionName = targetPositionName;//傳送位置物件名稱，以便新場景找到相應的物件
+        GameObject.Find("Main Camera").SendMessage("doChangeSceneOn");
     }
 
     //標示Portal

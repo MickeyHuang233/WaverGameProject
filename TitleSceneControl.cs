@@ -16,24 +16,61 @@ public class TitleSceneControl : MonoBehaviour
 {
     //初始化場景名
     public string startScene;
-    
-    //遊戲開始
+
+    //玩家所選的操作
+    private string selectButton = "Null";
+
+    //相機物件
+    private GameObject cameraObject;
+
+    #region Start()
+    void Start()
+    {
+        cameraObject = GameObject.Find("Main Camera");
+    }
+    #endregion
+
+    #region Update()
+    void Update()
+    {
+        if (Input.GetButtonDown("Submit")) doGameStart();//暫時使用
+        if (selectButton.Equals("Start"))
+        {
+            if(CameraFix.isStatus("SceneDark")) SceneManager.LoadScene(startScene);//新的加找場景方法
+            else cameraObject.SendMessage("doChangeSceneOn");
+        }
+        else if (selectButton.Equals("Load"))
+        {
+
+        }
+        else if (selectButton.Equals("Exit"))
+        {
+            if (CameraFix.isStatus("SceneDark")) Application.Quit();//關閉遊戲
+            else cameraObject.SendMessage("doChangeSceneOn");
+        }
+    }
+    #endregion
+
+    #region 遊戲開始
     public void doGameStart()
     {
-        //Application.LoadLevel("Scene_1000");//舊方法，可透過場景名或場景編號加載場景
-        SceneManager.LoadScene(startScene);//新的加找場景方法
+        selectButton = "Start";
     }
-    
-    //讀取遊戲
+    #endregion
+
+    #region 讀取遊戲
     public void doGameLoad()
     {
         Debug.Log("doGameLoad");
+        selectButton = "Load";
     }
-    
-    //關閉遊戲
+    #endregion
+
+    #region 關閉遊戲
     public void doGameExit()
     {
         Debug.Log("doGameExit");
-        Application.Quit();//關閉遊戲
+        selectButton = "Exit";
     }
+    #endregion
 }
