@@ -98,8 +98,8 @@ public class MenuTagItem : MonoBehaviour
     }
     #endregion
 
-        #region 關閉物品欄
-        private void hideItemPage()
+    #region 關閉物品欄
+    private void hideItemPage()
     {
         itemPageAanimator.SetBool("openDetilMenu", false);
         itemPageAanimator.SetBool("closeDetilMenu", true);
