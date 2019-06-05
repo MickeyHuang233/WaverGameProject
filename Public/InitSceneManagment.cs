@@ -42,7 +42,10 @@ public class InitSceneManagment : MonoBehaviour
     public static bool isNeedScenceDark = false;
 
     //目標場景
-    public static string targetScenceName;
+    public static string targetSceneName;
+
+    //場景轉換是否已顯示過場景名稱
+    private bool showedSceneName;
 
     #region Start()
     void Start()
@@ -54,6 +57,7 @@ public class InitSceneManagment : MonoBehaviour
             Debug.Log("Tag 'Player' is not found!!");
             return;//找不到玩家物件直接返回
         }
+        PlayerMovement.returnRestTimer();//玩家已休息時間歸零
 
         getTargetPositionObject(); //取得指定傳送點物件
 
@@ -64,22 +68,23 @@ public class InitSceneManagment : MonoBehaviour
         Talkable.flowchartManager = GameObject.Find("SpeakManager").GetComponent<Flowchart>();
 
         //初始化目標場景為當前場景
-        targetScenceName = SceneManager.GetActiveScene().name;
-
-        showSceneName();//顯示場景名稱
+        targetSceneName = SceneManager.GetActiveScene().name;
 
         //前置作業完成後淡入場景
-        if (!CameraFix.isStatus("SceneWhite") && isNeedScenceDark == true)
+        if (!CameraFix.sceneGradientIsStatus("SceneWhite") && isNeedScenceDark == true)
         {
             GameObject.Find("Main Camera").SendMessage("doChangeSceneOff");
             isNeedScenceDark = false;
         }
+
+        showedSceneName = false;//剛進入場景的話就沒有顯示場景名稱
     }
     #endregion
 
     #region Update()
     void Update()
     {
+        if (!showedSceneName) showSceneName();//顯示場景名稱
         darkLayoutMove();//DarkLayout的移動
         loadTargetScene();//場景移動
     }
@@ -98,22 +103,27 @@ public class InitSceneManagment : MonoBehaviour
     private void loadTargetScene()
     {
         //如果目標場景為空或為空字串就報錯並返回
-        if (targetScenceName == null || targetScenceName.Equals(""))
+        if (targetSceneName == null || targetSceneName.Equals(""))
         {
             Debug.Log("目標場景名稱(targetScenceName)為空或為空字串，故無法轉移場景");
             return;
         }
         //如果當前場景和目標場景不一致時，加載目標場景
-        if (!SceneManager.GetActiveScene().name.Equals(targetScenceName) && CameraFix.isStatus("SceneDark"))
-            SceneManager.LoadScene(targetScenceName);
+        if (!SceneManager.GetActiveScene().name.Equals(targetSceneName) && CameraFix.sceneGradientIsStatus("SceneDark"))
+            SceneManager.LoadScene(targetSceneName);
     }
     #endregion
 
     #region 顯示場景名稱   showSceneName()
     private void showSceneName()
     {
-        string sceneName = GameMenager.mapInformationList[GameMenager.IsInMapDefinition(targetScenceName)].MapName;
-        CameraFix.showSceneName(sceneName);
+        if(GameMenager.IsInMapDefinition(targetSceneName) != -1)//如果Unity場景名稱可以在定義檔找到才顯示場景名
+        {
+            bool shouldShowSceneName = GameMenager.mapInformationList[GameMenager.IsInMapDefinition(targetSceneName)].IsShowMapName;
+            string sceneName = (shouldShowSceneName) ? GameMenager.mapInformationList[GameMenager.IsInMapDefinition(targetSceneName)].MapName : "？？？";
+            CameraFix.showSceneName(sceneName);
+        }
+        showedSceneName = true;
     }
     #endregion
 

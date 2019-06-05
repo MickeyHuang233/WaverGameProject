@@ -36,7 +36,7 @@ public class TitleSceneControl : MonoBehaviour
         if (Input.GetButtonDown("Submit")) doGameStart();//暫時使用
         if (selectButton.Equals("Start"))
         {
-            if(CameraFix.isStatus("SceneDark")) SceneManager.LoadScene(startScene);//新的加找場景方法
+            if(CameraFix.sceneGradientIsStatus("SceneDark")) SceneManager.LoadScene(startScene);//新的加找場景方法
             else cameraObject.SendMessage("doChangeSceneOn");
         }
         else if (selectButton.Equals("Load"))
@@ -45,7 +45,7 @@ public class TitleSceneControl : MonoBehaviour
         }
         else if (selectButton.Equals("Exit"))
         {
-            if (CameraFix.isStatus("SceneDark")) Application.Quit();//關閉遊戲
+            if (CameraFix.sceneGradientIsStatus("SceneDark")) Application.Quit();//關閉遊戲
             else cameraObject.SendMessage("doChangeSceneOn");
         }
     }

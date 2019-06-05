@@ -45,13 +45,18 @@ public class CameraFix : MonoBehaviour
     //場景名稱顯示物件
     public static GameObject sceneNameObject;
 
+    //場景名稱顯示物件的動畫組件
+    public static Animator sceneNameAnimator;
+
     #region Start()
     void Start()
     {
-        //獲取場景漸變物件
+        //獲取場景漸變物件的動畫組件
         sceneGradientAnimator = GameObject.Find("Canvas_UI").transform.GetChild(0).GetComponent<Animator>();
         //獲取場景名稱顯示物件
         sceneNameObject = GameObject.Find("Canvas_UI").transform.GetChild(1).gameObject;
+        //獲取場景名稱顯示物件的動畫組件
+        sceneNameAnimator = sceneNameObject.GetComponent<Animator>();
         //獲取Camara插件的Compoment
         cinemachineVirtualCamera = this.transform.GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
         //獲取關閉菜單時的Camara距離
@@ -99,18 +104,12 @@ public class CameraFix : MonoBehaviour
     public static void showSceneName(string sceneName)
     {
         sceneNameObject.GetComponent<Text>().text = sceneName;
+        sceneNameAnimator.SetTrigger("showSceneName");
     }
     #endregion
 
-    #region 穩藏場景名稱   hideSceneName()
-    private void hideSceneName()
-    {
-
-    }
-    #endregion
-
-    #region 判斷當前狀態
-    public static bool isStatus(string status)
+    #region 判斷漸變物件當前狀態  sceneGradientIsStatus(string status)
+    public static bool sceneGradientIsStatus(string status)
     {
         bool b = false;
         AnimatorStateInfo currentState = sceneGradientAnimator.GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態
@@ -128,5 +127,5 @@ public class CameraFix : MonoBehaviour
         }
         return b;
     }
-#endregion
+    #endregion
 }

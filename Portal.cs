@@ -19,7 +19,7 @@ public class Portal : MonoBehaviour
 
     public void ChangeScene()
     {
-        InitSceneManagment.targetScenceName = targetScenceName;//設置目標場景
+        InitSceneManagment.targetSceneName = targetScenceName;//設置目標場景
         InitSceneManagment.targetPositionName = targetPositionName;//傳送位置物件名稱，以便新場景找到相應的物件
         GameObject.Find("Main Camera").SendMessage("doChangeSceneOn");
     }
