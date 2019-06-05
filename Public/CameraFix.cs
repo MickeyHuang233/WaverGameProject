@@ -28,9 +28,6 @@ public class CameraFix : MonoBehaviour
     [Range(0F, 5F)]
     public float openMenuOrthographicSize = 0.8F;
 
-    //關閉菜單時的緩慢移動區Y軸偏移量，在CM vcam1中指定
-    private float closeMenuOrthographicY = 0F;
-
     [Header("打開菜單時的緩慢移動區Y軸偏移量")]
     [Range(0F, 5F)]
     public float openMenuOrthographicY = 0.8F;
@@ -48,6 +45,18 @@ public class CameraFix : MonoBehaviour
     //場景名稱顯示物件的動畫組件
     public static Animator sceneNameAnimator;
 
+    private float ShakeElapsedTime = 0F;
+
+    [Header("CinemachineVirtualCamera Noice的Amplitude Gain值")]
+    [Range(-1F, 1F)]
+    public float ShakeAmplitude = 0.05F;
+
+    [Header("CinemachineVirtualCamera Noice的Frequency Gain值")]
+    [Range(-1F, 1F)]
+    public float ShakeFrequency = 0.2F;
+    // Cinemachine Shake
+    private CinemachineBasicMultiChannelPerlin virtualCameraNoise;
+
     #region Start()
     void Start()
     {
@@ -58,7 +67,8 @@ public class CameraFix : MonoBehaviour
         //獲取場景名稱顯示物件的動畫組件
         sceneNameAnimator = sceneNameObject.GetComponent<Animator>();
         //獲取Camara插件的Compoment
-        cinemachineVirtualCamera = this.transform.GetChild(0).gameObject.GetComponent<CinemachineVirtualCamera>();
+        cinemachineVirtualCamera = GameObject.Find("CM vcam1").gameObject.GetComponent<CinemachineVirtualCamera>();
+        virtualCameraNoise = cinemachineVirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
         //獲取關閉菜單時的Camara距離
         closeMenuOrthographicSize = cinemachineVirtualCamera.m_Lens.OrthographicSize;
     }
@@ -69,7 +79,34 @@ public class CameraFix : MonoBehaviour
     {
         //視角移動
         moveCamera();
+        //晃動相機
+        if(player != null)
+        {
+            AnimatorStateInfo currentState = player.transform.GetChild(3).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);//取得Menu當前動畫狀態
+            bool isShaking = (PlayerItemMenu.openDetailMenu > -1) ? true : false;
+            shakeCamera(isShaking);
+        }
 
+    }
+    #endregion
+
+    #region 晃動相機    shakeCamera()
+    private void shakeCamera(bool isShaking)
+    {
+        // If the Cinemachine componet is not set, avoid update
+        if (cinemachineVirtualCamera != null && virtualCameraNoise != null)
+        {
+            if (isShaking)
+            {
+                virtualCameraNoise.m_AmplitudeGain = (virtualCameraNoise.m_AmplitudeGain >= (ShakeAmplitude * 0.8F)) ? Mathf.Lerp(virtualCameraNoise.m_AmplitudeGain, ShakeAmplitude, Time.deltaTime * 0.5F) : ShakeAmplitude;
+                virtualCameraNoise.m_FrequencyGain = (virtualCameraNoise.m_FrequencyGain >= (ShakeFrequency * 0.8F)) ? Mathf.Lerp(virtualCameraNoise.m_FrequencyGain, ShakeFrequency, Time.deltaTime * 0.5F) : ShakeAmplitude;
+            }
+            else
+            {
+                virtualCameraNoise.m_AmplitudeGain = (virtualCameraNoise.m_AmplitudeGain >= 0.01F)? Mathf.Lerp(virtualCameraNoise.m_AmplitudeGain, 0F, Time.deltaTime * 2F) : 0F;
+                virtualCameraNoise.m_FrequencyGain = (virtualCameraNoise.m_FrequencyGain >= 0.01F) ? Mathf.Lerp(virtualCameraNoise.m_FrequencyGain, 0F, Time.deltaTime * 2F) : 0F;
+            }
+        }
     }
     #endregion
 
