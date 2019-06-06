@@ -47,14 +47,15 @@ public class CameraFix : MonoBehaviour
 
     private float ShakeElapsedTime = 0F;
 
-    [Header("CinemachineVirtualCamera Noice的Amplitude Gain值")]
+    [Header("視角晃動強度")]
     [Range(-1F, 1F)]
     public float ShakeAmplitude = 0.05F;
 
-    [Header("CinemachineVirtualCamera Noice的Frequency Gain值")]
+    [Header("視角晃動頻率")]
     [Range(-1F, 1F)]
     public float ShakeFrequency = 0.2F;
-    // Cinemachine Shake
+
+    //實現視角晃動的物件
     private CinemachineBasicMultiChannelPerlin virtualCameraNoise;
 
     #region Start()
@@ -68,6 +69,7 @@ public class CameraFix : MonoBehaviour
         sceneNameAnimator = sceneNameObject.GetComponent<Animator>();
         //獲取Camara插件的Compoment
         cinemachineVirtualCamera = GameObject.Find("CM vcam1").gameObject.GetComponent<CinemachineVirtualCamera>();
+        //獲取實現視角晃動的物件
         virtualCameraNoise = cinemachineVirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
         //獲取關閉菜單時的Camara距離
         closeMenuOrthographicSize = cinemachineVirtualCamera.m_Lens.OrthographicSize;
@@ -93,7 +95,6 @@ public class CameraFix : MonoBehaviour
     #region 晃動相機    shakeCamera()
     private void shakeCamera(bool isShaking)
     {
-        // If the Cinemachine componet is not set, avoid update
         if (cinemachineVirtualCamera != null && virtualCameraNoise != null)
         {
             if (isShaking)
