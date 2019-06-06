@@ -80,6 +80,7 @@ public class GameMenager : MonoBehaviour
     }
     #endregion
 
+    #region 查詢場景名
     /*
      * 場景名是否在MapDefinition有定義    IsInMapDefinition(string SceneName)
      * 如果存在會返回在mapInformationList找到的index，若沒找到返回-1
@@ -99,6 +100,7 @@ public class GameMenager : MonoBehaviour
         }
         return returnIndex;
     }
+    #endregion
 
     #region 初始化道具欄
     private void initGetItem()
