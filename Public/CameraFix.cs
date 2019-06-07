@@ -39,11 +39,17 @@ public class CameraFix : MonoBehaviour
     //場景漸變物件的動畫組件
     public static Animator sceneGradientAnimator;
 
-    //場景名稱顯示物件
+    //顯示場景名稱物件
     public static GameObject sceneNameObject;
 
-    //場景名稱顯示物件的動畫組件
+    //顯示場景名稱物件的動畫組件
     public static Animator sceneNameAnimator;
+
+    //顯示倒數時間物件
+    public static GameObject nagativeTimerObject;
+
+    //顯示倒數時間物件的動畫組件
+    public static Animator nagativeTimerAnimator;
 
     private float ShakeElapsedTime = 0F;
 
@@ -65,8 +71,10 @@ public class CameraFix : MonoBehaviour
         sceneGradientAnimator = GameObject.Find("Canvas_UI").transform.GetChild(0).GetComponent<Animator>();
         //獲取場景名稱顯示物件
         sceneNameObject = GameObject.Find("Canvas_UI").transform.GetChild(1).gameObject;
-        //獲取場景名稱顯示物件的動畫組件
         sceneNameAnimator = sceneNameObject.GetComponent<Animator>();
+        //獲取顯示倒數時間物件
+        nagativeTimerObject = GameObject.Find("Canvas_UI").transform.GetChild(2).gameObject;
+        nagativeTimerAnimator = nagativeTimerObject.GetComponent<Animator>();
         //獲取Camara插件的Compoment
         cinemachineVirtualCamera = GameObject.Find("CM vcam1").gameObject.GetComponent<CinemachineVirtualCamera>();
         //獲取實現視角晃動的物件
@@ -138,11 +146,21 @@ public class CameraFix : MonoBehaviour
     }
     #endregion
 
-    #region 顯示場景名稱   showSceneName()
+    #region 顯示場景名稱   showSceneName(string sceneName)
     public static void showSceneName(string sceneName)
     {
         sceneNameObject.GetComponent<Text>().text = sceneName;
         sceneNameAnimator.SetTrigger("showSceneName");
+    }
+    #endregion
+
+    #region 倒計時時顯示剩余時間   showNagativeTime(string timer)
+    public static void showNagativeTime(string timer)
+    {
+        nagativeTimerObject.GetComponent<Text>().text = timer;
+        nagativeTimerAnimator.SetBool("showTimer", (GameTimer.nactivesecond > 0) ? true: false);
+        nagativeTimerAnimator.SetBool("hideTimer", (GameTimer.nactivesecond > 0) ? false : true);
+        nagativeTimerAnimator.SetBool("showRed", (GameTimer.nactivesecond > 10) ? false : true);
     }
     #endregion
 

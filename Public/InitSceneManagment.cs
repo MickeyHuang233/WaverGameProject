@@ -85,6 +85,7 @@ public class InitSceneManagment : MonoBehaviour
     void Update()
     {
         if (!showedSceneName) showSceneName();//顯示場景名稱
+        if (GameTimer.nactivesecond >= 0) showNagativeTime();
         darkLayoutMove();//DarkLayout的移動
         loadTargetScene();//場景移動
     }
@@ -123,7 +124,23 @@ public class InitSceneManagment : MonoBehaviour
             string sceneName = (shouldShowSceneName) ? GameMenager.mapInformationList[GameMenager.IsInMapDefinition(targetSceneName)].MapName : "？？？";
             CameraFix.showSceneName(sceneName);
         }
-        showedSceneName = true;
+        AnimatorStateInfo currentState = GameObject.Find("Canvas_UI").transform.GetChild(1).gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態
+        bool isSceneNamehide = currentState.IsName("HideSceneName");
+        if(isSceneNamehide) showedSceneName = true;
+    }
+    #endregion
+
+    #region 顯示倒數時間   showNagativeTime()
+    /*
+    若需要倒數直接指定GameTimer.nactivesecond要倒數的秒數即可 
+    */
+    private void showNagativeTime()
+    {
+        string timer =
+            (GameTimer.nactivesecond >= 100) ? GameTimer.nactivesecond.ToString() + "秒" :
+            (GameTimer.nactivesecond >= 10) ? "0" + GameTimer.nactivesecond.ToString() + "秒" : 
+            "00" + GameTimer.nactivesecond.ToString() + "秒";
+        CameraFix.showNagativeTime(timer);
     }
     #endregion
 
@@ -179,6 +196,13 @@ public class InitSceneManagment : MonoBehaviour
             darkLayoutTargetPosition = new Vector3(playerX, playerY, 0);
             d.transform.position = Vector3.Lerp(d.transform.position, darkLayoutTargetPosition, moveSpeed * Time.deltaTime / (i+1));
         }
+    }
+    #endregion
+
+    #region 倒數秒數加10秒
+    public void addNagativeTiming10Second()
+    {
+        GameTimer.nactivesecond += 10;
     }
     #endregion
 }
