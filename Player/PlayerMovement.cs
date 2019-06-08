@@ -42,17 +42,29 @@ public class PlayerMovement : MonoBehaviour
     //當前幀Y軸位置
     private float nowYaxis;
 
-    [Header("角色行走速度_縱向")]
+    [Header("角色跑步速度_縱向")]
     [Range(0.5F, 20F)]
-    public float speedV = 5F;
+    public float speedRunV = 10F;
 
-    [Header("角色行走速度_橫向")]
+    [Header("角色跑步速度_橫向")]
     [Range(0.5F, 20F)]
-    public float speedH = 0.1F;
+    public float speedRunH = 8F;
 
-    [Header("角色行走速度_Z")]
+    [Header("角色跑步速度_Z")]
     [Range(-1F, 1F)]
-    public float speedZ = -0.05F;
+    public float speedRunZ = -0.05F;
+
+    [Header("角色步行速度_縱向")]
+    [Range(0.5F, 20F)]
+    public float speedWalkV = 5F;
+
+    [Header("角色步行速度_橫向")]
+    [Range(0.5F, 20F)]
+    public float speedWalkH = 4F;
+
+    [Header("角色步行速度_Z")]
+    [Range(-1F, 1F)]
+    public float speedWalkZ = -0.025F;
 
     [Header("調查用的物件位置所乘倍率_X")]
     [Range(-1F, 1F)]
@@ -112,11 +124,13 @@ public class PlayerMovement : MonoBehaviour
         currentState = this.animator.GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態的hashCode
         float h = Input.GetAxisRaw("Horizontal");//檢測水平移動
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
+        float shift = Input.GetAxisRaw("Shift");//檢測點擊左Shift鍵
+        Debug.Log("shift: " + shift);
         doSetStatusToShould(currentState);
         restTimer += Time.deltaTime;
         if (!Talkable.isTalking && PlayerItemMenu.openDetailMenu == -1)//當玩家沒有正在對話或是打開菜單
         {
-            if (h != 0 || v != 0)doMove(h, v);//按方向鍵
+            if (h != 0 || v != 0) doMove(h, v, shift);//按方向鍵
             else if(Input.GetButtonDown("Submit") && overRestTime) doSubmit();
             else if (Input.GetButtonDown("Cancel") && isStatus("idle", currentState) && overRestTime) doCancel();//站穩才能打開菜單
             else shouldStatus = "idle";//什麼按也不按
@@ -128,6 +142,7 @@ public class PlayerMovement : MonoBehaviour
     private void setStatus(string status)
     {
         this.animator.SetBool("idle", false);
+        this.animator.SetBool("walk", false);
         this.animator.SetBool("run", false);
         this.animator.SetBool("lookNote", false);
         if (!status.Equals("allClose"))//只開啟所設定的狀態，若設定allClose則狀態全關
@@ -145,6 +160,9 @@ public class PlayerMovement : MonoBehaviour
         {
             case "idle":
                 b = nowStateHash.IsName("Idle");
+                break;
+            case "walk":
+                b = nowStateHash.IsName("Base Layer.Walk");
                 break;
             case "run":
                 b = nowStateHash.IsName("Base Layer.Run");
@@ -169,13 +187,16 @@ public class PlayerMovement : MonoBehaviour
     #endregion
 
     # region 角色移動
-    private void doMove(float h, float v)
+    private void doMove(float h, float v, float shift)
     {
         nowYaxis = this.transform.position.y;//取得當前位置
         float gapYaxis = nowYaxis - preYaxis;//取得上一幀與當前位置Y軸之差
         //角色移動
-        rigidbody.AddForce(new Vector2(h * speedH, v * speedV));
-        this.transform.Translate(0, 0, -(gapYaxis * speedZ), Space.World);
+        float moveSpeedH = (shift > 0)? speedRunH : speedWalkH;
+        float moveSpeedV = (shift > 0) ? speedRunV : speedWalkV;
+        float moveSpeedZ = (shift > 0) ? speedRunZ : speedWalkZ;
+        rigidbody.AddForce(new Vector2(h * moveSpeedH, v * moveSpeedV));
+        this.transform.Translate(0, 0, -(gapYaxis * moveSpeedZ), Space.World);
 
         //判斷方向，以便顯示正確的動畫
         moveDirction = Vector2.zero;
@@ -183,7 +204,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.RightArrow)) moveDirction.x = 1F;
         if (Input.GetKey(KeyCode.UpArrow)) moveDirction.y = 1F;
         if (Input.GetKey(KeyCode.DownArrow)) moveDirction.y = -1F;
-        shouldStatus = "run";
+        shouldStatus = (shift>0)? "run" : "walk";
         preMoveDirction = moveDirction;
         animator.SetFloat("move_X", moveDirction.x);//賦值給Animator的相應變量
         animator.SetFloat("move_Y", moveDirction.y);
