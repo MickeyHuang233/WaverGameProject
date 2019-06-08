@@ -53,7 +53,7 @@ public class MenuTagItem : MonoBehaviour
         if (PlayerItemMenu.openDetailMenu == 1)
         {
             if (Input.GetButtonDown("Vertical")) doMove(v);
-            if (Input.GetKeyDown(KeyCode.Z) && PlayerItemMenu.overRestTime) doSubmit();
+            if (Input.GetButtonDown("Submit") && PlayerItemMenu.overRestTime) doSubmit();
         }
 
         }
