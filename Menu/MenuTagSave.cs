@@ -12,15 +12,17 @@ public class MenuTagSave : MonoBehaviour
     private Animator savePageAanimator;
 
     //Menu物件
-    GameObject MenuObject;
+    private GameObject MenuObject;
 
     //指標物件
-    GameObject itemIndex;
+    private GameObject itemIndex;
 
     //顯示當前時間的物件
-    GameObject NowPlayTimer;
+    private GameObject NowPlayTimerObject;
     //顯示當前地點的物件
-    GameObject NowPlayPosition;
+    private GameObject NowPlayPositionObject;
+    //顯示劇情目標的物件
+    private GameObject PlotDescrptionObject;
 
     //當前位置編號
     private int tagIndex = 1;
@@ -40,9 +42,11 @@ public class MenuTagSave : MonoBehaviour
         //取得最大位置編號，要去掉指標物件
         tagIndexMax = this.transform.GetChild(2).gameObject.transform.childCount - 1;
         //取得顯示當前時間的物件
-        NowPlayTimer = this.transform.GetChild(1).gameObject.transform.GetChild(1).gameObject;
+        NowPlayTimerObject = this.transform.GetChild(1).gameObject.transform.GetChild(1).gameObject;
         //取得顯示當前地點的物件
-        NowPlayPosition = this.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
+        NowPlayPositionObject = this.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
+        //取得顯示劇情目標的物件
+        PlotDescrptionObject = this.transform.GetChild(0).gameObject;
         //初始化指標物件的位置
         Vector3 choicePosition = this.transform.GetChild(2).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
         itemIndex.transform.position = new Vector3(choicePosition.x - 0.2F, choicePosition.y, choicePosition.z);
@@ -55,6 +59,7 @@ public class MenuTagSave : MonoBehaviour
         {
             showNowGameTimer();
             showNowPosition();
+            showSituactionTarget();
             if (Input.GetButtonDown("Vertical")) doMove(v);
             if (Input.GetKeyDown(KeyCode.Z) && PlayerItemMenu.overRestTime) doSubmit();
         }
@@ -72,7 +77,7 @@ public class MenuTagSave : MonoBehaviour
         else if(GameTimer.minute >= 10 && GameTimer.minute < 100) minuteStr = "0" + GameTimer.minute.ToString();
         else if (GameTimer.minute >= 100 && GameTimer.minute < 1000) minuteStr =  GameTimer.minute.ToString();
         else minuteStr = "999";
-        NowPlayTimer.GetComponent<Text>().text = minuteStr + ":" + secondStr;
+        NowPlayTimerObject.GetComponent<Text>().text = minuteStr + ":" + secondStr;
     }
     #endregion
 
@@ -82,7 +87,15 @@ public class MenuTagSave : MonoBehaviour
         int mapIndex = GameMenager.IsInMapDefinition(InitSceneManagment.targetSceneName);
         bool shouldShowSceneName = GameMenager.mapInformationList[mapIndex].IsShowMapName;
         string sceneName = (shouldShowSceneName) ? GameMenager.mapInformationList[mapIndex].MapName : "？？？";
-        NowPlayPosition.GetComponent<Text>().text = sceneName;
+        NowPlayPositionObject.GetComponent<Text>().text = sceneName;
+    }
+    #endregion
+
+    #region 顯示當前劇情目標    showNowPosition()
+    private void showSituactionTarget()
+    {
+        Plot situactionTargetPlot = GameMenager.findPlotById(GameMenager.gamePlotNumber);
+        PlotDescrptionObject.GetComponent<Text>().text = situactionTargetPlot.SituactionTarget;
     }
     #endregion
 

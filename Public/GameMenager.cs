@@ -18,8 +18,14 @@ public class GameMenager : MonoBehaviour
     //所有遊戲場景信息
     public static List<Map> mapInformationList;
 
+    //所有遊戲劇情信息
+    public static List<Plot> plotInformationList;
+
     [Header("遊戲初始獲得道具")]
     public List<int> gameInitGetItemList;
+
+    [Header("遊戲的劇情編號")]
+    public static int gamePlotNumber = 0;
 
     //物品欄已獲得物品編號
     public static HashSet<int> getItemNumList;
@@ -28,6 +34,7 @@ public class GameMenager : MonoBehaviour
     {
         ParseMapJSON();//讀取場景json定義檔
         ParseItemJSON();//讀取物品json定義檔
+        ParsePlotJSON();//讀取劇情json定義檔
         initGetItem();//初始化獲得的道具
         SceneManager.LoadScene(startScene);
         InitSceneManagment.targetPositionName = startPositionnName;//傳送位置物件名稱，以便新場景找到相應的物件
@@ -75,6 +82,32 @@ public class GameMenager : MonoBehaviour
                     IsShowMapName = (bool)mapInformation["isShowMapName"].b
                 };
                 mapInformationList.Add(map);
+            }
+        }
+    }
+    #endregion
+
+    #region 讀取劇情json定義檔，放入bean  ParsePlotJSON()
+    private void ParsePlotJSON()
+    {
+        plotInformationList = new List<Plot>();
+        TextAsset plotText = Resources.Load<TextAsset>("Json/PlotDefinition");
+        if (plotText != null)
+        {
+            JSONObject plotJSON = new JSONObject(plotText.text);
+            foreach (JSONObject plotInformation in plotJSON.list)
+            {
+                Plot plot = new Plot
+                {
+                    PlotId = (int)plotInformation["plotId"].n,
+                    IsAction = (bool)plotInformation["isAction"].b,
+                    IsOrder = (bool)plotInformation["isOrder"].b,
+                    CanOpenMenu = (bool)plotInformation["canOpenMenu"].b,
+                    RestartPoint = (bool)plotInformation["restartPoint"].b,
+                    IsOrisOnlyWalkingder = (bool)plotInformation["isOnlyWalking"].b,
+                    SituactionTarget = plotInformation["situactionTarget"].str
+                };
+                plotInformationList.Add(plot);
             }
         }
     }
@@ -150,8 +183,8 @@ public class GameMenager : MonoBehaviour
     }
     #endregion
 
-    #region 打印現有道具至Log  chackMap()
-    public static void chackMap()
+    #region 打印所有地圖信息至Log  chackAllMap()
+    private void chackAllMap()
     {
         if (mapInformationList.Count == 0)
         {
@@ -166,6 +199,46 @@ public class GameMenager : MonoBehaviour
                 map.IsShowMapName
             );
         }
+    }
+    #endregion
+
+    #region 打印所有地圖信息至Log  chackAllPlot()
+    private void chackAllPlot()
+    {
+        if (plotInformationList.Count == 0)
+        {
+            Debug.Log("mapInformationList.Count == 0");
+        }
+        foreach (Plot plot in plotInformationList)
+        {
+            Debug.Log(
+                plot.PlotId + " " +
+                plot.IsAction + " " +
+                plot.IsOrder + " " +
+                plot.CanOpenMenu + " " +
+                plot.RestartPoint + " " +
+                plot.IsOrisOnlyWalkingder + " " +
+                plot.SituactionTarget
+            );
+        }
+    }
+    #endregion
+
+    #region 找相應劇情編號的劇情信息，找不到返回null  findPlot(int plotId)
+    public static Plot findPlotById(int targetPlotId)
+    {
+        Plot returnPlot = null;
+        int index = -1;
+        foreach (Plot plot in plotInformationList)
+        {
+            index++;
+            if (plot.PlotId == targetPlotId)
+            {
+                returnPlot = plotInformationList[index];
+                break;
+            }
+        }
+        return returnPlot;
     }
     #endregion
 }
