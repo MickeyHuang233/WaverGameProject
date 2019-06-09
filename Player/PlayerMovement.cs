@@ -125,7 +125,6 @@ public class PlayerMovement : MonoBehaviour
         float h = Input.GetAxisRaw("Horizontal");//檢測水平移動
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
         float shift = Input.GetAxisRaw("Shift");//檢測點擊左Shift鍵
-        Debug.Log("shift: " + shift);
         doSetStatusToShould(currentState);
         restTimer += Time.deltaTime;
         if (!Talkable.isTalking && PlayerItemMenu.openDetailMenu == -1)//當玩家沒有正在對話或是打開菜單
