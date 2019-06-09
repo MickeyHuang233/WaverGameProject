@@ -132,6 +132,7 @@ public class MenuTagSave : MonoBehaviour
     private void doSubmit()
     {
         Debug.Log("Save_doSubmit()");
+        GameMenager.saveToJsonFile(tagIndex);
         PlayerItemMenu.returnRestTimer();
     }
     #endregion

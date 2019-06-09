@@ -2,43 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class GameFile
 {
     //遊戲存檔編號
-    private int gameFileId;
-    public int GameFileId { get; set; }
-    
+    public int gameFileId;
+
     //存檔時玩家所在的地圖編號
-    private int mapId;
-    public int MapId { get; set; }
+    public int mapId;
 
     //存檔時玩家所在的X軸信息
-    private float playerPositionX;
-    public float PlayerPositionX { get; set; }
+    public float playerPositionX;
 
     //存檔時玩家所在的Y軸信息
-    private float playerPositionY;
-    public float PlayerPositionY { get; set; }
+    public float playerPositionY;
 
     //存檔時玩家所在的Z軸信息
-    private float playerPositionZ;
-    public float PlayerPositionZ { get; set; }
+    public float playerPositionZ;
 
     //存檔時玩家正在進行的劇情編號
-    private int plotId;
-    public int PlotId { get; set; }
+    public int plotId;
 
     //存檔時的已遊玩時間_秒
-    private int gameTimeSecond;
-    public int GameTimeSecond { get; set; }
+    public int gameTimeSecond;
 
     //存檔時的已遊玩時間_分
-    private int gameTimeMinute;
-    public int GameTimeMinute { get; set; }
+    public int gameTimeMinute;
+
+    //已獲得道具
+    public List<int> getItems = new List<int>();
 
     //是否完成各分支劇情
-    private List<bool> branchSituation = new List<bool>();
-    public List<bool> BranchSituation { get; set; }
+    public List<bool> branchSituation = new List<bool>();
 
     #region 初始化各分支劇情的List
     public void instaneBranchSituation(int branchSituationsize)

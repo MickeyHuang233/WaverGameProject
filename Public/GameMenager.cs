@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -241,4 +242,43 @@ public class GameMenager : MonoBehaviour
         return returnPlot;
     }
     #endregion
+
+    #region 將當前遊戲信息放入GameFile類
+    public static GameFiles saveToBean(int gameFileId)
+    {
+        GameFiles gameFiles = new GameFiles();
+        //將已獲得道具Set轉成List
+        List<int> GetItems = new List<int>();
+        foreach (int fetItemNum in getItemNumList) GetItems.Add(fetItemNum);
+        //儲存至Bean
+        GameFile gameFile = new GameFile
+        {
+            gameFileId = gameFileId,//遊戲存檔編號
+            mapId = GameMenager.IsInMapDefinition(InitSceneManagment.targetSceneName),//存檔時玩家所在的地圖編號
+            playerPositionX = PlayerMovement.playerObject.transform.position.x,//存檔時玩家所在的X軸信息
+            playerPositionY = PlayerMovement.playerObject.transform.position.y,//存檔時玩家所在的Y軸信息
+            playerPositionZ = PlayerMovement.playerObject.transform.position.z,//存檔時玩家所在的Z軸信息
+            plotId = GameMenager.gamePlotNumber,//存檔時玩家正在進行的劇情編號
+            gameTimeSecond = GameTimer.second,//存檔時的已遊玩時間_秒
+            gameTimeMinute = GameTimer.minute,//存檔時的已遊玩時間_分
+            getItems = GetItems//已獲得道具
+            // TODO 是否完成各分支劇情，存檔
+        };
+        gameFiles.gameFiles[gameFileId] = gameFile;
+        return gameFiles;
+    }
+    #endregion
+
+    public static void saveToJsonFile(int gameFileId)
+    {
+        // TODO 需要先取存檔的json檔，如果無此文件或字串不符合格式才會存全新的檔
+        GameFiles gameFiles = saveToBean(gameFileId);
+        //將myPlayer轉換成json格式的字串
+        string saveString = JsonUtility.ToJson(gameFiles);
+        //將字串saveString存到硬碟中
+        StreamWriter file = new StreamWriter(System.IO.Path.Combine("Assets\\Resources\\Json", "gameFile.json"));
+        file.Write(saveString);
+        file.Close();
+    }
+
 }

@@ -24,6 +24,9 @@ public class PlayerMovement : MonoBehaviour
     //角色的動畫信息
     private Animator animator;
 
+    //抏家物件
+    public static GameObject playerObject;
+
     //玩家應該的狀態
     private string shouldStatus;
 
@@ -106,6 +109,7 @@ public class PlayerMovement : MonoBehaviour
     #region Start()
     void Start()
     {
+        playerObject = this.gameObject;
         rigidbody = this.GetComponent<Rigidbody2D>();
         animator = this.GetComponent<Animator>();
         MenuObject = this.transform.GetChild(3).gameObject;
