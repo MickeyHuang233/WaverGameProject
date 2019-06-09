@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Map : MonoBehaviour
+public class Map
 {
     //場景編號
     private int mapId;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour
+public class Item
 {
     //物品編號
     private int itemId;

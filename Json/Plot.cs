@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plot : MonoBehaviour
+public class Plot
 {
     //劇情編號
     private int plotId;
@@ -23,16 +23,13 @@ public class Plot : MonoBehaviour
     //是否是復活點
     private bool restartPoint;
     public bool RestartPoint { get; set; }
-
-
+    
     //是否只能走路(也就是不能跑步)
     private bool IsOnlyWalking;
     public bool IsOrisOnlyWalkingder { get; set; }
-
-
+    
     //主線任務內容，在菜單存檔頁面顯示的內容
     private string situactionTarget;
     public string SituactionTarget { get; set; }
-
-
+    
 }
