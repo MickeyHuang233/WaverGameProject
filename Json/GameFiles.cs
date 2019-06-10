@@ -17,6 +17,5 @@ public class GameFiles
             gameFile.gameFileId = i;
             gameFiles.Add(gameFile);
         }
-        Debug.Log(gameFiles.Count);
     }
 }

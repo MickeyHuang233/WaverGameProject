@@ -24,6 +24,9 @@ public class MenuTagSave : MonoBehaviour
     //顯示劇情目標的物件
     private GameObject PlotDescrptionObject;
 
+    //顯示存檔信息物件
+    private List<GameObject> saveInformations = new List<GameObject>();
+
     //當前位置編號
     private int tagIndex = 1;
 
@@ -50,6 +53,8 @@ public class MenuTagSave : MonoBehaviour
         //初始化指標物件的位置
         Vector3 choicePosition = this.transform.GetChild(2).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
         itemIndex.transform.position = new Vector3(choicePosition.x - 0.2F, choicePosition.y, choicePosition.z);
+        //取得顯示存檔信息物件
+        for (int i = 1; i <= tagIndexMax; i++) saveInformations.Add(this.transform.GetChild(2).gameObject.transform.GetChild(i).gameObject);
     }
 
     void Update()
@@ -57,9 +62,11 @@ public class MenuTagSave : MonoBehaviour
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
         if (PlayerItemMenu.openDetailMenu == 2)
         {
-            showNowGameTimer();
-            showNowPosition();
+            NowPlayTimerObject.GetComponent<Text>().text = showNowGameTimer(GameTimer.second, GameTimer.minute);
+            int mapIndex = GameMenager.IsInMapDefinition(InitSceneManagment.targetSceneName);
+            NowPlayPositionObject.GetComponent<Text>().text = showPositionById(mapIndex);
             showSituactionTarget();
+            showSaveInformation();
             if (Input.GetButtonDown("Vertical")) doMove(v);
             if (Input.GetKeyDown(KeyCode.Z) && PlayerItemMenu.overRestTime) doSubmit();
         }
@@ -67,27 +74,28 @@ public class MenuTagSave : MonoBehaviour
     }
 
     #region 顯示當前遊戲時間    showNowGameTimer()
-    private void showNowGameTimer()
+    private string showNowGameTimer(int second, int minute)
     {
         string secondStr;
-        if (GameTimer.second < 10) secondStr = "0" + GameTimer.second.ToString();
-        else secondStr = GameTimer.second.ToString();
-        string minuteStr = GameTimer.minute.ToString();
-        if(GameTimer.minute < 10) minuteStr = "00" + GameTimer.minute.ToString();
-        else if(GameTimer.minute >= 10 && GameTimer.minute < 100) minuteStr = "0" + GameTimer.minute.ToString();
-        else if (GameTimer.minute >= 100 && GameTimer.minute < 1000) minuteStr =  GameTimer.minute.ToString();
+        //second format
+        if (second < 10) secondStr = "0" + second.ToString();
+        else secondStr = second.ToString();
+        string minuteStr = minute.ToString();
+        //minute format
+        if (minute < 10) minuteStr = "00" + minute.ToString();
+        else if(minute >= 10 && minute < 100) minuteStr = "0" + minute.ToString();
+        else if (minute >= 100 && minute < 1000) minuteStr =  minute.ToString();
         else minuteStr = "999";
-        NowPlayTimerObject.GetComponent<Text>().text = minuteStr + ":" + secondStr;
+        return minuteStr + ":" + secondStr;
     }
     #endregion
 
-    #region 顯示當前地點    showNowPosition()
-    private void showNowPosition()
+    #region 顯示當前地點    showPositionById(int mapIndex)
+    private string showPositionById(int mapIndex)
     {
-        int mapIndex = GameMenager.IsInMapDefinition(InitSceneManagment.targetSceneName);
         bool shouldShowSceneName = GameMenager.mapInformationList[mapIndex].IsShowMapName;
-        string sceneName = (shouldShowSceneName) ? GameMenager.mapInformationList[mapIndex].MapName : "？？？";
-        NowPlayPositionObject.GetComponent<Text>().text = sceneName;
+        string sceneName = (mapIndex==0)? "-------" : (shouldShowSceneName) ? GameMenager.mapInformationList[mapIndex].MapName : "？？？";
+        return sceneName;
     }
     #endregion
 
@@ -96,6 +104,23 @@ public class MenuTagSave : MonoBehaviour
     {
         Plot situactionTargetPlot = GameMenager.findPlotById(GameMenager.gamePlotNumber);
         PlotDescrptionObject.GetComponent<Text>().text = situactionTargetPlot.SituactionTarget;
+    }
+    #endregion
+
+    #region 顯示存檔信息    showSaveInformation()
+    private void showSaveInformation()
+    {
+        //顯示存檔信息
+        for (int i = 0; i < saveInformations.Count; i++)
+        {
+            //存檔時玩家所在的地圖名稱
+            int mapIndex = GameMenager.gameFiles.gameFiles[i+1].mapId;
+            saveInformations[i].transform.GetChild(0).gameObject.GetComponent<Text>().text = showPositionById(mapIndex);
+            //存檔時的已遊玩時間
+            int second = GameMenager.gameFiles.gameFiles[i + 1].gameTimeSecond;
+            int minute = GameMenager.gameFiles.gameFiles[i + 1].gameTimeMinute;
+            saveInformations[i].transform.GetChild(1).gameObject.GetComponent<Text>().text = showNowGameTimer(second, minute);
+        }
     }
     #endregion
 
@@ -131,8 +156,8 @@ public class MenuTagSave : MonoBehaviour
     #region 按下確認鍵操作 doSubmit()
     private void doSubmit()
     {
-        Debug.Log("Save_doSubmit()");
-        GameMenager.saveToJsonFile(tagIndex);
+        // TODO 存檔時顯示存檔中的動畫，存檔完成後播放動畫並關閉菜單
+        GameMenager.saveToJsonFile(tagIndex);//遊戲當前信息轉為json並存到硬中
         PlayerItemMenu.returnRestTimer();
     }
     #endregion

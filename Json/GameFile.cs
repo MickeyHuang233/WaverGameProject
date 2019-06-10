@@ -30,8 +30,8 @@ public class GameFile
     public int gameTimeMinute;
 
     //已獲得道具
-    public List<int> getItems = new List<int>();
-
+    public List<int> getItems;
+    /*
     //是否完成各分支劇情
     public List<bool> branchSituation = new List<bool>();
 
@@ -47,4 +47,5 @@ public class GameFile
         branchSituation[index] = isFinish;
     }
     #endregion
+    */
 }
