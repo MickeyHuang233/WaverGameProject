@@ -18,7 +18,7 @@ public class TitleSceneControl : MonoBehaviour
     public string startScene;
 
     //玩家所選的操作
-    private string selectButton = "Null";
+    public static string selectButton = "Null";
 
     //相機物件
     private GameObject cameraObject;
@@ -34,6 +34,12 @@ public class TitleSceneControl : MonoBehaviour
 
     //最大位置編號
     private int tagIndexMax;
+
+    //存檔欄當前位置編號
+    public static int loadIndex = 1;
+
+    //存檔欄最大位置編號
+    private int loadIndexMax;
 
     #region Start()
     void Start()
@@ -60,7 +66,7 @@ public class TitleSceneControl : MonoBehaviour
         //根據selectButton的關鍵字決定要做什麼操作
         if (selectButton.Equals("Start"))
         {
-            if(CameraFix.sceneGradientIsStatus("SceneDark")) SceneManager.LoadScene(startScene);//新的加找場景方法
+            if (CameraFix.sceneGradientIsStatus("SceneDark")) SceneManager.LoadScene(startScene);//新的加找場景方法
             else cameraObject.SendMessage("doChangeSceneOn");
         }
         else if (selectButton.Equals("Load"))

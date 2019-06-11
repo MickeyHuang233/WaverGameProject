@@ -2,17 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 //在遊戲初始化場景使用，加載完共用的元件後馬上轉至下一個場景
 public class GameMenager : MonoBehaviour
 {
-    [Header("初始化完成後要轉入的場景")]
-    public string startScene;
-
-    [Header("初始化完成後要轉入的場景傳送位置編號")]
-    public string startPositionnName;
-
     //所有遊戲道具信息
     public static List<Item> itemInformationList;
 
@@ -34,6 +27,7 @@ public class GameMenager : MonoBehaviour
     //遊戲存檔信息
     public static GameFiles gameFiles;
 
+    #region Start()
     void Start()
     {
         ParseMapJSON();//讀取場景json定義檔
@@ -41,9 +35,8 @@ public class GameMenager : MonoBehaviour
         ParsePlotJSON();//讀取劇情json定義檔
         loadJsonToBean();//讀取存檔信息json檔
         initGetItem();//初始化獲得的道具
-        SceneManager.LoadScene(startScene);
-        InitSceneManagment.targetPositionName = startPositionnName;//傳送位置物件名稱，以便新場景找到相應的物件
     }
+    #endregion
 
     #region 讀取物品json定義檔，放入bean  ParseItemJSON()
     private void ParseItemJSON()
