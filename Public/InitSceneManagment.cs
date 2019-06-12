@@ -25,6 +25,9 @@ public class InitSceneManagment : MonoBehaviour
     //傳送位置物件名稱，主要從Portal賦值
     public static string targetPositionName { get => positionName; set => positionName = value; }
 
+    //指定傳送位置，主要讀檔用
+    public static Vector3 targetPosition;
+
     //用來管理DarkLayout的物件(父類)
     private GameObject darkLayoutObject;
 
@@ -59,7 +62,7 @@ public class InitSceneManagment : MonoBehaviour
         }
         PlayerMovement.returnRestTimer();//玩家已休息時間歸零
 
-        getTargetPositionObject(); //取得指定傳送點物件
+        getTargetPosition(); //取得指定傳送點物件
 
         createDarkLayout();//建立前景黑的物件
         darkLayoutToList();//將DarkLayout的全部子物件放入List中
@@ -92,11 +95,26 @@ public class InitSceneManagment : MonoBehaviour
     #endregion
 
     #region 取得指定傳送點物件    getTargetPositionObject()
-    private void getTargetPositionObject()
+    private void getTargetPosition()
     {
         GameObject targetPositionObject = GameObject.Find(positionName) as GameObject;
-        if (targetPositionObject != null) playerObject.transform.position = targetPositionObject.transform.position;
-        else Debug.Log(positionName + " is not found!!");
+        if (targetPositionObject != null)//當指定目標物件
+        {
+            playerObject.transform.position = targetPositionObject.transform.position;
+            targetPositionObject = null;
+        }
+        else
+        {
+            if (targetPosition.x!=-9999F && targetPosition.y!=-9999F && targetPosition.z != -9999F)//當指定作坐標
+            {
+                playerObject.transform.position = InitSceneManagment.targetPosition;
+                InitSceneManagment.targetPosition = new Vector3(-9999F, -9999F, -9999F);
+            }
+            else
+            {
+                Debug.Log("targetPositionObject == null && targetPosition == null");
+            }
+        }
     }
     #endregion
 
