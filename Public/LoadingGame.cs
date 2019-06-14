@@ -32,6 +32,7 @@ public class LoadingGame : MonoBehaviour
     #region 讀取遊戲的變量操作
     private void setLoadVar(int saveIndex)
     {
+        GameFile gameFile = GameMenager.gameFiles.gameFiles[saveIndex];
         //存檔時的地圖
         int mapIndex = GameMenager.gameFiles.gameFiles[saveIndex].mapId;
         SceneManager.LoadScene(GameMenager.mapInformationList[mapIndex].MapPicMappingId);
@@ -40,6 +41,14 @@ public class LoadingGame : MonoBehaviour
         float positionY = GameMenager.gameFiles.gameFiles[saveIndex].playerPositionY;
         float positionZ = GameMenager.gameFiles.gameFiles[saveIndex].playerPositionZ;
         InitSceneManagment.targetPosition = new Vector3(positionX, positionY, positionZ);
+        //存檔時獲得的道具
+        List<int> items = gameFile.getItems;
+        for (int i = 1; i < items.Count; i++) GameMenager.getItem(i);
+        //存檔時的遊戲時間
+        GameTimer.second = gameFile.gameTimeSecond;
+        GameTimer.minute = gameFile.gameTimeMinute;
+        //存檔時的劇情編號
+        GameMenager.gamePlotNumber = gameFile.plotId;
     }
     #endregion
 }
