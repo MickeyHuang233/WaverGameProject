@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 //在遊戲初始化場景使用，加載完共用的元件後馬上轉至下一個場景
@@ -267,10 +266,16 @@ public class GameMenager : MonoBehaviour
     #region 讀取存檔信息json檔 loadJsonToBean()
     public static void loadJsonToBean()
     {
-        TextAsset gameFilesText = Resources.Load<TextAsset>("Json/gameFile");
-        //當gameFile.json有相應的存檔信息則存入gameFiles，否則新建一個
-        if (gameFilesText != null || gameFilesText.Equals("")) GameMenager.gameFiles = JsonUtility.FromJson<GameFiles>(gameFilesText.text);
-        else GameMenager.gameFiles = new GameFiles();
+        if (PlayerPrefs.GetString("gameFile") != null || PlayerPrefs.GetString("gameFile").Equals(""))//有存過檔
+        {
+            GameMenager.gameFiles = JsonUtility.FromJson<GameFiles>(PlayerPrefs.GetString("gameFile"));
+        }
+        else//沒存過檔
+        {
+            GameMenager.gameFiles = new GameFiles();
+            string saveString = JsonUtility.ToJson(GameMenager.gameFiles);//將gameFiles轉換成json格式的字串
+            PlayerPrefs.SetString("gameFile", saveString);
+        }
     }
     #endregion
 
@@ -280,10 +285,7 @@ public class GameMenager : MonoBehaviour
         GameFile gameFile = saveToBean(gameFileId);//先取存檔的json檔
         GameMenager.gameFiles.gameFiles[gameFileId] = gameFile;//覆蓋選中的檔案編號
         string saveString = JsonUtility.ToJson(GameMenager.gameFiles);//將gameFiles轉換成json格式的字串
-        //將字串saveString存到硬碟中
-        StreamWriter file = new StreamWriter(System.IO.Path.Combine("Assets\\Resources\\Json", "gameFile.json"));
-        file.Write(saveString);
-        file.Close();//關閉流
+        PlayerPrefs.SetString("gameFile", saveString);
     }
     #endregion
 }
