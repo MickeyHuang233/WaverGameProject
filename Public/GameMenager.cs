@@ -268,8 +268,7 @@ public class GameMenager : MonoBehaviour
     #region 讀取存檔信息json檔 loadJsonToBean()
     public static void loadJsonToBean()
     {
-        Debug.Log(PlayerPrefs.GetString("gameFile"));
-        if (PlayerPrefs.GetString("gameFile") != null && (!PlayerPrefs.GetString("gameFile").Equals("")) && GameMenager.gameFiles == null && GameMenager.gameFiles.gameFiles.Count == 0)//有存過檔
+        if (PlayerPrefs.GetString("gameFile") != null && (!PlayerPrefs.GetString("gameFile").Equals("")) && GameMenager.gameFiles == null)//有存過檔
         {
             GameMenager.gameFiles = JsonUtility.FromJson<GameFiles>(PlayerPrefs.GetString("gameFile"));
         }
