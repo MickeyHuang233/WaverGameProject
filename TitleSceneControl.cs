@@ -206,7 +206,8 @@ public class TitleSceneControl : MonoBehaviour
     #region 返回，關閉讀取遊戲菜單 doSubmitLoad()
     public void doSubmitLoad()
     {
-        selectButton = "Load";
+        if (GameMenager.gameFiles.gameFiles[loadIndex].mapId != 0) selectButton = "Load";
+        else Debug.Log("不可邊空檔案");
     }
     #endregion
 }

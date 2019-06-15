@@ -29,6 +29,9 @@ public class GameFile
     //存檔時的已遊玩時間_分
     public int gameTimeMinute;
 
+    //存檔時的系統時間
+    public long saveTime;
+
     //已獲得道具
     public List<int> getItems;
     /*

@@ -32,6 +32,7 @@ public class GameMenager : MonoBehaviour
         ParseMapJSON();//讀取場景json定義檔
         ParseItemJSON();//讀取物品json定義檔
         ParsePlotJSON();//讀取劇情json定義檔
+        //clearGameFile();//清空gameFile
         loadJsonToBean();//讀取存檔信息json檔
         initGetItem();//初始化獲得的道具
     }
@@ -256,7 +257,8 @@ public class GameMenager : MonoBehaviour
             plotId = GameMenager.gamePlotNumber,//存檔時玩家正在進行的劇情編號
             gameTimeSecond = GameTimer.second,//存檔時的已遊玩時間_秒
             gameTimeMinute = GameTimer.minute,//存檔時的已遊玩時間_分
-            getItems = getItems//已獲得道具
+            getItems = getItems,//已獲得道具
+            saveTime = System.Convert.ToInt64((System.DateTime.UtcNow - new System.DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalMilliseconds)//存檔時的系統時間
             // TODO 是否完成各分支劇情，存檔
         };
         return gameFile;
@@ -266,7 +268,8 @@ public class GameMenager : MonoBehaviour
     #region 讀取存檔信息json檔 loadJsonToBean()
     public static void loadJsonToBean()
     {
-        if (PlayerPrefs.GetString("gameFile") != null || PlayerPrefs.GetString("gameFile").Equals(""))//有存過檔
+        Debug.Log(PlayerPrefs.GetString("gameFile"));
+        if (PlayerPrefs.GetString("gameFile") != null && (!PlayerPrefs.GetString("gameFile").Equals("")) && GameMenager.gameFiles == null && GameMenager.gameFiles.gameFiles.Count == 0)//有存過檔
         {
             GameMenager.gameFiles = JsonUtility.FromJson<GameFiles>(PlayerPrefs.GetString("gameFile"));
         }
@@ -286,6 +289,13 @@ public class GameMenager : MonoBehaviour
         GameMenager.gameFiles.gameFiles[gameFileId] = gameFile;//覆蓋選中的檔案編號
         string saveString = JsonUtility.ToJson(GameMenager.gameFiles);//將gameFiles轉換成json格式的字串
         PlayerPrefs.SetString("gameFile", saveString);
+    }
+    #endregion
+
+    #region 清空gameFile
+    public static void clearGameFile()
+    {
+        PlayerPrefs.SetString("gameFile", "");
     }
     #endregion
 }
