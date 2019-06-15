@@ -55,6 +55,8 @@ public class MenuTagSave : MonoBehaviour
         itemIndex.transform.position = new Vector3(choicePosition.x - 0.2F, choicePosition.y, choicePosition.z);
         //取得顯示存檔信息物件
         for (int i = 1; i <= tagIndexMax; i++) saveInformations.Add(this.transform.GetChild(2).gameObject.transform.GetChild(i).gameObject);
+        //初始化指標位置
+        initializeIndexPosition();
     }
 
     void Update()
@@ -72,6 +74,26 @@ public class MenuTagSave : MonoBehaviour
         }
 
     }
+
+    #region 初始化指標位置 initializeIndexPosition()
+    private void initializeIndexPosition()
+    {
+        //存檔指標指向最近存的檔案
+        long max = GameMenager.gameFiles.gameFiles[1].saveTime;
+        tagIndex = 1;
+        for (int i = 2; i <= tagIndexMax; i++)
+        {
+            long saveTime = GameMenager.gameFiles.gameFiles[i].saveTime;
+            if (saveTime > max)
+            {
+                max = saveTime;
+                tagIndex = i;
+            }
+        }
+        //更新指標位置
+        doMove(0);
+    }
+    #endregion
 
     #region 顯示當前遊戲時間    showNowGameTimer()
     private string showNowGameTimer(int second, int minute)
