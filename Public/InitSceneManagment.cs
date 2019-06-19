@@ -41,6 +41,9 @@ public class InitSceneManagment : MonoBehaviour
     //場景轉換是否已顯示過場景名稱
     private bool showedSceneName;
 
+    [Header("需要場景初始化時調整Z軸的父物件(資料夾)")]
+    public List<GameObject> modifyZAxisFaterObjects;
+
     #region Start()
     void Start()
     {
@@ -61,6 +64,8 @@ public class InitSceneManagment : MonoBehaviour
         //初始化目標場景為當前場景
         targetSceneName = SceneManager.GetActiveScene().name;
 
+        modifyZAxis();//調整Z軸位置
+
         //前置作業完成後淡入場景
         if (!CameraFix.sceneGradientIsStatus("SceneWhite") && isNeedScenceDark == true)
         {
@@ -78,6 +83,22 @@ public class InitSceneManagment : MonoBehaviour
         if (!showedSceneName) showSceneName();//顯示場景名稱
         if (GameTimer.nactivesecond >= 0) showNagativeTime();
         loadTargetScene();//場景移動
+    }
+    #endregion
+
+    #region 調整Z軸位置   private void modifyZAxis()
+    private void modifyZAxis()
+    {
+        foreach (GameObject modifyZAxisFaterObject in modifyZAxisFaterObjects)
+        {
+            int faterObjectSize = modifyZAxisFaterObject.transform.childCount;
+            for (int i = 0; i < faterObjectSize ; i++)
+            {
+                GameObject c = modifyZAxisFaterObject.transform.GetChild(i).gameObject;
+                c.transform.position = new Vector3(c.transform.position.x, c.transform.position.y, c.transform.position.y * PlayerMovement.multiplyZ);
+            }
+        }
+        playerObject.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y, playerObject.transform.position.y * PlayerMovement.multiplyZ);
     }
     #endregion
 

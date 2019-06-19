@@ -69,6 +69,10 @@ public class PlayerMovement : MonoBehaviour
     [Range(-1F, 1F)]
     public float speedWalkZ = -0.025F;
 
+    //得出Z軸乘率：Z軸位置 = Y軸位置 * multiplyZ
+    //值由speedWalkZ設定
+    public static float multiplyZ;
+
     [Header("調查用的物件位置所乘倍率_X")]
     [Range(-1F, 1F)]
     public float talkColliderPositionRateX = 0.1F;
@@ -116,9 +120,12 @@ public class PlayerMovement : MonoBehaviour
         nowYaxis = this.transform.position.y;//初始化當前幀的y軸位置
         preYaxis = this.transform.position.y;//初始化上一幀的y軸位置
         talkColliderObject = this.transform.GetChild(0).gameObject;//取得玩家物件下的對話域物件的碰撞器元件
+        //將設定的角色步行速度_Z放至得出Z軸乘率，以方便調用
+        multiplyZ = speedWalkZ;
         //將設定的應休息時間放至靜態變量，以方便調用
         restTime = setRestTime;
         shouldStatus = "idle";
+        playerObject.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y, playerObject.transform.position.y * PlayerMovement.multiplyZ);
     }
     #endregion
 
@@ -138,6 +145,7 @@ public class PlayerMovement : MonoBehaviour
             else if (Input.GetButtonDown("Cancel") && isStatus("idle", currentState) && overRestTime) doCancel();//站穩才能打開菜單
             else shouldStatus = "idle";//什麼按也不按
         }
+        playerObject.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y, playerObject.transform.position.y * PlayerMovement.multiplyZ);
     }
     #endregion
 
@@ -214,8 +222,6 @@ public class PlayerMovement : MonoBehaviour
 
         //根據移動方向移動Player底下的talkColliderObject物件
         talkColliderObject.transform.position = new Vector2(this.transform.position.x + moveDirction.x * talkColliderPositionRateX, this.transform.position.y + moveDirction.y * talkColliderPositionRateY);
-
-        preYaxis = nowYaxis;//更新上一幀的玩家位置信息，以便下一幀計算差值
     }
     #endregion
 
