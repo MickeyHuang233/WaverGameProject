@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Fungus;
 using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 
 //每一個場景初始化的操作，一定要每個場景都加，否則無法傳送到指定位置
 public class InitSceneManagment : MonoBehaviour
@@ -44,6 +45,21 @@ public class InitSceneManagment : MonoBehaviour
     [Header("需要場景初始化時調整Z軸的父物件(資料夾)")]
     public List<GameObject> modifyZAxisFaterObjects;
 
+    [Header("顯示第一層黑的TileMap")]
+    public Tilemap BlurredMap;
+
+    [Header("顯示第二層黑的TileMap")]
+    public Tilemap DarkMap;
+
+    [Header("顯示黑的TileMap要比照的區域")]
+    public Tilemap BackgroundMap;
+
+    [Header("指定第一層黑的Tile")]
+    public Tile BlurredTile;
+
+    [Header("指定第二層黑的Tile")]
+    public Tile DarkTile;
+
     #region Start()
     void Start()
     {
@@ -65,6 +81,7 @@ public class InitSceneManagment : MonoBehaviour
         targetSceneName = SceneManager.GetActiveScene().name;
 
         modifyZAxis();//調整Z軸位置
+        showDarkMap();//顯示場景黑
 
         //前置作業完成後淡入場景
         if (!CameraFix.sceneGradientIsStatus("SceneWhite") && isNeedScenceDark == true)
@@ -86,7 +103,17 @@ public class InitSceneManagment : MonoBehaviour
     }
     #endregion
 
-    #region 調整Z軸位置   private void modifyZAxis()
+    #region 顯示場景黑   showDarkMap()
+    private void showDarkMap()
+    {
+        DarkMap.origin = BlurredMap.origin = BackgroundMap.origin;
+        DarkMap.size = BlurredMap.size = BackgroundMap.size;
+        foreach (Vector3Int p in DarkMap.cellBounds.allPositionsWithin) DarkMap.SetTile(p, DarkTile);
+        foreach (Vector3Int p in BlurredMap.cellBounds.allPositionsWithin) BlurredMap.SetTile(p, BlurredTile);
+    }
+    #endregion
+
+    #region 調整Z軸位置   modifyZAxis()
     private void modifyZAxis()
     {
         foreach (GameObject modifyZAxisFaterObject in modifyZAxisFaterObjects)
