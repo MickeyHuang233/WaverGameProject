@@ -46,19 +46,19 @@ public class InitSceneManagment : MonoBehaviour
     public List<GameObject> modifyZAxisFaterObjects;
 
     [Header("顯示第一層黑的TileMap")]
-    public Tilemap BlurredMap;
+    public Tilemap DarkMap_5;
 
     [Header("顯示第二層黑的TileMap")]
-    public Tilemap DarkMap;
+    public Tilemap DarkMap_4;
 
     [Header("顯示黑的TileMap要比照的區域")]
     public Tilemap BackgroundMap;
 
     [Header("指定第一層黑的Tile")]
-    public Tile BlurredTile;
+    public Tile DarkTile_5;
 
     [Header("指定第二層黑的Tile")]
-    public Tile DarkTile;
+    public Tile DarkTile_4;
 
     #region Start()
     void Start()
@@ -106,10 +106,10 @@ public class InitSceneManagment : MonoBehaviour
     #region 顯示場景黑   showDarkMap()
     private void showDarkMap()
     {
-        DarkMap.origin = BlurredMap.origin = BackgroundMap.origin;
-        DarkMap.size = BlurredMap.size = BackgroundMap.size;
-        foreach (Vector3Int p in DarkMap.cellBounds.allPositionsWithin) DarkMap.SetTile(p, DarkTile);
-        foreach (Vector3Int p in BlurredMap.cellBounds.allPositionsWithin) BlurredMap.SetTile(p, BlurredTile);
+        DarkMap_5.origin = DarkMap_4.origin = BackgroundMap.origin;
+        DarkMap_5.size = DarkMap_4.size = BackgroundMap.size;
+        foreach (Vector3Int p in DarkMap_5.cellBounds.allPositionsWithin) DarkMap_5.SetTile(p, DarkTile_5);
+        foreach (Vector3Int p in DarkMap_4.cellBounds.allPositionsWithin) DarkMap_4.SetTile(p, DarkTile_4);
     }
     #endregion
 
