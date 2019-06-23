@@ -51,14 +51,38 @@ public class InitSceneManagment : MonoBehaviour
     [Header("顯示第二層黑的TileMap")]
     public Tilemap DarkMap_4;
 
+    [Header("顯示第三層黑的TileMap")]
+    public Tilemap DarkMap_3;
+
+    [Header("顯示第四層黑的TileMap")]
+    public Tilemap DarkMap_2;
+
+    [Header("顯示第五層黑的TileMap，暫時不需用")]
+    public Tilemap DarkMap_1;
+
     [Header("顯示黑的TileMap要比照的區域")]
     public Tilemap BackgroundMap;
+
+    [Header("地圖類型")]
+    public string mapType;
+
+    //Layout加載的類型
+    public static string mapLayoutType;
 
     [Header("指定第一層黑的Tile")]
     public Tile DarkTile_5;
 
     [Header("指定第二層黑的Tile")]
     public Tile DarkTile_4;
+
+    [Header("指定第三層黑的Tile")]
+    public Tile DarkTile_3;
+
+    [Header("指定第四層黑的Tile")]
+    public Tile DarkTile_2;
+
+    [Header("指定第五層黑的Tile，暫時不需用")]
+    public Tile DarkTile_1;
 
     #region Start()
     void Start()
@@ -81,6 +105,7 @@ public class InitSceneManagment : MonoBehaviour
         targetSceneName = SceneManager.GetActiveScene().name;
 
         modifyZAxis();//調整Z軸位置
+        mapLayoutType = mapType;
         showDarkMap();//顯示場景黑
 
         //前置作業完成後淡入場景
@@ -106,10 +131,21 @@ public class InitSceneManagment : MonoBehaviour
     #region 顯示場景黑   showDarkMap()
     private void showDarkMap()
     {
-        DarkMap_5.origin = DarkMap_4.origin = BackgroundMap.origin;
-        DarkMap_5.size = DarkMap_4.size = BackgroundMap.size;
-        foreach (Vector3Int p in DarkMap_5.cellBounds.allPositionsWithin) DarkMap_5.SetTile(p, DarkTile_5);
-        foreach (Vector3Int p in DarkMap_4.cellBounds.allPositionsWithin) DarkMap_4.SetTile(p, DarkTile_4);
+        //地圖為1F和3F只有兩個DarkLayout
+        if (InitSceneManagment.mapLayoutType.Equals("1F") || InitSceneManagment.mapLayoutType.Equals("3F"))
+        {
+            DarkMap_5.origin = DarkMap_4.origin = BackgroundMap.origin;
+            DarkMap_5.size = DarkMap_4.size = BackgroundMap.size;
+            foreach (Vector3Int p in DarkMap_5.cellBounds.allPositionsWithin) DarkMap_5.SetTile(p, DarkTile_5);
+            foreach (Vector3Int p in DarkMap_4.cellBounds.allPositionsWithin) DarkMap_4.SetTile(p, DarkTile_4);
+        }
+        else if (InitSceneManagment.mapLayoutType.Equals("B1"))
+        {
+            DarkMap_3.origin = DarkMap_2.origin = BackgroundMap.origin;
+            DarkMap_3.size = DarkMap_2.size = BackgroundMap.size;
+            foreach (Vector3Int p in DarkMap_3.cellBounds.allPositionsWithin) DarkMap_3.SetTile(p, DarkTile_3);
+            foreach (Vector3Int p in DarkMap_2.cellBounds.allPositionsWithin) DarkMap_2.SetTile(p, DarkTile_2);
+        }
     }
     #endregion
 
