@@ -11,7 +11,7 @@ public class ShadowMask : MonoBehaviour
     [Range(0.5F, 10F)]
     public float restTime = 5F;
 
-    [Header("對話完成或關閉菜單所需等待時間")]
+    [Header("增加或減少DarkLayout的大小范圍")]
     [Range(0.00F, 0.1F)]
     public float addSize;
 
@@ -39,12 +39,36 @@ public class ShadowMask : MonoBehaviour
     [Header("目標跟隨物體是否是玩家")]
     public bool isPlayer = false;
 
+    [Header("目標跟隨物體是否是菜單")]
+    public bool isMenu = false;
+
+    //菜單大小
+    private float menuScaleX = 0.4F;
+    private float menuScaleY = 0.4F;
+
+    #region Start()
+    public void Start()
+    {
+        if (isMenu) transform.localScale = new Vector3(0, 0, 0);
+    }
+    #endregion
+
     #region Update()
     public void Update()
     {
         RestTimer += Time.deltaTime;
-        darkLayoutShine();//超過等待時間，燈光閃一下
+        if (isMenu && PlayerItemMenu.openDetailMenu > -1) darkLayoutShine();//超過等待時間，燈光閃一下
         darkLayoutMove();//DarkLayout的移動
+        if (isMenu) menuTriggerDarkLayout();
+    }
+    #endregion
+
+    #region 菜單顯示或隱藏DarkLayout   menuTriggerDarkLayout()
+    private void menuTriggerDarkLayout()
+    {
+        //當玩家打開一級菜單時另外顯示光源
+        if (PlayerItemMenu.openDetailMenu > -1) transform.localScale = new Vector3(menuScaleX, menuScaleY, 0);
+        else transform.localScale = new Vector3(0, 0, 0);
     }
     #endregion
 
