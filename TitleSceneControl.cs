@@ -48,6 +48,7 @@ public class TitleSceneControl : MonoBehaviour
     //顯示存檔信息物件
     private List<GameObject> SaveSituations = new List<GameObject>();
 
+
     #region Start()
     void Start()
     {
@@ -59,6 +60,8 @@ public class TitleSceneControl : MonoBehaviour
         //獲取指標物件
         itemIndex = GameObject.Find("Canvas_TitleButton").transform.GetChild(0).gameObject;
 
+
+        //隱藏讀檔信息
         GameObject savePage = GameObject.Find("SavePage");
         savePage.GetComponent<Animator>().SetBool("openDetilMenu", false);
         savePage.GetComponent<Animator>().SetBool("closeDetilMenu", true);
@@ -69,7 +72,11 @@ public class TitleSceneControl : MonoBehaviour
         //取得顯示存檔信息物件
         for (int i = 1; i <= loadIndexMax; i++) SaveSituations.Add(GameObject.Find("SaveSituations").transform.GetChild(i).gameObject);
         showSaveInformation();//顯示存檔信息
-        initializeIndexPosition();
+        initializeIndexPosition();//初始化指標位置
+        
+        //初始化完成後才淡入場景
+        GameObject.Find("Canvas_UI").transform.GetChild(0).GetComponent<Animator>().SetBool("changeScene_On", false);
+        GameObject.Find("Canvas_UI").transform.GetChild(0).GetComponent<Animator>().SetBool("changeScene_Off", true);
     }
     #endregion
 
@@ -97,17 +104,17 @@ public class TitleSceneControl : MonoBehaviour
         if (selectButton.Equals("Start"))
         {
             if (CameraFix.sceneGradientIsStatus("SceneDark")) SceneManager.LoadScene(startScene);//新的加找場景方法
-            else cameraObject.SendMessage("doChangeSceneOn");
+            else CameraFix.doChangeSceneOn();
         }
         else if (selectButton.Equals("Load"))
         {
             if (CameraFix.sceneGradientIsStatus("SceneDark")) SceneManager.LoadScene(startScene);//新的加找場景方法
-            else cameraObject.SendMessage("doChangeSceneOn");
+            else CameraFix.doChangeSceneOn();
         }
         else if (selectButton.Equals("Exit"))
         {
             if (CameraFix.sceneGradientIsStatus("SceneDark")) Application.Quit();//關閉遊戲
-            else cameraObject.SendMessage("doChangeSceneOn");
+            else CameraFix.doChangeSceneOn();
         }
     }
     #endregion

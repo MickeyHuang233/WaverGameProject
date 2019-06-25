@@ -129,7 +129,7 @@ public class CameraFix : MonoBehaviour
     #endregion
 
     #region 場景淡出
-    private void doChangeSceneOn()
+    public static void doChangeSceneOn()
     {
         InitSceneManagment.isNeedScenceDark = true;
         sceneGradientAnimator.SetBool("changeScene_On", true);
@@ -138,7 +138,7 @@ public class CameraFix : MonoBehaviour
     #endregion
 
     #region 場景淡入
-    private void doChangeSceneOff()
+    public static void doChangeSceneOff()
     {
         InitSceneManagment.isNeedScenceDark = false;
         sceneGradientAnimator.SetBool("changeScene_On", false);

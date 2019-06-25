@@ -26,8 +26,8 @@ public class GameMenager : MonoBehaviour
     //遊戲存檔信息
     public static GameFiles gameFiles;
 
-    #region Start()
-    void Start()
+    #region Awake()
+    void Awake()
     {
         ParseMapJSON();//讀取場景json定義檔
         ParseItemJSON();//讀取物品json定義檔

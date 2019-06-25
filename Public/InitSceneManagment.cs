@@ -111,7 +111,7 @@ public class InitSceneManagment : MonoBehaviour
         //前置作業完成後淡入場景
         if (!CameraFix.sceneGradientIsStatus("SceneWhite") && isNeedScenceDark == true)
         {
-            GameObject.Find("Main Camera").SendMessage("doChangeSceneOff");
+            CameraFix.doChangeSceneOff();
             isNeedScenceDark = false;
         }
 
