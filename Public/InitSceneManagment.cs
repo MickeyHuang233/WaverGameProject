@@ -20,15 +20,6 @@ public class InitSceneManagment : MonoBehaviour
     //指定傳送位置，主要讀檔用
     public static Vector3 targetPosition;
 
-    //用來管理DarkLayout的物件(父類)
-    private GameObject darkLayoutObject;
-
-    //用來管理DarkLayout的物件(子類)
-    private List<GameObject> darkLayoutObjects = new List<GameObject>();
-
-    //目標位置
-    private Vector3 darkLayoutTargetPosition;
-
     [Header("視角移動速度")]
     [Range(0F, 50F)]
     public float moveSpeed;
@@ -132,19 +123,19 @@ public class InitSceneManagment : MonoBehaviour
     private void showDarkMap()
     {
         //地圖為1F和3F只有兩個DarkLayout
-        if (InitSceneManagment.mapLayoutType.Equals("1F") || InitSceneManagment.mapLayoutType.Equals("3F"))
+        if (InitSceneManagment.mapLayoutType.Equals("1F") || InitSceneManagment.mapLayoutType.Equals("3F") || InitSceneManagment.mapLayoutType.Equals("B1"))
         {
             DarkMap_5.origin = DarkMap_4.origin = BackgroundMap.origin;
             DarkMap_5.size = DarkMap_4.size = BackgroundMap.size;
             foreach (Vector3Int p in DarkMap_5.cellBounds.allPositionsWithin) DarkMap_5.SetTile(p, DarkTile_5);
             foreach (Vector3Int p in DarkMap_4.cellBounds.allPositionsWithin) DarkMap_4.SetTile(p, DarkTile_4);
-        }
-        else if (InitSceneManagment.mapLayoutType.Equals("B1"))
-        {
-            DarkMap_3.origin = DarkMap_2.origin = BackgroundMap.origin;
-            DarkMap_3.size = DarkMap_2.size = BackgroundMap.size;
-            foreach (Vector3Int p in DarkMap_3.cellBounds.allPositionsWithin) DarkMap_3.SetTile(p, DarkTile_3);
-            foreach (Vector3Int p in DarkMap_2.cellBounds.allPositionsWithin) DarkMap_2.SetTile(p, DarkTile_2);
+            if (InitSceneManagment.mapLayoutType.Equals("B1"))
+            {
+                DarkMap_3.origin = DarkMap_2.origin = BackgroundMap.origin;
+                DarkMap_3.size = DarkMap_2.size = BackgroundMap.size;
+                foreach (Vector3Int p in DarkMap_3.cellBounds.allPositionsWithin) DarkMap_3.SetTile(p, DarkTile_3);
+                foreach (Vector3Int p in DarkMap_2.cellBounds.allPositionsWithin) DarkMap_2.SetTile(p, DarkTile_2);
+            }
         }
     }
     #endregion
@@ -199,7 +190,7 @@ public class InitSceneManagment : MonoBehaviour
             return;
         }
         //如果當前場景和目標場景不一致時，加載目標場景
-        if (!SceneManager.GetActiveScene().name.Equals(targetSceneName) && CameraFix.sceneGradientIsStatus("SceneDark"))
+        if (!SceneManager.GetActiveScene().name.Equals(targetSceneName) && !CameraFix.sceneGradientIsStatus("SceneDark"))
             SceneManager.LoadScene(targetSceneName);
     }
     #endregion
