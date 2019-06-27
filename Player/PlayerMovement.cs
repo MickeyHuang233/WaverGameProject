@@ -125,6 +125,7 @@ public class PlayerMovement : MonoBehaviour
         //將設定的應休息時間放至靜態變量，以方便調用
         restTime = setRestTime;
         shouldStatus = "idle";
+        //根據玩家Y軸計算Z軸的值
         playerObject.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y, playerObject.transform.position.y * PlayerMovement.multiplyZ);
     }
     #endregion
@@ -145,6 +146,7 @@ public class PlayerMovement : MonoBehaviour
             else if (Input.GetButtonDown("Cancel") && isStatus("idle", currentState) && overRestTime) doCancel();//站穩才能打開菜單
             else shouldStatus = "idle";//什麼按也不按
         }
+        //依據玩家Y軸計算出Z軸的值
         playerObject.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y, playerObject.transform.position.y * PlayerMovement.multiplyZ);
     }
     #endregion
