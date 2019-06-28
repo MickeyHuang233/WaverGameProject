@@ -75,56 +75,13 @@ public class CameraFix : MonoBehaviour
         //獲取顯示倒數時間物件
         nagativeTimerObject = GameObject.Find("Canvas_UI").transform.GetChild(2).gameObject;
         nagativeTimerAnimator = nagativeTimerObject.GetComponent<Animator>();
-        //獲取Camara插件的Compoment
-        cinemachineVirtualCamera = GameObject.Find("CM vcam1").gameObject.GetComponent<CinemachineVirtualCamera>();
-        //獲取實現視角晃動的物件
-        virtualCameraNoise = cinemachineVirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
-        //獲取關閉菜單時的Camara距離
-        closeMenuOrthographicSize = cinemachineVirtualCamera.m_Lens.OrthographicSize;
     }
     #endregion
 
     #region Update()
     void Update()
     {
-        //視角移動
-        moveCamera();
-        //晃動相機
-        if(player != null)
-        {
-            AnimatorStateInfo currentState = player.transform.GetChild(3).GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);//取得Menu當前動畫狀態
-            bool isShaking = (PlayerItemMenu.openDetailMenu > -1) ? true : false;
-            shakeCamera(isShaking);
-        }
 
-    }
-    #endregion
-
-    #region 晃動相機    shakeCamera()
-    private void shakeCamera(bool isShaking)
-    {
-        if (cinemachineVirtualCamera != null && virtualCameraNoise != null)
-        {
-            if (isShaking)
-            {
-                virtualCameraNoise.m_AmplitudeGain = (virtualCameraNoise.m_AmplitudeGain >= (ShakeAmplitude * 0.8F)) ? Mathf.Lerp(virtualCameraNoise.m_AmplitudeGain, ShakeAmplitude, Time.deltaTime * 0.5F) : ShakeAmplitude;
-                virtualCameraNoise.m_FrequencyGain = (virtualCameraNoise.m_FrequencyGain >= (ShakeFrequency * 0.8F)) ? Mathf.Lerp(virtualCameraNoise.m_FrequencyGain, ShakeFrequency, Time.deltaTime * 0.5F) : ShakeAmplitude;
-            }
-            else
-            {
-                virtualCameraNoise.m_AmplitudeGain = (virtualCameraNoise.m_AmplitudeGain >= 0.01F)? Mathf.Lerp(virtualCameraNoise.m_AmplitudeGain, 0F, Time.deltaTime * 2F) : 0F;
-                virtualCameraNoise.m_FrequencyGain = (virtualCameraNoise.m_FrequencyGain >= 0.01F) ? Mathf.Lerp(virtualCameraNoise.m_FrequencyGain, 0F, Time.deltaTime * 2F) : 0F;
-            }
-        }
-    }
-    #endregion
-
-    #region 根據菜單狀態進行視角移動
-    private void moveCamera()
-    {
-        //調整放大倍數
-        float targetOrthographicSize = (PlayerItemMenu.openDetailMenu == -1) ? closeMenuOrthographicSize : openMenuOrthographicSize;
-        cinemachineVirtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(cinemachineVirtualCamera.m_Lens.OrthographicSize, targetOrthographicSize, Time.deltaTime * targetMenuSpeed);
     }
     #endregion
 
