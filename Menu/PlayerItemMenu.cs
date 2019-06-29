@@ -101,6 +101,7 @@ public class PlayerItemMenu : MonoBehaviour
     {
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
         restTimer += Time.deltaTime;
+        Debug.Log(tagIndex);
         if (openDetailMenu == 0)//當開啟一級菜單
         {
             if (Input.GetButtonDown("Vertical")) doFirstMenuMove(v);
@@ -124,7 +125,7 @@ public class PlayerItemMenu : MonoBehaviour
             else if (tagIndex == 2) setTagStatus("save");
             returnRestTimer();
         }
-        else if (v < 0 && tagIndex <= tagIndexMax)//向下移動
+        else if (v < 0 && tagIndex < tagIndexMax)//向下移動
         {
             tagIndex++;
             if (tagIndex == 2) setTagStatus("save");
