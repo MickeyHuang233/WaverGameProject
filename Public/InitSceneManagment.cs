@@ -24,14 +24,15 @@ public class InitSceneManagment : MonoBehaviour
     [Range(0F, 50F)]
     public float moveSpeed;
 
+    [Header("轉換場景後淡入等待秒數")]
+    [Range(0F, 5F)]
+    public float SceneOffTime = 2F;
+
     //場景是否需要淡出
     public static bool isNeedScenceDark = false;
 
     //目標場景
     public static string targetSceneName;
-
-    //場景轉換是否已顯示過場景名稱
-    private bool showedSceneName;
 
     [Header("需要場景初始化時調整Z軸的父物件(資料夾)")]
     public List<GameObject> modifyZAxisFaterObjects;
@@ -99,23 +100,29 @@ public class InitSceneManagment : MonoBehaviour
         mapLayoutType = mapType;
         showDarkMap();//顯示場景黑
 
-        //前置作業完成後淡入場景
-        if (!CameraFix.sceneGradientIsStatus("SceneWhite") && isNeedScenceDark == true)
-        {
-            CameraFix.doChangeSceneOff();
-            isNeedScenceDark = false;
-        }
-
-        showedSceneName = false;//剛進入場景的話就沒有顯示場景名稱
+        StartCoroutine(doChangeSceneOffInSingleScene());
     }
     #endregion
 
     #region Update()
     void Update()
     {
-        if (!showedSceneName) showSceneName();//顯示場景名稱
         if (GameTimer.nactivesecond >= 0) showNagativeTime();
         loadTargetScene();//場景移動
+    }
+    #endregion
+
+    #region 協程_場景淡入
+    IEnumerator doChangeSceneOffInSingleScene()
+    {
+        yield return new WaitForSeconds (SceneOffTime);
+        //前置作業完成後淡入場景
+        if (!CameraFix.sceneGradientIsStatus("SceneWhite") && isNeedScenceDark == true)
+        {
+            CameraFix.doChangeSceneOff();
+            isNeedScenceDark = false;
+        }
+        showSceneName();//顯示場景名稱
     }
     #endregion
 
@@ -190,8 +197,12 @@ public class InitSceneManagment : MonoBehaviour
             return;
         }
         //如果當前場景和目標場景不一致時，加載目標場景
-        if (!SceneManager.GetActiveScene().name.Equals(targetSceneName) && !CameraFix.sceneGradientIsStatus("SceneDark"))
-            SceneManager.LoadScene(targetSceneName);
+        if (!SceneManager.GetActiveScene().name.Equals(targetSceneName))
+        {
+            CameraFix.doChangeSceneOn();
+            isNeedScenceDark = true;
+            if (CameraFix.sceneGradientIsStatus("SceneDark")) SceneManager.LoadScene(targetSceneName);//淡出完成後才轉換場景
+        }
     }
     #endregion
 
@@ -204,9 +215,6 @@ public class InitSceneManagment : MonoBehaviour
             string sceneName = (shouldShowSceneName) ? GameMenager.mapInformationList[GameMenager.IsInMapDefinition(targetSceneName)].MapName : "？？？";
             CameraFix.showSceneName(sceneName);
         }
-        AnimatorStateInfo currentState = GameObject.Find("Canvas_UI").transform.GetChild(1).gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態
-        bool isSceneNamehide = currentState.IsName("HideSceneName");
-        if(isSceneNamehide) showedSceneName = true;
     }
     #endregion
 
