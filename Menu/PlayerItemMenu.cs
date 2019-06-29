@@ -13,6 +13,9 @@ using UnityEngine;
 */
 public class PlayerItemMenu : MonoBehaviour
 {
+    //玩家物件
+    private GameObject playerObject;
+
     //菜單的動畫信息
     private Animator animator;
 
@@ -101,6 +104,8 @@ public class PlayerItemMenu : MonoBehaviour
             a.SetBool("closeMenu", false);
         }
         tagIndex = 1;//初始化當前位置編號
+        //取得玩家物件
+        playerObject = GameObject.Find("Player");
     }
     #endregion
 
@@ -145,6 +150,8 @@ public class PlayerItemMenu : MonoBehaviour
     #region 打開一級菜單  doOpenMenu()
     private void doOpenMenu()
     {
+        playerObject.SendMessage("hideTalkBubble");//清空玩家頭上的對話泡泡狀態
+        GameObject.Find("talkColliderObject").transform.localScale = new Vector3(0F, 0F, 0F);
         animator.SetBool("openMenu", true);
         animator.SetBool("closeMenu", false);
         for (int i = 0; i < MenuTagsObject.Count; i++)
@@ -167,8 +174,9 @@ public class PlayerItemMenu : MonoBehaviour
     #region 關閉一級菜單  doCloseMenu()
     private void doCloseMenu()
     {
-        this.animator.SetBool("openMenu", false);
-        this.animator.SetBool("closeMenu", true);
+        GameObject.Find("talkColliderObject").transform.localScale = new Vector3(1F, 1F, 1F);
+        animator.SetBool("openMenu", false);
+        animator.SetBool("closeMenu", true);
         for (int i = 0; i < MenuTagsObject.Count; i++)
         {
             MenuTagsAnimator[i].SetBool("openMenu", false);
@@ -203,6 +211,8 @@ public class PlayerItemMenu : MonoBehaviour
                 break;
             case 2:
                 SavePage.SendMessage("showSavePage");
+                SavePage.SendMessage("showSaveInformation");
+                SavePage.SendMessage("showSituactionTarget");
                 openDetailMenu = 2;
                 break;
             case 3:

@@ -40,28 +40,33 @@ public class MenuTagSave : MonoBehaviour
     //最大位置編號
     private int tagIndexMax;
 
+    //玩家物件
+    private GameObject playerObject;
+
     void Start()
     {
         //取得savePage物件及動畫信息
         savePage = GameObject.Find("SavePage");
         savePageAanimator = savePage.GetComponent<Animator>();
         //取得指標物件
-        itemIndex = this.transform.GetChild(2).gameObject.transform.GetChild(0).gameObject;
+        itemIndex = transform.GetChild(2).gameObject.transform.GetChild(0).gameObject;
         //取得最大位置編號，要去掉指標物件
-        tagIndexMax = this.transform.GetChild(2).gameObject.transform.childCount - 1;
+        tagIndexMax = transform.GetChild(2).gameObject.transform.childCount - 1;
         //取得顯示當前時間的物件
-        NowPlayTimerObject = this.transform.GetChild(1).gameObject.transform.GetChild(1).gameObject;
+        NowPlayTimerObject = transform.GetChild(1).gameObject.transform.GetChild(1).gameObject;
         //取得顯示當前地點的物件
-        NowPlayPositionObject = this.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
+        NowPlayPositionObject = transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
         //取得顯示劇情目標的物件
-        PlotDescrptionObject = this.transform.GetChild(0).gameObject;
+        PlotDescrptionObject = transform.GetChild(0).gameObject;
         //初始化指標物件的位置
-        Vector3 choicePosition = this.transform.GetChild(2).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
+        Vector3 choicePosition = transform.GetChild(2).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
         itemIndex.transform.position = new Vector3(choicePosition.x - 0.2F, choicePosition.y, choicePosition.z);
         //取得顯示存檔信息物件
-        for (int i = 1; i <= tagIndexMax; i++) saveInformations.Add(this.transform.GetChild(2).gameObject.transform.GetChild(i).gameObject);
+        for (int i = 1; i <= tagIndexMax; i++) saveInformations.Add(transform.GetChild(2).gameObject.transform.GetChild(i).gameObject);
         //初始化指標位置
         initializeIndexPosition();
+        //取得玩家物件
+        playerObject = GameObject.Find("Player");
     }
 
     void Update()
@@ -72,8 +77,6 @@ public class MenuTagSave : MonoBehaviour
             NowPlayTimerObject.GetComponent<Text>().text = showNowGameTimer(GameTimer.second, GameTimer.minute);
             int mapIndex = GameMenager.IsInMapDefinition(InitSceneManagment.targetSceneName);
             NowPlayPositionObject.GetComponent<Text>().text = showPositionById(mapIndex);
-            showSituactionTarget();
-            showSaveInformation();
             if (Input.GetButtonDown("Vertical")) doMove(v);
             if (Input.GetKeyDown(KeyCode.Z) && PlayerItemMenu.overRestTime) doSubmit();
         }
@@ -183,9 +186,22 @@ public class MenuTagSave : MonoBehaviour
     #region 按下確認鍵操作 doSubmit()
     private void doSubmit()
     {
-        // TODO 存檔時顯示存檔中的動畫，存檔完成後播放動畫並關閉菜單
+        StartCoroutine(doShowPlayerBubble());
         GameMenager.saveToJsonFile(tagIndex);//遊戲當前信息轉為json並存到硬中
         PlayerItemMenu.returnRestTimer();
+    }
+    #endregion
+
+    #region 協程
+    IEnumerator doShowPlayerBubble()
+    {
+        playerObject.SendMessage("showTalkBubble_01");
+        saveInformations[tagIndex - 1].transform.GetChild(0).gameObject.GetComponent<Text>().text = "覆寫中……";
+        saveInformations[tagIndex - 1].transform.GetChild(1).gameObject.GetComponent<Text>().text = "";
+        yield return new WaitForSeconds(3F);
+        showSaveInformation();//刷新存檔信息
+        playerObject.SendMessage("hideTalkBubble");
+        transform.parent.parent.SendMessage("doCloseDetailMenu");
     }
     #endregion
 }

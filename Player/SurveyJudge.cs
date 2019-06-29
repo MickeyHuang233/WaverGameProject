@@ -43,7 +43,6 @@ public class SurveyJudge : MonoBehaviour
     void Update()
     {
         if (PlayerMovement.overRestTime && PlayerItemMenu.openDetailMenu == -1) countAllTriggerDistance();
-        else returnStatus();
     }
     #endregion
 
