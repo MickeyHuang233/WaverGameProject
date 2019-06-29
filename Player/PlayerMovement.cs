@@ -9,7 +9,7 @@ using UnityEngine;
         SurveyJudge --> (碰撞器物件必須放在玩家物件底下的第一個)
     實現功能：
         1. 角色的拸動及動畫轉換// TODO 缺斜向四個角的動畫轉換
-        2. 在角色上下移動時需要同時改動Z軸 // TODO 因程式重構，需要從history中取之前寫好的部分
+        2. 在角色上下移動時需要同時改動Z軸
         3. 按下確認鍵調查或對話，調用Player底下的碰撞器物件的方法(碰撞器物件必須放在玩家物件底下的第一個)
         4. 按下取消鍵開啟或關閉一級菜單，調用Player底下的菜單物件的方法(菜單物件必須放在玩家物件底下的第四個)
 */
@@ -30,20 +30,11 @@ public class PlayerMovement : MonoBehaviour
     //玩家應該的狀態
     private string shouldStatus;
 
-    //上一幀角色方向
-    private Vector2 preMoveDirction;
-
     //當前角色方向
     public static Vector2 moveDirction;
 
     //對話域物件
     private GameObject talkColliderObject;
-
-    //上一幀Y軸位置
-    private float preYaxis;
-
-    //當前幀Y軸位置
-    private float nowYaxis;
 
     [Header("角色跑步速度_縱向")]
     [Range(0.5F, 20F)]
@@ -52,10 +43,6 @@ public class PlayerMovement : MonoBehaviour
     [Header("角色跑步速度_橫向")]
     [Range(0.5F, 20F)]
     public float speedRunH = 8F;
-
-    [Header("角色跑步速度_Z")]
-    [Range(-1F, 1F)]
-    public float speedRunZ = -0.05F;
 
     [Header("角色步行速度_縱向")]
     [Range(0.5F, 20F)]
@@ -67,10 +54,10 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("角色步行速度_Z")]
     [Range(-1F, 1F)]
-    public float speedWalkZ = -0.025F;
+    public float playerMultiplyZ = 0.05F;
 
     //得出Z軸乘率：Z軸位置 = Y軸位置 * multiplyZ
-    //值由speedWalkZ設定
+    //值由playerMultiplyZ設定
     public static float multiplyZ;
 
     [Header("調查用的物件位置所乘倍率_X")]
@@ -113,15 +100,13 @@ public class PlayerMovement : MonoBehaviour
     #region Start()
     void Start()
     {
-        playerObject = this.gameObject;
-        rigidbody = this.GetComponent<Rigidbody2D>();
-        animator = this.GetComponent<Animator>();
-        MenuObject = this.transform.GetChild(3).gameObject;
-        nowYaxis = this.transform.position.y;//初始化當前幀的y軸位置
-        preYaxis = this.transform.position.y;//初始化上一幀的y軸位置
-        talkColliderObject = this.transform.GetChild(0).gameObject;//取得玩家物件下的對話域物件的碰撞器元件
+        playerObject = gameObject;
+        rigidbody = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        MenuObject = transform.GetChild(3).gameObject;
+        talkColliderObject = transform.GetChild(0).gameObject;//取得玩家物件下的對話域物件的碰撞器元件
         //將設定的角色步行速度_Z放至得出Z軸乘率，以方便調用
-        multiplyZ = speedWalkZ;
+        multiplyZ = playerMultiplyZ;
         //將設定的應休息時間放至靜態變量，以方便調用
         restTime = setRestTime;
         shouldStatus = "idle";
@@ -133,7 +118,7 @@ public class PlayerMovement : MonoBehaviour
     #region Update()
     void Update()
     {
-        currentState = this.animator.GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態的hashCode
+        currentState = animator.GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態的hashCode
         float h = Input.GetAxisRaw("Horizontal");//檢測水平移動
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
         float shift = Input.GetAxisRaw("Shift");//檢測點擊左Shift鍵
@@ -154,13 +139,13 @@ public class PlayerMovement : MonoBehaviour
     #region 設定批次狀態機的狀態
     private void setStatus(string status)
     {
-        this.animator.SetBool("idle", false);
-        this.animator.SetBool("walk", false);
-        this.animator.SetBool("run", false);
-        this.animator.SetBool("lookNote", false);
+        animator.SetBool("idle", false);
+        animator.SetBool("walk", false);
+        animator.SetBool("run", false);
+        animator.SetBool("lookNote", false);
         if (!status.Equals("allClose"))//只開啟所設定的狀態，若設定allClose則狀態全關
         {
-            this.animator.SetBool(status, true);
+            animator.SetBool(status, true);
         }
     }
     #endregion
@@ -202,14 +187,10 @@ public class PlayerMovement : MonoBehaviour
     # region 角色移動
     private void doMove(float h, float v, float shift)
     {
-        nowYaxis = this.transform.position.y;//取得當前位置
-        float gapYaxis = nowYaxis - preYaxis;//取得上一幀與當前位置Y軸之差
         //角色移動
         float moveSpeedH = (shift > 0)? speedRunH : speedWalkH;
         float moveSpeedV = (shift > 0) ? speedRunV : speedWalkV;
-        float moveSpeedZ = (shift > 0) ? speedRunZ : speedWalkZ;
         rigidbody.AddForce(new Vector2(h * moveSpeedH, v * moveSpeedV));
-        this.transform.Translate(0, 0, -(gapYaxis * moveSpeedZ), Space.World);
 
         //判斷方向，以便顯示正確的動畫
         moveDirction = Vector2.zero;
@@ -218,12 +199,11 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.UpArrow)) moveDirction.y = 1F;
         if (Input.GetKey(KeyCode.DownArrow)) moveDirction.y = -1F;
         shouldStatus = (shift>0)? "run" : "walk";
-        preMoveDirction = moveDirction;
         animator.SetFloat("move_X", moveDirction.x);//賦值給Animator的相應變量
         animator.SetFloat("move_Y", moveDirction.y);
 
         //根據移動方向移動Player底下的talkColliderObject物件
-        talkColliderObject.transform.position = new Vector2(this.transform.position.x + moveDirction.x * talkColliderPositionRateX, this.transform.position.y + moveDirction.y * talkColliderPositionRateY);
+        talkColliderObject.transform.position = new Vector2(transform.position.x + moveDirction.x * talkColliderPositionRateX, transform.position.y + moveDirction.y * talkColliderPositionRateY);
     }
     #endregion
 
