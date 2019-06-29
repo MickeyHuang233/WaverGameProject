@@ -4,38 +4,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-//視角相關的操作
+/*
+    視角相關的操作
+    掛載物件：
+        CameraFix --> Main Camera
+    使用插件：
+        Cinemachine
+    實現功能：
+        1. 場景淡入淡出效果
+        2. 顯示場景名稱
+        3. 顯示倒數時間
+*/
 public class CameraFix : MonoBehaviour
 {
-    [Header("上下偏移單位")]
-    [Range(-5F, 5F)]
-    public float cameraYPlus = 0F;
-
-    [Header("左右偏移單位")]
-    [Range(-5F, 5)]
-    public float cameraXPlus = 0F;
-
-    [Header("要跟隨的玩家物件")]
-    public GameObject player;
-
-    //Camara插件的Compoment
-    CinemachineVirtualCamera cinemachineVirtualCamera;
-
-    //關閉菜單時的Camara距離，在CM vcam1中指定
-    private float closeMenuOrthographicSize;
-
-    [Header("打開菜單時的Camara距離")]
-    [Range(0F, 5F)]
-    public float openMenuOrthographicSize = 0.8F;
-
-    [Header("打開菜單時的緩慢移動區Y軸偏移量")]
-    [Range(0F, 5F)]
-    public float openMenuOrthographicY = 0.8F;
-
-    [Header("打開及關閉菜單視角的移動速度")]
-    [Range(0F, 10F)]
-    public float targetMenuSpeed = 5F;
-
     //場景漸變物件的動畫組件
     public static Animator sceneGradientAnimator;
 
@@ -51,19 +32,6 @@ public class CameraFix : MonoBehaviour
     //顯示倒數時間物件的動畫組件
     public static Animator nagativeTimerAnimator;
 
-    private float ShakeElapsedTime = 0F;
-
-    [Header("視角晃動強度")]
-    [Range(-1F, 1F)]
-    public float ShakeAmplitude = 0.05F;
-
-    [Header("視角晃動頻率")]
-    [Range(-1F, 1F)]
-    public float ShakeFrequency = 0.2F;
-
-    //實現視角晃動的物件
-    private CinemachineBasicMultiChannelPerlin virtualCameraNoise;
-
     #region Start()
     void Start()
     {
@@ -75,13 +43,6 @@ public class CameraFix : MonoBehaviour
         //獲取顯示倒數時間物件
         nagativeTimerObject = GameObject.Find("Canvas_UI").transform.GetChild(2).gameObject;
         nagativeTimerAnimator = nagativeTimerObject.GetComponent<Animator>();
-    }
-    #endregion
-
-    #region Update()
-    void Update()
-    {
-
     }
     #endregion
 
@@ -115,9 +76,9 @@ public class CameraFix : MonoBehaviour
     public static void showNagativeTime(string timer)
     {
         nagativeTimerObject.GetComponent<Text>().text = timer;
-        nagativeTimerAnimator.SetBool("showTimer", (GameTimer.nactivesecond > 0) ? true: false);
-        nagativeTimerAnimator.SetBool("hideTimer", (GameTimer.nactivesecond > 0) ? false : true);
-        nagativeTimerAnimator.SetBool("showRed", (GameTimer.nactivesecond > 10) ? false : true);
+        nagativeTimerAnimator.SetBool("showTimer", (GameTimer.nactivesecond > 0) ? true: false);//一般顯示
+        nagativeTimerAnimator.SetBool("hideTimer", (GameTimer.nactivesecond > 0) ? false : true);//隱藏
+        nagativeTimerAnimator.SetBool("showRed", (GameTimer.nactivesecond > 10) ? false : true);//警告
     }
     #endregion
 
@@ -129,10 +90,10 @@ public class CameraFix : MonoBehaviour
         switch (status)
         {
             case "SceneDark":
-                b = currentState.IsName("SceneDark");
+                b = currentState.IsName("SceneDark");//淡出
                 break;
             case "SceneWhite":
-                b = currentState.IsName("SceneWhite");
+                b = currentState.IsName("SceneWhite");//淡入
                 break;
             default:
                 Debug.Log(status + "找不到相對應的狀態，可能輸入錯誤");
