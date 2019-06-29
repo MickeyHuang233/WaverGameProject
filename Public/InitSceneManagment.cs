@@ -9,7 +9,7 @@ using UnityEngine.Tilemaps;
 public class InitSceneManagment : MonoBehaviour
 {
     //要傳送的位置名
-    static string positionName;
+    public static string positionName;
 
     //玩家物件
     private GameObject playerObject;
