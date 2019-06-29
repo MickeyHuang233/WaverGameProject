@@ -10,7 +10,7 @@ using UnityEngine.UI;
         TitleSceneControl --> TitleScenesManager
     實現功能：
         1. 遊戲開始後加載初始化場景
-        2. // TODO 遊戲讀取的操作
+        2. 遊戲讀取的操作
         3. 遊戲關閉的操作
 */
 public class TitleSceneControl : MonoBehaviour
@@ -21,14 +21,11 @@ public class TitleSceneControl : MonoBehaviour
     //玩家所選的操作
     public static string selectButton = "Null";
 
-    //相機物件
-    private GameObject cameraObject;
-
     //主頁面按鍵物件
     private List<GameObject> menuButtonObject = new List<GameObject>();
 
-    //指標物件
-    private GameObject itemIndex;
+    //第一層菜單指標物件
+    private GameObject firstMenuIndex;
 
     //當前位置編號
     private int tagIndex = 1;
@@ -52,14 +49,10 @@ public class TitleSceneControl : MonoBehaviour
     #region Start()
     void Start()
     {
-        cameraObject = GameObject.Find("Main Camera");
         //取得最大位置編號，要去掉指標物件
         tagIndexMax = GameObject.Find("Canvas_TitleButton").transform.childCount - 1;
         //獲取主頁面按鍵物件
         for (int i=1; i<=tagIndexMax; i++) menuButtonObject.Add(GameObject.Find("Canvas_TitleButton").transform.GetChild(i).gameObject);
-        //獲取指標物件
-        itemIndex = GameObject.Find("Canvas_TitleButton").transform.GetChild(0).gameObject;
-
 
         //隱藏讀檔信息
         GameObject savePage = GameObject.Find("SavePage");
@@ -72,8 +65,12 @@ public class TitleSceneControl : MonoBehaviour
         //取得顯示存檔信息物件
         for (int i = 1; i <= loadIndexMax; i++) SaveSituations.Add(GameObject.Find("SaveSituations").transform.GetChild(i).gameObject);
         showSaveInformation();//顯示存檔信息
+
+        //獲取第一層菜單指標物件
+        firstMenuIndex = GameObject.Find("Canvas_TitleButton").transform.GetChild(0).gameObject;
+
         initializeIndexPosition();//初始化指標位置
-        
+
         //初始化完成後才淡入場景
         GameObject.Find("Canvas_UI").transform.GetChild(0).GetComponent<Animator>().SetBool("changeScene_On", false);
         GameObject.Find("Canvas_UI").transform.GetChild(0).GetComponent<Animator>().SetBool("changeScene_Off", true);
@@ -123,8 +120,16 @@ public class TitleSceneControl : MonoBehaviour
     private void initializeIndexPosition()
     {
         //初始化一級菜單指標物件的位置
+        foreach (GameFile gameFile in GameMenager.gameFiles.gameFiles)
+        {
+            if(gameFile.mapId != 0)
+            {
+                tagIndex = 2;
+                break;
+            }
+        }
         Vector3 choicePosition = menuButtonObject[tagIndex - 1].transform.position;
-        itemIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
+        firstMenuIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
 
         //存檔指標指向最近存的檔案
         long max = GameMenager.gameFiles.gameFiles[1].saveTime;
@@ -152,7 +157,7 @@ public class TitleSceneControl : MonoBehaviour
         else if (v < 0 && tagIndex == tagIndexMax) tagIndex = 1;//最後一項，向下移動
         //更新指標位置
         Vector3 choicePosition = menuButtonObject[tagIndex - 1].transform.position;
-        itemIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
+        firstMenuIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
     }
     #endregion
 
