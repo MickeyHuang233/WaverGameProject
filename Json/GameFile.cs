@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+    遊戲劇情信息
+*/
 [System.Serializable]
 public class GameFile
 {

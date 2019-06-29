@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+    遊戲物品信息
+*/
 public class Item
 {
     //物品編號

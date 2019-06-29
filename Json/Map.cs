@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+/*
+    遊戲地圖信息
+*/
 public class Map
 {
     //場景編號
