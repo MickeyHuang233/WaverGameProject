@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//玩家物品菜單欄
+/*
+    玩家菜單欄
+    控制菜單的層級顯示
+*/
 public class PlayerItemMenu : MonoBehaviour
 {
     //菜單的動畫信息
@@ -73,16 +76,16 @@ public class PlayerItemMenu : MonoBehaviour
         restTime = setRestTime;
         animator = GetComponent<Animator>();
         //設定菜單動畫狀態
-        this.animator.SetBool("openMenu", false);
-        this.animator.SetBool("closeMenu", true);
+        animator.SetBool("openMenu", false);
+        animator.SetBool("closeMenu", true);
         //獲取菜單各page物件
         ItemPage = GameObject.Find("ItemPage");
         SavePage = GameObject.Find("SavePage");
         ExitPage = GameObject.Find("ExitPage");
         //取得菜單的Tag物件及動畫組件
-        for (int i = 0; i < this.transform.GetChild(0).GetChildCount(); i++)
+        for (int i = 0; i < transform.GetChild(0).childCount; i++)
         {
-            GameObject t = this.transform.GetChild(0).GetChild(i).gameObject;
+            GameObject t = transform.GetChild(0).GetChild(i).gameObject;
             MenuTagsObject.Add(t);
             Animator a = t.GetComponent<Animator>();
             MenuTagsAnimator.Add(a);
@@ -101,7 +104,6 @@ public class PlayerItemMenu : MonoBehaviour
     {
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
         restTimer += Time.deltaTime;
-        Debug.Log(tagIndex);
         if (openDetailMenu == 0)//當開啟一級菜單
         {
             if (Input.GetButtonDown("Vertical")) doFirstMenuMove(v);
@@ -239,12 +241,11 @@ public class PlayerItemMenu : MonoBehaviour
     #region 設定批次Tag狀態機的狀態  setTagStatus(string status)
     private void setTagStatus(string status)
     {
-        MenuTagsAnimator[0].GetComponent<Animator>().SetBool("choseTag", false);
-        MenuTagsAnimator[0].GetComponent<Animator>().SetBool("cancelChoseTag", false);
-        MenuTagsAnimator[1].GetComponent<Animator>().SetBool("choseTag", false);
-        MenuTagsAnimator[1].GetComponent<Animator>().SetBool("cancelChoseTag", false);
-        MenuTagsAnimator[2].GetComponent<Animator>().SetBool("choseTag", false);
-        MenuTagsAnimator[2].GetComponent<Animator>().SetBool("cancelChoseTag", false);
+        foreach (Animator menuTagsAnimator in MenuTagsAnimator)
+        {
+            menuTagsAnimator.GetComponent<Animator>().SetBool("choseTag", false);
+            menuTagsAnimator.GetComponent<Animator>().SetBool("cancelChoseTag", false);
+        }
         if (status.Equals("item"))
         {
             MenuTagsAnimator[0].GetComponent<Animator>().SetBool("choseTag", true);
