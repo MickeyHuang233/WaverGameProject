@@ -21,12 +21,13 @@ public class PlayerTalkingBubble : MonoBehaviour
     //先取得目前頭上泡泡動畫狀態的資訊
     AnimatorStateInfo currentState;
 
+    //應該所處的狀態名稱
     private string shouldBeStatus;
 
     void Start()
     {
         //獲取子物件
-        talkBubbleAnimator = this.transform.GetChild(2).gameObject.GetComponent<Animator>();
+        talkBubbleAnimator = transform.GetChild(2).gameObject.GetComponent<Animator>();
         shouldBeStatus = "empty";
     }
     
@@ -52,14 +53,8 @@ public class PlayerTalkingBubble : MonoBehaviour
     //判斷當前狀態是否為當前應該的狀態
     private void changShouldBeStatus(string status)
     {
-        if (currentState.IsName("empty") || currentState.IsName(status))
-        {
-            setStatus(status);
-        }
-        else
-        {
-            setStatus("empty");
-        }
+        if (currentState.IsName("empty") || currentState.IsName(status)) setStatus(status);
+        else setStatus("empty");
     }
 
     private void showTalkBubble_01()
