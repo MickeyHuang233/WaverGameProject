@@ -25,8 +25,8 @@ public class InitSceneManagment : MonoBehaviour
     public float moveSpeed;
 
     [Header("轉換場景後淡入等待秒數")]
-    [Range(0F, 5F)]
-    public float SceneOffTime = 2F;
+    [Range(0.0F, 5.0F)]
+    public float SceneOffTime = 0.5F;
 
     //場景是否需要淡出
     public static bool isNeedScenceDark = false;
@@ -100,7 +100,7 @@ public class InitSceneManagment : MonoBehaviour
         mapLayoutType = mapType;
         showDarkMap();//顯示場景黑
 
-        StartCoroutine(doChangeSceneOffInSingleScene());
+        StartCoroutine(doChangeSceneOffInSingleScene());//協程_場景淡入
     }
     #endregion
 
@@ -112,7 +112,7 @@ public class InitSceneManagment : MonoBehaviour
     }
     #endregion
 
-    #region 協程_場景淡入
+    #region 協程_場景淡入 doChangeSceneOffInSingleScene()
     IEnumerator doChangeSceneOffInSingleScene()
     {
         yield return new WaitForSeconds (SceneOffTime);
