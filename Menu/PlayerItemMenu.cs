@@ -4,7 +4,12 @@ using UnityEngine;
 
 /*
     玩家菜單欄
-    控制菜單的層級顯示
+    掛載物件：
+        PlayerItemMenu --> Menu
+            MenuTag
+            Page
+    實現功能：
+        1. 控制菜單的層級顯示
 */
 public class PlayerItemMenu : MonoBehaviour
 {

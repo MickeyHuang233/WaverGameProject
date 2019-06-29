@@ -2,6 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*
+    菜單，離開遊戲畫面
+    掛載物件：
+        MenuTagExit --> ExitPage
+    實現功能：
+        1. 控制動畫的開啟和關閉
+        2. 離開遊戲
+        3. 返回上一層菜單
+*/
 public class MenuTagExit : MonoBehaviour
 {
     //離開遊戲菜單文字物件

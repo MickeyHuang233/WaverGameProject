@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+    菜單，物品欄畫面
+    掛載物件：
+        MenuTagSave --> SavePage
+    實現功能：
+        1. 控制動畫的開啟和關閉
+        2. 檔案信息顯示及顯示當前劇情目標
+        3. 存檔【未完成，存檔時顯示存檔中的動畫，存檔完成後播放動畫並關閉菜單】
+        4. 返回上一層菜單
+*/
 public class MenuTagSave : MonoBehaviour
 {
     //存檔菜單文字物件
@@ -10,9 +20,6 @@ public class MenuTagSave : MonoBehaviour
 
     //存檔菜單文字的動畫信息
     private Animator savePageAanimator;
-
-    //Menu物件
-    private GameObject MenuObject;
 
     //指標物件
     private GameObject itemIndex;
@@ -38,8 +45,6 @@ public class MenuTagSave : MonoBehaviour
         //取得savePage物件及動畫信息
         savePage = GameObject.Find("SavePage");
         savePageAanimator = savePage.GetComponent<Animator>();
-        //取得Menu物件
-        MenuObject = this.transform.parent.parent.gameObject;
         //取得指標物件
         itemIndex = this.transform.GetChild(2).gameObject.transform.GetChild(0).gameObject;
         //取得最大位置編號，要去掉指標物件

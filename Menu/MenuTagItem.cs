@@ -3,6 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*
+    菜單，物品欄畫面
+    掛載物件：
+        MenuTagItem --> ItemPage
+    實現功能：
+        1. 控制動畫的開啟和關閉
+        2. 使用道具【未完成】
+        3. 返回上一層菜單
+*/
 public class MenuTagItem : MonoBehaviour
 {
     //物品欄文字物件
@@ -10,9 +19,6 @@ public class MenuTagItem : MonoBehaviour
 
     //物品欄文字的動畫信息
     private Animator itemPageAanimator;
-
-    //Menu物件
-    GameObject MenuObject;
 
     //指標物件
     GameObject itemIndex;
@@ -32,16 +38,14 @@ public class MenuTagItem : MonoBehaviour
         //取得itemPage物件及動畫信息
         itemPage = GameObject.Find("ItemPage");
         itemPageAanimator = itemPage.GetComponent<Animator>();
-        //取得Menu物件
-        MenuObject = this.transform.parent.parent.gameObject;
         //取得指標物件
-        itemIndex = this.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
+        itemIndex = transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
         //取得物品說明物件
-        descriptionObject = this.transform.GetChild(0).gameObject;
+        descriptionObject = transform.GetChild(0).gameObject;
         //取得最大位置編號，要去掉指標物件
-        tagIndexMax = this.transform.GetChild(1).gameObject.transform.childCount - 1;
+        tagIndexMax = transform.GetChild(1).gameObject.transform.childCount - 1;
         //初始化指標物件的位置
-        Vector3 choicePosition = this.transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
+        Vector3 choicePosition = transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
         itemIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
     }
     #endregion
