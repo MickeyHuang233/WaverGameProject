@@ -1,13 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Fungus;
 
 //可調查物品的操作
 public class NPC_Item : MonoBehaviour
 {
+    private Flowchart npcFlowchart;
+
     void Start()
     {
-        this.transform.tag = "NPC_Item";//更改自身tag
+        transform.tag = "NPC_Item";//更改自身tag
+        npcFlowchart = GetComponent<Flowchart>();
     }
     
     void Update()
@@ -15,17 +19,23 @@ public class NPC_Item : MonoBehaviour
 
     }
 
+    #region 調查物品      itemTalking()
+    public void itemTalking()
+    {
+        Block enterBlock = npcFlowchart.FindBlock("NPC_Fungus_Enter");
+        npcFlowchart.ExecuteBlock(enterBlock);
+    }
+    #endregion
+
     //標示Item
     private void doHightLineOn()
     {
-        this.gameObject.GetComponent<Renderer>().material.color = Color.gray;
-        // TODO Portal，當物品可被調查時應該要如何實現標示
+        SendMessage("OnEnable");
     }
 
     //取消標示Item
     private void doHightLineOff()
     {
-        this.gameObject.GetComponent<Renderer>().material.color = Color.white;
-        // TODO Portal，當物品取消標示的實現，應與實現相對應
+        SendMessage("OnDisable");
     }
 }

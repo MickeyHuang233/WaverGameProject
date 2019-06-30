@@ -104,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         MenuObject = transform.GetChild(3).gameObject;
-        talkColliderObject = transform.GetChild(0).gameObject;//取得玩家物件下的對話域物件的碰撞器元件
+        talkColliderObject = transform.GetChild(2).gameObject;//取得玩家物件下的對話域物件的碰撞器元件
         //將設定的角色步行速度_Z放至得出Z軸乘率，以方便調用
         multiplyZ = playerMultiplyZ;
         //將設定的應休息時間放至靜態變量，以方便調用

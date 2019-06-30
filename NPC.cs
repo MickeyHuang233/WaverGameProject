@@ -6,14 +6,13 @@ using Fungus;
 //可調查NPC的操作
 public class NPC : MonoBehaviour
 {
-
     private Flowchart npcFlowchart;
 
     #region Start()
     void Start()
     {
-        this.transform.tag = "NPC";//更改自身tag
-        npcFlowchart = this.GetComponent<Flowchart>();
+        transform.tag = "NPC";//更改自身tag
+        npcFlowchart = GetComponent<Flowchart>();
     }
     #endregion
 
@@ -35,16 +34,14 @@ public class NPC : MonoBehaviour
     #region 標示NPC      doHightLineOn()
     private void doHightLineOn()
     {
-        this.gameObject.GetComponent<Renderer>().material.color = Color.gray;
-        // TODO Portal，當NPC可被調查時應該要如何實現標示
+        SendMessage("showTalkBubble_01");
     }
     #endregion
 
     #region 取消標示NPC      doHightLineOff()
     private void doHightLineOff()
     {
-        this.gameObject.GetComponent<Renderer>().material.color = Color.white;
-        // TODO Portal，當NPC取消標示的實現，應與實現相對應
+        SendMessage("hideTalkBubble");
     }
     #endregion
 

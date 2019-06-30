@@ -27,7 +27,7 @@ public class PlayerTalkingBubble : MonoBehaviour
     void Start()
     {
         //獲取子物件
-        talkBubbleAnimator = transform.GetChild(2).gameObject.GetComponent<Animator>();
+        talkBubbleAnimator = transform.GetChild(1).gameObject.GetComponent<Animator>();
         shouldBeStatus = "empty";
     }
     

@@ -34,7 +34,7 @@ public class SurveyJudge : MonoBehaviour
     void Start()
     {
         //獲取父類的Player物件
-        playerObject = this.transform.parent.gameObject;
+        playerObject = transform.parent.gameObject;
         triggerNameMap = new Dictionary<string, float>();
     }
     #endregion
@@ -92,13 +92,14 @@ public class SurveyJudge : MonoBehaviour
                 }
             }
 
+            //玩家發現可調查對象時的標示
             if (surveyObjectCollider.tag == "NPC")
             {
                 playerObject.SendMessage("showTalkBubble_01");
             }
             else if (surveyObjectCollider.tag == "NPC_Item")
             {
-                playerObject.SendMessage("showTalkBubble_02");
+                playerObject.SendMessage("showTalkBubble_03");
             }
             else if (surveyObjectCollider.tag == "Portal")
             {
@@ -132,6 +133,7 @@ public class SurveyJudge : MonoBehaviour
             else if (surveyObjectCollider.tag == "NPC_Item")
             {
                 // TODO SurveyJudge，調查物品按Z後的操作
+                surveyObject.SendMessage("itemTalking");
             }
             else if (surveyObjectCollider.tag == "Portal")
             {
