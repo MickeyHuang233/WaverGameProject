@@ -78,7 +78,7 @@ public class MenuTagItem : MonoBehaviour
     private void showItemName()
     {
         //顯示與所擁有物品數相當的欄位數
-        GameObject ItemObject = this.transform.GetChild(1).gameObject;
+        GameObject ItemObject = transform.GetChild(1).gameObject;
         for (int i = 1; i <= 5; i++)
         {
             ItemObject.transform.GetChild(i).gameObject.transform.localScale = new Vector3((i > GameMenager.getItemNumList.Count) ? 0F : 1F, 1F, 1F);
@@ -132,8 +132,18 @@ public class MenuTagItem : MonoBehaviour
     #region 按下確認鍵操作
     private void doSubmit()
     {
-        Debug.Log("Item_doSubmit()");
-        // TODO 具體每個物品要執行不同的腳本
+        List<int> itemNums = new List<int>();
+        foreach (int itemNum in GameMenager.getItemNumList) itemNums.Add(itemNum);
+        //Debug.Log(GameMenager.itemInformationList[itemNums[tagIndex - 1]].UseItemameObject);
+        GameObject useItemameObject = GameObject.Find(GameMenager.itemInformationList[itemNums[tagIndex - 1]].UseItemameObject);
+        if (useItemameObject != null)
+        {
+            useItemameObject.SendMessage("itemUse");
+        }
+        else//場景無此物件時
+        {
+            Debug.Log("此場景無此物件可以使用");
+        }
         PlayerItemMenu.returnRestTimer();
     }
     #endregion

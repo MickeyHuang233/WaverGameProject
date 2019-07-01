@@ -21,11 +21,14 @@ public class SurveyJudge : MonoBehaviour
     //Player物件
     private GameObject playerObject;
 
-    //進入觸發器的物件
+    //進入觸發器的可調查物件
     static Dictionary<string, float> triggerNameMap;
 
     //取得需要被調查的物件
     private GameObject surveyObject;
+
+    //進入觸發器的道具使用Collider物件
+    public static Dictionary<string, int> ItemUseMap;
 
     //觸發對話或調查的物件名
     string minDistanceObject;
@@ -35,7 +38,9 @@ public class SurveyJudge : MonoBehaviour
     {
         //獲取父類的Player物件
         playerObject = transform.parent.gameObject;
+        //初始化
         triggerNameMap = new Dictionary<string, float>();
+        ItemUseMap = new Dictionary<string, int>();
     }
     #endregion
 
@@ -49,7 +54,7 @@ public class SurveyJudge : MonoBehaviour
     #region 判斷是否是可被調查的物件tag
     private bool isTag(Collider2D collision)
     {
-        return collision.tag == "NPC" || collision.tag == "NPC_Item" || collision.tag == "Portal";
+        return collision.tag.Equals("NPC") || collision.tag.Equals("NPC_Item") || collision.tag.Equals("Portal");
     }
     #endregion
 
@@ -148,10 +153,16 @@ public class SurveyJudge : MonoBehaviour
     #region 當物件進入觸發器時
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isTag(collision))
+        //將符合條件的物件加入至Map中
+        if (isTag(collision))//調查對象
         {
-            //將符合條件的物件加入至Map中
             triggerNameMap.Add(collision.transform.name, 0F);
+        }
+        else if (collision.tag.Equals("ItemUseSituation"))//道具使用Collider對象
+        {
+            string objectName = collision.GetComponent<ItemUseSituation>().ItemUseName;
+            if (!ItemUseMap.ContainsKey(objectName))//key不存在時才加入
+                ItemUseMap.Add(collision.GetComponent<ItemUseSituation>().ItemUseName, collision.GetComponent<ItemUseSituation>().ItemUseSituationNum);
         }
     }
     #endregion
@@ -159,11 +170,18 @@ public class SurveyJudge : MonoBehaviour
     #region 當物件離開觸發器時
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (isTag(collision))
+        //將符合條件的物件移除
+        if (isTag(collision))//調查對象
         {
             playerObject.SendMessage("hideTalkBubble");
-            triggerNameMap.Remove(collision.transform.name);//將符合條件的物件移除
+            triggerNameMap.Remove(collision.transform.name);
             collision.SendMessage("doHightLineOff");
+        }
+        else if (collision.tag.Equals("ItemUseSituation"))//道具使用Collider對象
+        {
+            string objectName = collision.GetComponent<ItemUseSituation>().ItemUseName;
+            if (ItemUseMap.ContainsKey(objectName))//key存在時才刪除
+                ItemUseMap.Remove(collision.GetComponent<ItemUseSituation>().ItemUseName);
         }
     }
     #endregion
