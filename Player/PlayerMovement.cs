@@ -131,6 +131,7 @@ public class PlayerMovement : MonoBehaviour
             else if (Input.GetButtonDown("Cancel") && isStatus("idle", currentState) && overRestTime) doCancel();//站穩才能打開菜單
             else shouldStatus = "idle";//什麼按也不按
         }
+        Debug.Log("shouldStatus : " + shouldStatus);
         //依據玩家Y軸計算出Z軸的值
         playerObject.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y, playerObject.transform.position.y * PlayerMovement.multiplyZ);
     }

@@ -109,7 +109,7 @@ public class MenuTagItem : MonoBehaviour
         itemPageAanimator.SetBool("closeDetilMenu", true);
         //將指標返回至第一個物品的位置
         tagIndex = 1;
-        Vector3 choicePosition_02 = this.transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
+        Vector3 choicePosition_02 = transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
         itemIndex.transform.position = new Vector3(choicePosition_02.x - 0.25F, choicePosition_02.y, choicePosition_02.z);
     }
     #endregion
@@ -134,7 +134,6 @@ public class MenuTagItem : MonoBehaviour
     {
         List<int> itemNums = new List<int>();
         foreach (int itemNum in GameMenager.getItemNumList) itemNums.Add(itemNum);
-        //Debug.Log(GameMenager.itemInformationList[itemNums[tagIndex - 1]].UseItemameObject);
         GameObject useItemameObject = GameObject.Find(GameMenager.itemInformationList[itemNums[tagIndex - 1]].UseItemameObject);
         if (useItemameObject != null)
         {
@@ -145,6 +144,16 @@ public class MenuTagItem : MonoBehaviour
             Debug.Log("此場景無此物件可以使用");
         }
         PlayerItemMenu.returnRestTimer();
+        StartCoroutine(doCloseAllMenu());//協程_關閉菜單
+    }
+    #endregion
+
+    #region 協程_關閉菜單
+    IEnumerator doCloseAllMenu()
+    {
+        GameObject.Find("Menu").SendMessage("doCloseDetailMenu");
+        yield return new WaitForSeconds(0.5F);
+        GameObject.Find("Menu").SendMessage("doCloseMenu");
     }
     #endregion
 }
