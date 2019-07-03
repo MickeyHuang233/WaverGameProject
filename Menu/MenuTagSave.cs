@@ -18,9 +18,6 @@ public class MenuTagSave : MonoBehaviour
     //存檔菜單文字物件
     GameObject savePage;
 
-    //存檔菜單文字的動畫信息
-    private Animator savePageAanimator;
-
     //指標物件
     private GameObject itemIndex;
 
@@ -43,11 +40,13 @@ public class MenuTagSave : MonoBehaviour
     //玩家物件
     private GameObject playerObject;
 
+    //是否正在存檔
+    private bool isSaving = false;
+
     void Start()
     {
         //取得savePage物件及動畫信息
         savePage = GameObject.Find("SavePage");
-        savePageAanimator = savePage.GetComponent<Animator>();
         //取得指標物件
         itemIndex = transform.GetChild(2).gameObject.transform.GetChild(0).gameObject;
         //取得最大位置編號，要去掉指標物件
@@ -72,7 +71,7 @@ public class MenuTagSave : MonoBehaviour
     void Update()
     {
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
-        if (PlayerItemMenu.openDetailMenu == 2)
+        if (PlayerItemMenu.openDetailMenu == 2 && !isSaving)
         {
             NowPlayTimerObject.GetComponent<Text>().text = showNowGameTimer(GameTimer.second, GameTimer.minute);
             int mapIndex = GameMenager.IsInMapDefinition(InitSceneManagment.targetSceneName);
@@ -154,19 +153,18 @@ public class MenuTagSave : MonoBehaviour
     }
     #endregion
 
-    #region 打開存檔菜單  showSavePage()
-    private void showSavePage()
+    #region 打開存檔菜單  showPage()
+    private void showPage()
     {
-        savePageAanimator.SetBool("openDetilMenu", true);
-        savePageAanimator.SetBool("closeDetilMenu", false);
+        showSaveInformation();//顯示存檔信息
+        showSituactionTarget();//顯示當前劇情目標
     }
     #endregion
 
-    #region 關閉存檔菜單      hideSavePage()
-    private void hideSavePage()
+    #region 關閉存檔菜單
+    private void hidePage()
     {
-        savePageAanimator.SetBool("openDetilMenu", false);
-        savePageAanimator.SetBool("closeDetilMenu", true);
+
     }
     #endregion
 
@@ -195,6 +193,7 @@ public class MenuTagSave : MonoBehaviour
     #region 協程
     IEnumerator doShowPlayerBubble()
     {
+        isSaving = true;
         playerObject.SendMessage("showTalkBubble_01");
         saveInformations[tagIndex - 1].transform.GetChild(0).gameObject.GetComponent<Text>().text = "覆寫中……";
         saveInformations[tagIndex - 1].transform.GetChild(1).gameObject.GetComponent<Text>().text = "";
@@ -202,6 +201,7 @@ public class MenuTagSave : MonoBehaviour
         showSaveInformation();//刷新存檔信息
         playerObject.SendMessage("hideTalkBubble");
         transform.parent.parent.SendMessage("doCloseDetailMenu");
+        isSaving = false;
     }
     #endregion
 }

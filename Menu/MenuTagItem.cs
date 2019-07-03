@@ -59,19 +59,7 @@ public class MenuTagItem : MonoBehaviour
             if (Input.GetButtonDown("Vertical")) doMove(v);
             if (Input.GetButtonDown("Submit") && PlayerItemMenu.overRestTime) doSubmit();
         }
-
         }
-    #endregion
-
-    #region 打開物品欄
-    private void showItemPage()
-    {
-        itemPageAanimator.SetBool("openDetilMenu", true);
-        itemPageAanimator.SetBool("closeDetilMenu", false);
-        showItemName();
-        //如果物品欄有東西，就顯示第一個物品的物品說明
-        if (GameMenager.getItemNumList.Count > 0) showItemDescription(0);
-    }
     #endregion
 
     #region 顯示物品欄中的物品名稱
@@ -102,11 +90,18 @@ public class MenuTagItem : MonoBehaviour
     }
     #endregion
 
-    #region 關閉物品欄
-    private void hideItemPage()
+    #region 打開物品欄
+    private void showPage()
     {
-        itemPageAanimator.SetBool("openDetilMenu", false);
-        itemPageAanimator.SetBool("closeDetilMenu", true);
+        showItemName();
+        //如果物品欄有東西，就顯示第一個物品的物品說明
+        if (GameMenager.getItemNumList.Count > 0) showItemDescription(0);
+    }
+    #endregion
+
+    #region 關閉物品欄
+    private void hidePage()
+    {
         //將指標返回至第一個物品的位置
         tagIndex = 1;
         Vector3 choicePosition_02 = transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
@@ -132,17 +127,6 @@ public class MenuTagItem : MonoBehaviour
     #region 按下確認鍵操作
     private void doSubmit()
     {
-        List<int> itemNums = new List<int>();
-        foreach (int itemNum in GameMenager.getItemNumList) itemNums.Add(itemNum);
-        GameObject useItemameObject = GameObject.Find(GameMenager.itemInformationList[itemNums[tagIndex - 1]].UseItemameObject);
-        if (useItemameObject != null)
-        {
-            useItemameObject.SendMessage("itemUse");
-        }
-        else//場景無此物件時
-        {
-            Debug.Log("此場景無此物件可以使用");
-        }
         PlayerItemMenu.returnRestTimer();
         StartCoroutine(doCloseAllMenu());//協程_關閉菜單
     }
@@ -152,8 +136,22 @@ public class MenuTagItem : MonoBehaviour
     IEnumerator doCloseAllMenu()
     {
         GameObject.Find("Menu").SendMessage("doCloseDetailMenu");
-        yield return new WaitForSeconds(0.5F);
+        yield return new WaitForSeconds(0.2F);
         GameObject.Find("Menu").SendMessage("doCloseMenu");
+
+        yield return new WaitForSeconds(0.2F);
+        List<int> itemNums = new List<int>();
+        foreach (int itemNum in GameMenager.getItemNumList) itemNums.Add(itemNum);
+        GameObject useItemameObject = GameObject.Find(GameMenager.itemInformationList[itemNums[tagIndex - 1]].UseItemameObject);
+
+        if (useItemameObject != null)
+        {
+            useItemameObject.SendMessage("itemUse");
+        }
+        else//場景無此物件時
+        {
+            Debug.Log("此場景無此物件可以使用");
+        }
     }
     #endregion
 }

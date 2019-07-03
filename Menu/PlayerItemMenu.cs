@@ -107,7 +107,7 @@ public class PlayerItemMenu : MonoBehaviour
         if (openDetailMenu == 0)//當開啟一級菜單
         {
             if (Input.GetButtonDown("Vertical")) doFirstMenuMove(v);
-            if (Input.GetButtonDown("Submit")) doOpenDetailMenu();
+            if (Input.GetButtonDown("Submit") && overRestTime) doOpenDetailMenu();
             if (Input.GetButtonDown("Cancel")) doCloseMenu();
         }
         if(openDetailMenu > 0)//當開啟任一個二級菜單
@@ -146,46 +146,20 @@ public class PlayerItemMenu : MonoBehaviour
     #region 打開二級菜單  doOpenDetailMenu()
     private void doOpenDetailMenu()
     {
-        switch (tagIndex)
-        {
-            case 1:
-                MenuPageObjects[tagIndex - 1].SendMessage("showItemPage");
-                openDetailMenu = 1;
-                break;
-            case 2:
-                MenuPageObjects[tagIndex - 1].SendMessage("showSavePage");
-                MenuPageObjects[tagIndex - 1].SendMessage("showSaveInformation");
-                MenuPageObjects[tagIndex - 1].SendMessage("showSituactionTarget");
-                openDetailMenu = 2;
-                break;
-            case 3:
-                MenuPageObjects[tagIndex - 1].SendMessage("showExitPage");
-                openDetailMenu = 3;
-                break;
-        }
+        MenuPageObjects[tagIndex - 1].SendMessage("showPage");
+        openDetailMenu = tagIndex;
     }
     #endregion
 
     #region 關閉二級菜單  doCloseDetailMenu()
     private void doCloseDetailMenu()
     {
-        switch (tagIndex)
-        {
-            case 1:
-                MenuPageObjects[tagIndex - 1].SendMessage("hideItemPage");
-                break;
-            case 2:
-                MenuPageObjects[tagIndex - 1].SendMessage("hideSavePage");
-                break;
-            case 3:
-                MenuPageObjects[tagIndex - 1].SendMessage("hideExitPage");
-                break;
-        }
+        MenuPageObjects[tagIndex - 1].SendMessage("hidePage");
         openDetailMenu = 0;
     }
     #endregion
 
-    #region 設定批次菜單狀態機的狀態
+    #region 統一管理菜單各元素的動畫狀態
     private void setMenuStatus(AnimatorStateInfo menuNowStateHash)
     {
         {
@@ -197,6 +171,9 @@ public class PlayerItemMenu : MonoBehaviour
 
                 //設置Tag狀態
                 foreach (GameObject MenuTagsObject in MenuTagsObjects) setTagStatus(MenuTagsObject.GetComponent<Animator>(), false, false, false);
+
+                //設置Page狀態
+                foreach (GameObject MenuPageObject in MenuPageObjects) setPageStatus(MenuPageObject.GetComponent<Animator>(), false);
             }
             else if (openDetailMenu == 0)//打開一級菜單
             {
@@ -209,6 +186,9 @@ public class PlayerItemMenu : MonoBehaviour
                     if(i == (tagIndex - 1)) setTagStatus(MenuTagsObjects[i].GetComponent<Animator>(), true, false, true);
                     else setTagStatus(MenuTagsObjects[i].GetComponent<Animator>(), true, false, false);
                 }
+
+                //設置Page狀態
+                foreach (GameObject MenuPageObject in MenuPageObjects) setPageStatus(MenuPageObject.GetComponent<Animator>(), false);
             }
             else if (openDetailMenu > 0)//打開二級菜單
             {
@@ -222,12 +202,19 @@ public class PlayerItemMenu : MonoBehaviour
                     if (i == (tagIndex - 1)) setTagStatus(MenuTagsObjects[i].GetComponent<Animator>(), true, true, true);
                     else setTagStatus(MenuTagsObjects[i].GetComponent<Animator>(), true, true, false);
                 }
+
+                //設置Page狀態
+                for (int i = 0; i < MenuPageObjects.Count; i++)
+                {
+                    if (i == (tagIndex - 1)) setPageStatus(MenuPageObjects[i].GetComponent<Animator>(), true);
+                    else setPageStatus(MenuPageObjects[i].GetComponent<Animator>(), false);
+                }
             }
         }
     }
     #endregion
 
-    //設置菜單狀態
+    #region 設置菜單狀態
     private void setMenuStatus(bool openMenu, bool openDetilMenu)
     {
         animator.SetBool("openMenu", openMenu);
@@ -236,18 +223,29 @@ public class PlayerItemMenu : MonoBehaviour
         animator.SetBool("openDetilMenu", openDetilMenu);
         animator.SetBool("closeDetilMenu", !openDetilMenu);
     }
+    #endregion
 
-    private void setTagStatus(Animator menuTagsAnimator, bool openMenu, bool openDetilMenu, bool choseTag)
+    #region 設置第二層菜單內容狀態
+    private void setPageStatus(Animator menuPageAnimator, bool openDetilMenu)
     {
-        menuTagsAnimator.SetBool("openMenu", openMenu);
-        menuTagsAnimator.SetBool("closeMenu", !openMenu);
-
-        menuTagsAnimator.SetBool("openDetilMenu", openDetilMenu);
-        menuTagsAnimator.SetBool("closeDetilMenu", !openDetilMenu);
-
-        menuTagsAnimator.SetBool("choseTag", choseTag);
-        menuTagsAnimator.SetBool("cancelChoseTag", !choseTag);
+        menuPageAnimator.SetBool("openDetilMenu", openDetilMenu);
+        menuPageAnimator.SetBool("closeDetilMenu", !openDetilMenu);
     }
+    #endregion
+
+    #region 設置Tag狀態
+    private void setTagStatus(Animator menuTagAnimator, bool openMenu, bool openDetilMenu, bool choseTag)
+    {
+        menuTagAnimator.SetBool("openMenu", openMenu);
+        menuTagAnimator.SetBool("closeMenu", !openMenu);
+
+        menuTagAnimator.SetBool("openDetilMenu", openDetilMenu);
+        menuTagAnimator.SetBool("closeDetilMenu", !openDetilMenu);
+
+        menuTagAnimator.SetBool("choseTag", choseTag);
+        menuTagAnimator.SetBool("cancelChoseTag", !choseTag);
+    }
+    #endregion
 
     #region 判斷當前菜單的狀態
     private bool menuIsStatus(string status, AnimatorStateInfo nowStateHash)

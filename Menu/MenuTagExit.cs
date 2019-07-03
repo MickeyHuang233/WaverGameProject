@@ -61,25 +61,23 @@ public class MenuTagExit : MonoBehaviour
     #endregion
 
     #region 打開離開遊戲菜單
-    private void showExitPage()
+    private void showPage()
     {
-        exitPageAanimator.SetBool("openDetilMenu", true);
-        exitPageAanimator.SetBool("closeDetilMenu", false);
+
     }
     #endregion
 
     #region 關閉離開遊戲菜單
-    private void hideExitPage()
+    private void hidePage()
     {
-        exitPageAanimator.SetBool("openDetilMenu", false);
-        exitPageAanimator.SetBool("closeDetilMenu", true);
-        //將指標返回至"取消"狀態上
-        tagIndex = 2;
-        Vector3 choicePosition_02 = this.transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
+        PlayerItemMenu.openDetailMenu = 0;
+        tagIndex = 2;//重置位置編號
+        Vector3 choicePosition_02 = transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
         itemIndex.transform.position = new Vector3(choicePosition_02.x - 0.25F, choicePosition_02.y, choicePosition_02.z);
+        PlayerItemMenu.returnRestTimer();
     }
     #endregion
-    
+
     #region 指標移動
     private void doMove(float v)
     {
@@ -102,7 +100,7 @@ public class MenuTagExit : MonoBehaviour
                 Application.Quit();//關閉遊戲
                 break;
             case 2://取消
-                MenuObject.SendMessage("doCloseDetailMenu");
+                hidePage();
                 break;
             }
     }
