@@ -118,6 +118,7 @@ public class PlayerMovement : MonoBehaviour
     #region Update()
     void Update()
     {
+        Debug.Log(PlayerItemMenu.openDetailMenu);
         currentState = animator.GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態的hashCode
         float h = Input.GetAxisRaw("Horizontal");//檢測水平移動
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
@@ -221,8 +222,8 @@ public class PlayerMovement : MonoBehaviour
     {
         shouldStatus = "lookNote";
         MenuObject.SendMessage("doOpenMenu");
+        SendMessage("hideTalkBubble");//清空玩家頭上的對話泡泡狀態
         returnRestTimer();
-        PlayerItemMenu.openDetailMenu = 0;
     }
     #endregion
 }

@@ -108,7 +108,7 @@ public class PlayerItemMenu : MonoBehaviour
         {
             if (Input.GetButtonDown("Vertical")) doFirstMenuMove(v);
             if (Input.GetButtonDown("Submit") && overRestTime) doOpenDetailMenu();
-            if (Input.GetButtonDown("Cancel")) doCloseMenu();
+            if (Input.GetButtonDown("Cancel") && overRestTime) doCloseMenu();
         }
         if(openDetailMenu > 0)//當開啟任一個二級菜單
         {
@@ -128,15 +128,17 @@ public class PlayerItemMenu : MonoBehaviour
     #region 打開一級菜單  doOpenMenu()
     private void doOpenMenu()
     {
-        playerObject.SendMessage("hideTalkBubble");//清空玩家頭上的對話泡泡狀態
+        Debug.Log("doOpenMenu");
         GameObject.Find("talkColliderObject").transform.localScale = new Vector3(0F, 0F, 0F);
         openDetailMenu = 0;
+        returnRestTimer();
     }
     #endregion
 
     #region 關閉一級菜單  doCloseMenu()
     private void doCloseMenu()
     {
+        Debug.Log("doCloseMenu");
         GameObject.Find("talkColliderObject").transform.localScale = new Vector3(1F, 1F, 1F);
         openDetailMenu = -1;
         tagIndex = 1;
