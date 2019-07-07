@@ -118,7 +118,6 @@ public class PlayerMovement : MonoBehaviour
     #region Update()
     void Update()
     {
-        Debug.Log(PlayerItemMenu.openDetailMenu);
         currentState = animator.GetCurrentAnimatorStateInfo(0);//取得當前動畫狀態的hashCode
         float h = Input.GetAxisRaw("Horizontal");//檢測水平移動
         float v = Input.GetAxisRaw("Vertical");//檢測垂直移動
@@ -223,7 +222,37 @@ public class PlayerMovement : MonoBehaviour
         shouldStatus = "lookNote";
         MenuObject.SendMessage("doOpenMenu");
         SendMessage("hideTalkBubble");//清空玩家頭上的對話泡泡狀態
-        returnRestTimer();
+
+        //重置玩家的方向狀態
+        if (animator.GetFloat("move_X") > 0) resetPlayDirction("Right");//向右
+        else resetPlayDirction("Left");
+
+    }
+    #endregion
+
+    #region 
+    private void resetPlayDirction(string status)
+    {
+        if (status.Equals("Up"))
+        {
+            animator.SetFloat("move_X", 0);
+            animator.SetFloat("move_Y", 1F);
+        }
+        else if (status.Equals("Down"))
+        {
+            animator.SetFloat("move_X", 0);
+            animator.SetFloat("move_Y", -1F);
+        }
+        else if (status.Equals("Left"))
+        {
+            animator.SetFloat("move_X", -1F);
+            animator.SetFloat("move_Y", 0);
+        }
+        else if (status.Equals("Right"))
+        {
+            animator.SetFloat("move_X", 1F);
+            animator.SetFloat("move_Y", 0);
+        }
     }
     #endregion
 }
