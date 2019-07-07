@@ -6,6 +6,9 @@ using UnityEngine.UI;
 //
 public class RandomShowText : MonoBehaviour
 {
+    [Header("是否要顯示文字")]
+    public bool canShowText = true;
+
     //要顯示的文字信息
     public string[] showTexts;
 
@@ -52,13 +55,11 @@ public class RandomShowText : MonoBehaviour
         showTextObject = showTextFolder.transform.GetChild(0).gameObject;
         //莪得radomText的父物件
         showTextsObject = transform.GetChild(0).gameObject.transform;
-        //建立文字信息
-        for (int i = 1;i<= createTextsNum;i++) createRandomText(showTextsObject);
     }
 
     void Update()
     {
-        if (showTextsObject.childCount < createTextsNum) createRandomText(showTextsObject);
+        if (canShowText && showTextsObject.childCount < createTextsNum) createRandomText(showTextsObject);
     }
 
     private void createRandomText(Transform showTextsObject)
