@@ -128,7 +128,6 @@ public class PlayerItemMenu : MonoBehaviour
     #region 打開一級菜單  doOpenMenu()
     private void doOpenMenu()
     {
-        Debug.Log("doOpenMenu");
         GameObject.Find("talkColliderObject").transform.localScale = new Vector3(0F, 0F, 0F);
         openDetailMenu = 0;
         returnRestTimer();
@@ -138,7 +137,6 @@ public class PlayerItemMenu : MonoBehaviour
     #region 關閉一級菜單  doCloseMenu()
     private void doCloseMenu()
     {
-        Debug.Log("doCloseMenu");
         GameObject.Find("talkColliderObject").transform.localScale = new Vector3(1F, 1F, 1F);
         openDetailMenu = -1;
         tagIndex = 1;
