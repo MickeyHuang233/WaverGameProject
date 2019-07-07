@@ -8,14 +8,14 @@ public class RandomShowTextChild : MonoBehaviour
     private Animator animator;
 
     //隨機最小秒數
-    private float radomMinTime = 3F;
+    private float radomMinTime = 5F;
 
     //隨機最大秒數
-    private float radomMaxTime = 15F;
+    private float radomMaxTime = 20F;
 
     void Start()
     {
-        animator = GetComponent<Animator>();
+        animator = transform.GetChild(0).gameObject.GetComponent<Animator>();
         StartCoroutine(showTextChild());//協程_顯示文字
     }
 

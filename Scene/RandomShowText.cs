@@ -14,7 +14,13 @@ public class RandomShowText : MonoBehaviour
     public int createTextsNum = 5;
 
     [Header("使用的文字預載體")]
-    public GameObject showTextObject;
+    public GameObject showTextFolder;
+
+    //使用的文字顯示物件
+    private GameObject showTextObject;
+
+    //radomText的父物件
+    private Transform showTextsObject;
 
     [Header("文字出現范圍_XMax")]
     [Range(-5F, 5F)]
@@ -38,13 +44,12 @@ public class RandomShowText : MonoBehaviour
     [Header("文字描邊顯示顏色")]
     public Color textOutlineColor = Color.white;
 
-    //radomText的父物件
-    private Transform showTextsObject;
-
     void Start()
     {
         //根據玩家Y軸計算Z軸的值
         transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+        //獲得使用的文字顯示物件
+        showTextObject = showTextFolder.transform.GetChild(0).gameObject;
         //莪得radomText的父物件
         showTextsObject = transform.GetChild(0).gameObject.transform;
         //建立文字信息
@@ -63,11 +68,12 @@ public class RandomShowText : MonoBehaviour
         showTextObject.GetComponent<Text>().text = showText;
         //文字顏色
         showTextObject.GetComponent<Text>().color = textColor;
+        showTextObject.GetComponent<Outline>().effectColor = textOutlineColor;
 
         //生成的位置信息
         float radomX = Random.Range(radomXMin, radomXMax) + transform.position.x;
         float radomY = Random.Range(radomYMin, radomYMax) + transform.position.y;
-        GameObject createTextObject = Instantiate(showTextObject, new Vector3(radomX, radomY, 0), Quaternion.identity) as GameObject;
+        GameObject createTextObject = Instantiate(showTextFolder, new Vector3(radomX, radomY, 0), Quaternion.identity) as GameObject;
         createTextObject.transform.SetParent(showTextsObject);//將新建出來的radomText放到showTextsObject物件底下
     }
 }
