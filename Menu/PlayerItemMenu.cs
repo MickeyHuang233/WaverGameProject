@@ -32,9 +32,9 @@ public class PlayerItemMenu : MonoBehaviour
 
     /*
      *菜單Page物件
-     * 0 --> MenuTag_Item
-     * 1 --> MenuTag_Save
-     * 2 --> MenuTag_Exit
+     * 0 --> MenuPage_Item
+     * 1 --> MenuPage_Save
+     * 2 --> MenuPage_Exit
      */
     private List<GameObject> MenuPageObjects = new List<GameObject>();
 
@@ -154,6 +154,7 @@ public class PlayerItemMenu : MonoBehaviour
     #region 關閉二級菜單  doCloseDetailMenu()
     private void doCloseDetailMenu()
     {
+        if (MenuPageObjects[1].GetComponent<MenuTagSave>().getIsSaving) return;//正在存檔時什麼也不做
         MenuPageObjects[tagIndex - 1].SendMessage("hidePage");
         openDetailMenu = 0;
     }

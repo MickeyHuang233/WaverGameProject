@@ -42,6 +42,13 @@ public class MenuTagSave : MonoBehaviour
 
     //是否正在存檔
     private bool isSaving = false;
+    public bool getIsSaving
+    {
+        get
+        {
+            return isSaving;
+        }
+    }
 
     void Start()
     {
@@ -176,7 +183,7 @@ public class MenuTagSave : MonoBehaviour
         else if (v < 0 && tagIndex < tagIndexMax) tagIndex++;//向下移動
         else if (v < 0 && tagIndex == tagIndexMax) tagIndex = 1;//最後一項，向下移動
         //更新指標位置
-        Vector3 choicePosition = this.transform.GetChild(2).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
+        Vector3 choicePosition = transform.GetChild(2).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
         itemIndex.transform.position = new Vector3(choicePosition.x - 0.2F, choicePosition.y, choicePosition.z);
     }
     #endregion
