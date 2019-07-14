@@ -18,7 +18,7 @@ public class GameMenager : MonoBehaviour
     public List<int> gameInitGetItemList;
 
     [Header("遊戲的劇情編號")]
-    public static int gamePlotNumber = 1;
+    public static int gamePlotNumber;
 
     //物品欄已獲得物品編號
     public static HashSet<int> getItemNumList;
@@ -29,10 +29,12 @@ public class GameMenager : MonoBehaviour
     #region Awake()
     void Awake()
     {
-        ParseMapJSON();//讀取場景json定義檔
-        ParseItemJSON();//讀取物品json定義檔
-        ParsePlotJSON();//讀取劇情json定義檔
+        gamePlotNumber = 1;
+        if (mapInformationList == null) ParseMapJSON();//讀取場景json定義檔
+        if (itemInformationList == null) ParseItemJSON();//讀取物品json定義檔
+        if (plotInformationList == null) ParsePlotJSON();//讀取劇情json定義檔
         //clearGameFile();//清空gameFile
+        Debug.Log(PlayerPrefs.GetString("gameFile"));
         loadJsonToBean();//讀取存檔信息json檔
         initGetItem();//初始化獲得的道具
     }
@@ -268,7 +270,7 @@ public class GameMenager : MonoBehaviour
     #region 讀取存檔信息json檔 loadJsonToBean()
     public static void loadJsonToBean()
     {
-        if (PlayerPrefs.GetString("gameFile") != null && (!PlayerPrefs.GetString("gameFile").Equals("")) && GameMenager.gameFiles == null)//有存過檔
+        if (PlayerPrefs.GetString("gameFile") != null && (!PlayerPrefs.GetString("gameFile").Equals("")) && GameMenager.gameFiles != null)//有存過檔
         {
             GameMenager.gameFiles = JsonUtility.FromJson<GameFiles>(PlayerPrefs.GetString("gameFile"));
         }

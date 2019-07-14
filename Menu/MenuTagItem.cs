@@ -17,9 +17,6 @@ public class MenuTagItem : MonoBehaviour
     //物品欄文字物件
     GameObject itemPage;
 
-    //物品欄文字的動畫信息
-    private Animator itemPageAanimator;
-
     //指標物件
     GameObject itemIndex;
 
@@ -37,7 +34,6 @@ public class MenuTagItem : MonoBehaviour
     {
         //取得itemPage物件及動畫信息
         itemPage = GameObject.Find("ItemPage");
-        itemPageAanimator = itemPage.GetComponent<Animator>();
         //取得指標物件
         itemIndex = transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
         //取得物品說明物件

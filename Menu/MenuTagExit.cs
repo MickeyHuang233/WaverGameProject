@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /*
     菜單，離開遊戲畫面
@@ -13,14 +14,6 @@ using UnityEngine;
 */
 public class MenuTagExit : MonoBehaviour
 {
-    //離開遊戲菜單文字物件
-    GameObject exitPage;
-
-    //離開遊戲菜單文字的動畫信息
-    private Animator exitPageAanimator;
-
-    GameObject MenuObject;
-
     //指標物件
     GameObject itemIndex;
 
@@ -30,20 +23,18 @@ public class MenuTagExit : MonoBehaviour
     //最大位置編號
     private int tagIndexMax;
 
+    [Header("返回主頁面時需要銷毀的物件名稱")]
+    public string[] destoryObjectNames;
+
     #region Start()
     void Start()
     {
-        //取得exitPage物件及動畫信息
-        exitPage = GameObject.Find("ExitPage");
-        exitPageAanimator = exitPage.GetComponent<Animator>();
-        //取得Menu物件
-        MenuObject = this.transform.parent.parent.gameObject;
         //取得指標物件
-        itemIndex = this.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
+        itemIndex = transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
         //取得最大位置編號，要去掉指標物件
-        tagIndexMax = this.transform.GetChild(1).gameObject.transform.childCount - 1;
+        tagIndexMax = transform.GetChild(1).gameObject.transform.childCount - 1;
         //初始化指標物件的位置
-        Vector3 choicePosition = this.transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
+        Vector3 choicePosition = transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
         itemIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
     }
     #endregion
@@ -85,7 +76,7 @@ public class MenuTagExit : MonoBehaviour
         else if (v > 0 && tagIndex == 1) tagIndex = tagIndexMax;//向上移動
         else if (v < 0 && tagIndex < tagIndexMax) tagIndex++;//向下移動
         else if (v < 0 && tagIndex == tagIndexMax) tagIndex = 1;//最後一項，向下移動
-        Vector3 choicePosition = this.transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
+        Vector3 choicePosition = transform.GetChild(1).gameObject.transform.GetChild(tagIndex).gameObject.transform.position;
         itemIndex.transform.position = new Vector3(choicePosition.x - 0.25F, choicePosition.y, choicePosition.z);
     }
     #endregion
@@ -97,12 +88,30 @@ public class MenuTagExit : MonoBehaviour
         switch (tagIndex)
         {
             case 1://是的
-                Application.Quit();//關閉遊戲
+                StartCoroutine(doRetrunTitle());//協程_返回主菜單
                 break;
             case 2://取消
                 hidePage();
                 break;
             }
+    }
+    #endregion
+
+    #region 協程_返回主菜單
+    IEnumerator doRetrunTitle()
+    {
+        GameObject.Find("Menu").SendMessage("doCloseDetailMenu");
+        yield return new WaitForSeconds(0.2F);
+
+        GameObject.Find("Menu").SendMessage("doCloseMenu");
+        yield return new WaitForSeconds(0.2F);
+
+        foreach (string destoryObjectName in destoryObjectNames)
+        {
+            Destroy(GameObject.Find(destoryObjectName));
+        }
+        SceneManager.LoadScene("00_Title");//新的加找場景方法
+        //Application.Quit();//關閉遊戲
     }
     #endregion
 }

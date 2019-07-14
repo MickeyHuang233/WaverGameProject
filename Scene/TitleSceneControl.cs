@@ -19,7 +19,7 @@ public class TitleSceneControl : MonoBehaviour
     public string startScene;
 
     //玩家所選的操作
-    public static string selectButton = "Null";
+    public static string selectButton;
 
     //主頁面按鍵物件
     private List<GameObject> menuButtonObject = new List<GameObject>();
@@ -45,6 +45,8 @@ public class TitleSceneControl : MonoBehaviour
     //顯示存檔信息物件
     private List<GameObject> SaveSituations = new List<GameObject>();
 
+    [Header("gameManager")]
+    public GameObject gameManager;
 
     #region Start()
     void Start()
@@ -53,6 +55,12 @@ public class TitleSceneControl : MonoBehaviour
         tagIndexMax = GameObject.Find("Canvas_TitleButton").transform.childCount - 1;
         //獲取主頁面按鍵物件
         for (int i=1; i<=tagIndexMax; i++) menuButtonObject.Add(GameObject.Find("Canvas_TitleButton").transform.GetChild(i).gameObject);
+        selectButton = "Null";//重置玩家所選的操作
+
+        if (GameObject.Find("GameManager") == null)
+        {
+            Instantiate(gameManager, new Vector3(0, 0, 0), Quaternion.identity);
+        }
 
         //隱藏讀檔信息
         GameObject savePage = GameObject.Find("SavePage");
