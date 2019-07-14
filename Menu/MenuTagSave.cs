@@ -15,9 +15,6 @@ using UnityEngine.UI;
 */
 public class MenuTagSave : MonoBehaviour
 {
-    //存檔菜單文字物件
-    GameObject savePage;
-
     //指標物件
     private GameObject itemIndex;
 
@@ -52,8 +49,6 @@ public class MenuTagSave : MonoBehaviour
 
     void Start()
     {
-        //取得savePage物件及動畫信息
-        savePage = GameObject.Find("SavePage");
         //取得指標物件
         itemIndex = transform.GetChild(2).gameObject.transform.GetChild(0).gameObject;
         //取得最大位置編號，要去掉指標物件
@@ -191,13 +186,13 @@ public class MenuTagSave : MonoBehaviour
     #region 按下確認鍵操作 doSubmit()
     private void doSubmit()
     {
-        StartCoroutine(doShowPlayerBubble());
+        StartCoroutine(doShowPlayerBubble());//協程_正在存檔時的操作
         GameMenager.saveToJsonFile(tagIndex);//遊戲當前信息轉為json並存到硬中
         PlayerItemMenu.returnRestTimer();
     }
     #endregion
 
-    #region 協程
+    #region 協程_正在存檔時的操作
     IEnumerator doShowPlayerBubble()
     {
         isSaving = true;
@@ -206,9 +201,9 @@ public class MenuTagSave : MonoBehaviour
         saveInformations[tagIndex - 1].transform.GetChild(1).gameObject.GetComponent<Text>().text = "";
         yield return new WaitForSeconds(3F);
         showSaveInformation();//刷新存檔信息
+        isSaving = false;
         playerObject.SendMessage("hideTalkBubble");
         transform.parent.parent.SendMessage("doCloseDetailMenu");
-        isSaving = false;
     }
     #endregion
 }
