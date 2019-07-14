@@ -13,7 +13,7 @@ public class RandomShowText : MonoBehaviour
     public string[] showTexts;
 
     [Header("建立文字串的數量")]
-    [Range(0F, 30F)]
+    [Range(0F, 50F)]
     public int createTextsNum = 5;
 
     [Header("使用的文字預載體")]
@@ -77,6 +77,7 @@ public class RandomShowText : MonoBehaviour
         float radomY = Random.Range(radomYMin, radomYMax) + transform.position.y;
         GameObject createTextObject = Instantiate(showTextFolder, new Vector3(radomX, radomY, 0), Quaternion.identity) as GameObject;
         createTextObject.transform.SetParent(showTextsObject);//將新建出來的radomText放到showTextsObject物件底下
+        createTextObject.transform.localScale = new Vector3(1, 1, 1);
     }
     #endregion
 
