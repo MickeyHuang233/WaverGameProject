@@ -252,11 +252,11 @@ public class GameMenager : MonoBehaviour
         GameFile gameFile = new GameFile
         {
             gameFileId = gameFileId,//遊戲存檔編號
-            mapId = GameMenager.IsInMapDefinition(InitSceneManagment.targetSceneName),//存檔時玩家所在的地圖編號
+            mapId = IsInMapDefinition(InitSceneManagment.targetSceneName),//存檔時玩家所在的地圖編號
             playerPositionX = PlayerMovement.playerObject.transform.position.x,//存檔時玩家所在的X軸信息
             playerPositionY = PlayerMovement.playerObject.transform.position.y,//存檔時玩家所在的Y軸信息
             playerPositionZ = PlayerMovement.playerObject.transform.position.z,//存檔時玩家所在的Z軸信息
-            plotId = GameMenager.gamePlotNumber,//存檔時玩家正在進行的劇情編號
+            plotId = gamePlotNumber,//存檔時玩家正在進行的劇情編號
             gameTimeSecond = GameTimer.second,//存檔時的已遊玩時間_秒
             gameTimeMinute = GameTimer.minute,//存檔時的已遊玩時間_分
             getItems = getItems,//已獲得道具
@@ -270,14 +270,14 @@ public class GameMenager : MonoBehaviour
     #region 讀取存檔信息json檔 loadJsonToBean()
     public static void loadJsonToBean()
     {
-        if (PlayerPrefs.GetString("gameFile") != null && (!PlayerPrefs.GetString("gameFile").Equals("")) && GameMenager.gameFiles != null)//有存過檔
+        if (PlayerPrefs.GetString("gameFile") != null && (!PlayerPrefs.GetString("gameFile").Equals("")))//有存過檔
         {
-            GameMenager.gameFiles = JsonUtility.FromJson<GameFiles>(PlayerPrefs.GetString("gameFile"));
+            gameFiles = JsonUtility.FromJson<GameFiles>(PlayerPrefs.GetString("gameFile"));
         }
         else//沒存過檔
         {
-            GameMenager.gameFiles = new GameFiles();
-            string saveString = JsonUtility.ToJson(GameMenager.gameFiles);//將gameFiles轉換成json格式的字串
+            gameFiles = new GameFiles();
+            string saveString = JsonUtility.ToJson(gameFiles);//將gameFiles轉換成json格式的字串
             PlayerPrefs.SetString("gameFile", saveString);
         }
     }
@@ -287,8 +287,8 @@ public class GameMenager : MonoBehaviour
     public static void saveToJsonFile(int gameFileId)
     {
         GameFile gameFile = saveToBean(gameFileId);//先取存檔的json檔
-        GameMenager.gameFiles.gameFiles[gameFileId] = gameFile;//覆蓋選中的檔案編號
-        string saveString = JsonUtility.ToJson(GameMenager.gameFiles);//將gameFiles轉換成json格式的字串
+        gameFiles.gameFiles[gameFileId] = gameFile;//覆蓋選中的檔案編號
+        string saveString = JsonUtility.ToJson(gameFiles);//將gameFiles轉換成json格式的字串
         PlayerPrefs.SetString("gameFile", saveString);
     }
     #endregion
