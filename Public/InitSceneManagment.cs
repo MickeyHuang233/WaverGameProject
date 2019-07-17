@@ -238,4 +238,11 @@ public class InitSceneManagment : MonoBehaviour
         GameTimer.nactivesecond += 10;
     }
     #endregion
+
+    #region temp存檔，調用GameMenager   saveTempFile()
+    private void saveTempFile()
+    {
+        GameMenager.saveTempFile();
+    }
+    #endregion
 }

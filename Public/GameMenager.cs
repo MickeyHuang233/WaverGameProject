@@ -34,8 +34,10 @@ public class GameMenager : MonoBehaviour
         if (itemInformationList == null) ParseItemJSON();//讀取物品json定義檔
         if (plotInformationList == null) ParsePlotJSON();//讀取劇情json定義檔
         //clearGameFile();//清空gameFile
-        Debug.Log(PlayerPrefs.GetString("gameFile"));
+        Debug.Log("nomral" + PlayerPrefs.GetString("gameFile"));
         loadJsonToBean();//讀取存檔信息json檔
+        clearTempFile();//將temp存檔清空
+        Debug.Log("temp" + PlayerPrefs.GetString("gameFile"));
         initGetItem();//初始化獲得的道具
     }
     #endregion
@@ -288,6 +290,42 @@ public class GameMenager : MonoBehaviour
     {
         GameFile gameFile = saveToBean(gameFileId);//先取存檔的json檔
         gameFiles.gameFiles[gameFileId] = gameFile;//覆蓋選中的檔案編號
+        string saveString = JsonUtility.ToJson(gameFiles);//將gameFiles轉換成json格式的字串
+        PlayerPrefs.SetString("gameFile", saveString);
+    }
+    #endregion
+
+    #region 將temp存檔清空
+    public static void clearTempFile()
+    {
+        gameFiles.gameFiles[0] = new GameFile();
+        string saveString = JsonUtility.ToJson(gameFiles);//將gameFiles轉換成json格式的字串
+        PlayerPrefs.SetString("gameFile", saveString);
+    }
+    #endregion
+
+    #region temp存檔
+    public static void saveTempFile()
+    {
+        //將已獲得道具Set轉成List
+        List<int> getItems = new List<int>();
+        foreach (int fetItemNum in getItemNumList) getItems.Add(fetItemNum);
+        //儲存至Bean
+        GameFile tempGameFile = new GameFile
+        {
+            gameFileId = 0,//遊戲存檔編號
+            mapId = IsInMapDefinition(InitSceneManagment.targetSceneName),//存檔時玩家所在的地圖編號
+            playerPositionX = PlayerMovement.playerObject.transform.position.x,//存檔時玩家所在的X軸信息
+            playerPositionY = PlayerMovement.playerObject.transform.position.y,//存檔時玩家所在的Y軸信息
+            playerPositionZ = PlayerMovement.playerObject.transform.position.z,//存檔時玩家所在的Z軸信息
+            plotId = gamePlotNumber,//存檔時玩家正在進行的劇情編號
+            gameTimeSecond = GameTimer.second,//存檔時的已遊玩時間_秒
+            gameTimeMinute = GameTimer.minute,//存檔時的已遊玩時間_分
+            getItems = getItems,//已獲得道具
+            saveTime = System.Convert.ToInt64((System.DateTime.UtcNow - new System.DateTime(1970, 1, 1, 0, 0, 0, 0)).TotalMilliseconds)//存檔時的系統時間
+            // TODO temp存檔和其他存檔不太一樣，要存的東西會比較少，有需要再適當增減
+        };
+        gameFiles.gameFiles[0] = tempGameFile;
         string saveString = JsonUtility.ToJson(gameFiles);//將gameFiles轉換成json格式的字串
         PlayerPrefs.SetString("gameFile", saveString);
     }
